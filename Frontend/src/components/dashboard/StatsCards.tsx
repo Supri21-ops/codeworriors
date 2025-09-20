@@ -50,24 +50,25 @@ const stats = [
 export const StatsCards: React.FC = () => {
   const { ordersStats, ordersLoading } = useManufacturingStore();
 
-  const displayStats = ordersStats ? [
+  // Safely access ordersStats properties with fallbacks
+  const displayStats = [
     {
       ...stats[0],
-      value: ordersStats.total.toString(),
+      value: ordersStats?.total?.toString() || '0',
     },
     {
       ...stats[1],
-      value: ordersStats.inProgress.toString(),
+      value: ordersStats?.inProgress?.toString() || '0',
     },
     {
       ...stats[2],
-      value: ordersStats.completed.toString(),
+      value: ordersStats?.completed?.toString() || '0',
     },
     {
       ...stats[3],
-      value: ordersStats.urgent.toString(),
+      value: ordersStats?.urgent?.toString() || '0',
     },
-  ] : stats;
+  ];
 
   if (ordersLoading) {
     return (

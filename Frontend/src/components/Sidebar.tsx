@@ -3,13 +3,18 @@ import { NavLink } from 'react-router-dom';
 import { COLORS } from '../theme';
 
 const links: { label: string; to: string; icon: string }[] = [
-  { label: 'Dashboard', to: '/', icon: '🏠' },
+  { label: 'Dashboard', to: '/dashboard', icon: '🏠' },
   { label: 'Manufacturing Orders', to: '/manufacturing-orders', icon: '🏭' },
   { label: 'Work Orders', to: '/work-orders', icon: '⚙️' },
   { label: 'Inventory', to: '/inventory', icon: '📦' },
-  { label: 'Work Centers', to: '/work-centers', icon: '🏗️' },
   { label: 'Stock Ledger', to: '/stock', icon: '📊' },
+  { label: 'Work Centers', to: '/work-centers', icon: '🏗️' },
+  { label: 'Products', to: '/products', icon: '📋' },
+  { label: 'Bills of Materials', to: '/bom', icon: '📝' },
+  { label: 'Operator Dashboard', to: '/operator', icon: '👷' },
   { label: 'Reports', to: '/reports', icon: '📈' },
+  { label: 'Users', to: '/users', icon: '👥' },
+  { label: 'Settings', to: '/settings', icon: '⚙️' },
 ];
 
 export const Sidebar: React.FC = () => {

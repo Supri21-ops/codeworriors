@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pool = void 0;
-const pg_1 = require("pg");
-const env_1 = require("./env");
-exports.pool = new pg_1.Pool({ connectionString: env_1.config.DATABASE_URL });
+exports.db = void 0;
+var database_docker_1 = require("./database-docker");
+Object.defineProperty(exports, "db", { enumerable: true, get: function () { return database_docker_1.db; } });
 //# sourceMappingURL=prisma.js.map

@@ -38,18 +38,18 @@ class UserService {
                 countParams.push(filters.role);
             }
             if (filters.isActive !== undefined) {
-                sql += ' AND isActive = $' + (params.length + 1);
-                countSql += ' AND isActive = $' + (countParams.length + 1);
+                sql += ' AND is_active = $' + (params.length + 1);
+                countSql += ' AND is_active = $' + (countParams.length + 1);
                 params.push(filters.isActive === 'true');
                 countParams.push(filters.isActive === 'true');
             }
             if (filters.search) {
-                sql += ' AND (firstName ILIKE $' + (params.length + 1) + ' OR lastName ILIKE $' + (params.length + 1) + ' OR email ILIKE $' + (params.length + 1) + ' OR username ILIKE $' + (params.length + 1) + ')';
-                countSql += ' AND (firstName ILIKE $' + (countParams.length + 1) + ' OR lastName ILIKE $' + (countParams.length + 1) + ' OR email ILIKE $' + (countParams.length + 1) + ' OR username ILIKE $' + (countParams.length + 1) + ')';
+                sql += ' AND (name ILIKE $' + (params.length + 1) + ' OR email ILIKE $' + (params.length + 1) + ')';
+                countSql += ' AND (name ILIKE $' + (countParams.length + 1) + ' OR email ILIKE $' + (countParams.length + 1) + ')';
                 params.push(`%${filters.search}%`);
                 countParams.push(`%${filters.search}%`);
             }
-            sql += ' ORDER BY createdAt DESC OFFSET $' + (params.length + 1) + ' LIMIT $' + (params.length + 2);
+            sql += ' ORDER BY created_at DESC OFFSET $' + (params.length + 1) + ' LIMIT $' + (params.length + 2);
             params.push(skip, pagination.limit);
             const usersRes = await pool.query(sql, params);
             const users = usersRes.rows;
@@ -108,7 +108,7 @@ class UserService {
             if (fields.length === 0)
                 return existingUser;
             let setClause = fields.map((f, i) => `${f} = $${i + 1}`).join(', ');
-            await pool.query(`UPDATE users SET ${setClause}, updatedAt = NOW() WHERE id = $${fields.length + 1}`, [...values, id]);
+            await pool.query(`UPDATE users SET ${setClause}, updated_at = NOW() WHERE id = $${fields.length + 1}`, [...values, id]);
             const { rows: updatedRows } = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
             const updatedUser = updatedRows[0];
             logger_1.logger.info(`User updated: ${updatedUser.email}`);

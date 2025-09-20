@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
-import { useAuthStore } from '../../store/auth.store';
+import { useAuthStore } from '../../stores/authStore';
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -11,8 +11,11 @@ interface DashboardLayoutProps {
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuthStore();
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  console.log('DashboardLayout: sidebarOpen state:', sidebarOpen);
+  console.log('DashboardLayout: current route:', location.pathname);
 
   const handleLogout = async () => {
     try {
@@ -23,9 +26,19 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     }
   };
 
+  const handleMenuClick = () => {
+    console.log('Menu clicked, toggling sidebar from:', sidebarOpen, 'to:', !sidebarOpen);
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
   if (!user) {
-    navigate('/login');
-    return null;
+    return <div>Redirecting...</div>;
   }
 
   return (
@@ -40,11 +53,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       {/* Main Content */}
       <div className="lg:pl-64">
         {/* Topbar */}
-        <Topbar 
-          onMenuClick={() => setSidebarOpen(true)}
-          user={user}
-          onLogout={handleLogout}
-        />
+        {user && (
+          <Topbar 
+            onMenuClick={handleMenuClick}
+            user={user}
+            onLogout={handleLogout}
+          />
+        )}
 
         {/* Page Content */}
         <main className="py-6">

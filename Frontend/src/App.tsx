@@ -1,26 +1,30 @@
 import React from 'react';
 import './index.css';
 
-// TypeScript JSX fix
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elemName: string]: any;
-    }
-  }
-}
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
-import { useAuthStore } from "./store/auth.store";
+import { useAuthStore } from "./stores/authStore";
+import { RoleRoute } from './components/navigation/ProtectedRoute';
 
 // Pages
 import { LoginPage } from './pages/auth/LoginPage';
 import { SignupPage } from './pages/auth/SignupPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import OtpVerifyPage from './pages/auth/OtpVerifyPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
+import OperatorDashboard from './pages/OperatorDashboard';
 import { ManufacturingOrdersPage } from './pages/manufacturing/ManufacturingOrdersPage';
 import { WorkOrdersPage } from './pages/work-orders/WorkOrdersPage';
 import { InventoryPage } from './pages/inventory/InventoryPage';
+import StockDashboard from './pages/inventory/StockDashboard';
+import WorkCenterDashboard from './pages/workcenter/WorkCenterDashboard';
+import ReportsPage from './pages/reports/ReportsPage';
+import SearchResultsPage from './pages/search/SearchResultsPage';
+import { ProductsPage } from './pages/products/ProductsPage';
+import { BOMPage } from './pages/bom/BOMPage';
+import { UsersPage } from './pages/users/UsersPage';
+import { SettingsPage } from './pages/settings/SettingsPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -125,6 +129,112 @@ function App() {
                 <ProtectedRoute>
                   <InventoryPage />
                 </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/work-centers"
+              element={
+                <ProtectedRoute>
+                  <WorkCenterDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <RoleRoute allowedRoles={["manager","admin"]}>
+                  <ReportsPage />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/products"
+              element={
+                <ProtectedRoute>
+                  <ProductsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bom"
+              element={
+                <ProtectedRoute>
+                  <BOMPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <RoleRoute allowedRoles={["admin"]}>
+                  <UsersPage />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <RoleRoute allowedRoles={["admin","manager"]}>
+                  <SettingsPage />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/operator"
+              element={
+                <ProtectedRoute>
+                  <OperatorDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/stock"
+              element={
+                <ProtectedRoute>
+                  <StockDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <ProtectedRoute>
+                  <SearchResultsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Auth Routes */}
+            <Route
+              path="/auth/login"
+              element={
+                <PublicRoute>
+                  <LoginPage />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/auth/signup"
+              element={
+                <PublicRoute>
+                  <SignupPage />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/auth/forgot"
+              element={
+                <PublicRoute>
+                  <ForgotPasswordPage />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/auth/otp"
+              element={
+                <PublicRoute>
+                  <OtpVerifyPage />
+                </PublicRoute>
               }
             />
 

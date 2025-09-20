@@ -1,0 +1,40 @@
+{
+  "name": "Manufacturing Management System",
+  "short_name": "MMS",
+  "description": "A comprehensive manufacturing management system for production planning, work orders, and inventory tracking",
+  "version": "1.0.0",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View manufacturing dashboard",
+      "url": "/dashboard",
+      "icons": []
+    },
+    {
+      "name": "Orders",
+      "short_name": "Orders", 
+      "description": "Manage manufacturing orders",
+      "url": "/orders",
+      "icons": []
+    }
+  ],
+  "prefer_related_applications": false
+}

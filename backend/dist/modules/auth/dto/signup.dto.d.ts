@@ -1,7 +1,6 @@
 import Joi from 'joi';
 export interface SignupDto {
     email: string;
-    username: string;
     password: string;
     firstName: string;
     lastName: string;

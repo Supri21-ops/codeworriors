@@ -124,6 +124,7 @@ model User {
   stockMovements             StockMovement[]
   qualityChecks              QualityCheck[]        @relation("checkedByUser")
   events                     Event[]               @relation("eventUser")
+  searchAnalytics            SearchAnalytics[]
   userRoleAssignments        UserRoleAssignment[]
 
   @@map("users")
@@ -195,6 +196,8 @@ model WorkCenter {
 
   workOrders      WorkOrder[]
   stockItems      StockItem[]
+  stockMovements  StockMovement[]
+  priorityQueue   PriorityQueue[]
 
   @@map("work_centers")
 }
@@ -321,7 +324,7 @@ model QualityCheck {
   checkType  QualityCheckType
   status     QualityStatus
   notes      String?
-  checkedBy  User        @relation("checkedByUser", fields: [checkedBy], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  checkedBy  User        @relation("checkedByUser", fields: [checkedById], references: [id], onDelete: Restrict, onUpdate: Cascade)
   checkedById String
   checkedAt  DateTime    @default(now())
   createdAt  DateTime    @default(now())
@@ -355,7 +358,7 @@ model VectorDocument {
   id         String    @id @default(uuid())
   content    String
   // Use Float[] to store embeddings. For production, prefer pgvector extension and map accordingly.
-  embedding  Float[]   @db.Float8[] 
+  embedding  String    // Store as JSON string for now, can be converted to pgvector later
   metadata   Json?
   collection String
   createdAt  DateTime  @default(now())

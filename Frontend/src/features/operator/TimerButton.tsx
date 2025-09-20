@@ -13,7 +13,7 @@ export const TimerButton: React.FC<Props> = ({ status, onStart, onPause, onCompl
   const [seconds, setSeconds] = useState(initialSeconds);
   const [running, setRunning] = useState(status === 'Started');
   const [showModal, setShowModal] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (running) {
@@ -21,7 +21,11 @@ export const TimerButton: React.FC<Props> = ({ status, onStart, onPause, onCompl
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    return () => intervalRef.current && clearInterval(intervalRef.current);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, [running]);
 
   const format = (s: number) => {

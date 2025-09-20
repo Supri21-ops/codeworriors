@@ -28,17 +28,17 @@ class PriorityService {
             if (type === 'MANUFACTURING_ORDER') {
                 const { rows } = await pool.query(`SELECT mo.*, p.*, u.*
            FROM manufacturing_orders mo
-           JOIN products p ON mo.productId = p.id
-           JOIN users u ON mo.createdById = u.id
+           JOIN products p ON mo.product_id = p.id
+           JOIN users u ON mo.created_by_id = u.id
            WHERE mo.id = $1`, [orderId]);
                 order = rows[0];
             }
             else {
                 const { rows } = await pool.query(`SELECT wo.*, mo.*, p.*, wc.*
            FROM work_orders wo
-           JOIN manufacturing_orders mo ON wo.manufacturingOrderId = mo.id
-           JOIN products p ON mo.productId = p.id
-           JOIN work_centers wc ON wo.workCenterId = wc.id
+           JOIN manufacturing_orders mo ON wo.manufacturing_order_id = mo.id
+           JOIN products p ON mo.product_id = p.id
+           JOIN work_centers wc ON wo.work_center_id = wc.id
            WHERE wo.id = $1`, [orderId]);
                 order = rows[0];
             }
@@ -105,10 +105,10 @@ class PriorityService {
     }
     async calculateResourceAvailability(order) {
         try {
-            const { rows: wcRows } = await pool.query(`SELECT * FROM work_centers WHERE "isActive" = true`);
+            const { rows: wcRows } = await pool.query(`SELECT * FROM work_centers WHERE is_active = true`);
             const workCenters = wcRows;
             const totalCapacity = workCenters.reduce((sum, wc) => sum + wc.capacity, 0);
-            const { rows: workloadRows } = await pool.query(`SELECT COUNT(*) as count FROM work_orders WHERE status = 'IN_PROGRESS' AND workCenterId = ANY($1::uuid[])`, [workCenters.map(wc => wc.id)]);
+            const { rows: workloadRows } = await pool.query(`SELECT COUNT(*) as count FROM work_orders WHERE status = 'IN_PROGRESS' AND work_center_id = ANY($1::uuid[])`, [workCenters.map(wc => wc.id)]);
             const currentWorkload = parseInt(workloadRows[0]?.count || '0', 10);
             const availabilityRatio = Math.max(0.1, (totalCapacity - currentWorkload) / totalCapacity);
             return 0.5 + (availabilityRatio * 1.5);
@@ -121,10 +121,10 @@ class PriorityService {
     async updatePriorityScore(orderId, type, score) {
         try {
             if (type === 'MANUFACTURING_ORDER') {
-                await pool.query(`UPDATE manufacturing_orders SET "priorityScore" = $1, "updatedAt" = NOW() WHERE id = $2`, [score, orderId]);
+                await pool.query(`UPDATE manufacturing_orders SET priority_score = $1, updated_at = NOW() WHERE id = $2`, [score, orderId]);
             }
             else {
-                await pool.query(`UPDATE work_orders SET "priorityScore" = $1, "updatedAt" = NOW() WHERE id = $2`, [score, orderId]);
+                await pool.query(`UPDATE work_orders SET priority_score = $1, updated_at = NOW() WHERE id = $2`, [score, orderId]);
             }
         }
         catch (error) {
@@ -140,18 +140,18 @@ class PriorityService {
             if (workCenterId) {
                 whereClause.workCenterId = workCenterId;
             }
-            let sql = `SELECT wo.*, mo.orderNumber as moOrderNumber, p.name as productName, wc.name as workCenterName
+            let sql = `SELECT wo.*, mo.order_number as moOrderNumber, p.name as productName, wc.name as workCenterName
                  FROM work_orders wo
-                 JOIN manufacturing_orders mo ON wo.manufacturingOrderId = mo.id
-                 JOIN products p ON mo.productId = p.id
-                 JOIN work_centers wc ON wo.workCenterId = wc.id
+                 JOIN manufacturing_orders mo ON wo.manufacturing_order_id = mo.id
+                 JOIN products p ON mo.product_id = p.id
+                 JOIN work_centers wc ON wo.work_center_id = wc.id
                  WHERE wo.status IN ('PLANNED', 'RELEASED')`;
             let params = [];
             if (workCenterId) {
-                sql += ` AND wo.workCenterId = $1`;
+                sql += ` AND wo.work_center_id = $1`;
                 params.push(workCenterId);
             }
-            sql += ` ORDER BY wo."priorityScore" DESC NULLS LAST, wo."dueDate" ASC LIMIT $${params.length + 1}`;
+            sql += ` ORDER BY wo.priority_score DESC NULLS LAST, wo.planned_end_date ASC LIMIT $${params.length + 1}`;
             params.push(limit);
             const { rows: workOrders } = await pool.query(sql, params);
             return workOrders.map(order => ({
@@ -207,7 +207,7 @@ class PriorityService {
     async updateWorkOrderPriorities(optimized) {
         try {
             for (let i = 0; i < optimized.length; i++) {
-                await pool.query(`UPDATE work_orders SET "priorityScore" = $1, "schedulePosition" = $2, "updatedAt" = NOW() WHERE id = $3`, [optimized[i].priority, i + 1, optimized[i].id]);
+                await pool.query(`UPDATE work_orders SET priority_score = $1, schedule_position = $2, updated_at = NOW() WHERE id = $3`, [optimized[i].priority, i + 1, optimized[i].id]);
             }
         }
         catch (error) {
@@ -248,7 +248,7 @@ class PriorityService {
     }
     async handlePriorityChange(orderId, newPriority, reason) {
         try {
-            await pool.query(`UPDATE work_orders SET priority = $1, "updatedAt" = NOW() WHERE id = $2`, [newPriority, orderId]);
+            await pool.query(`UPDATE work_orders SET priority = $1, updated_at = NOW() WHERE id = $2`, [newPriority, orderId]);
             const priorityScore = await this.calculatePriorityScore(orderId, 'WORK_ORDER');
             await kafka_1.kafkaService.publishPriorityEvent('PRIORITY_CHANGED', {
                 orderId,

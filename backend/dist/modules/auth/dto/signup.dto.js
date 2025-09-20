@@ -11,13 +11,6 @@ exports.signupSchema = joi_1.default.object({
         'string.empty': 'Email is required',
         'any.required': 'Email is required'
     }),
-    username: joi_1.default.string().alphanum().min(3).max(30).required().messages({
-        'string.alphanum': 'Username must contain only alphanumeric characters',
-        'string.min': 'Username must be at least 3 characters long',
-        'string.max': 'Username must not exceed 30 characters',
-        'string.empty': 'Username is required',
-        'any.required': 'Username is required'
-    }),
     password: joi_1.default.string().min(6).required().messages({
         'string.min': 'Password must be at least 6 characters long',
         'string.empty': 'Password is required',

@@ -16,11 +16,33 @@ const user_routes_1 = __importDefault(require("./modules/users/user.routes"));
 const mo_routes_1 = __importDefault(require("./modules/manufacturing/mo.routes"));
 const search_routes_1 = __importDefault(require("./modules/search/search.routes"));
 const priority_routes_1 = __importDefault(require("./modules/priority/priority.routes"));
+const bom_routes_1 = __importDefault(require("./modules/bom/bom.routes"));
+const stock_routes_1 = __importDefault(require("./modules/stock/stock.routes"));
+const workcenter_routes_1 = __importDefault(require("./modules/workcenter/workcenter.routes"));
+const workorder_routes_1 = __importDefault(require("./modules/workorder/workorder.routes"));
+const product_routes_1 = __importDefault(require("./modules/product/product.routes"));
 const app = (0, express_1.default)();
 exports.app = app;
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)({
-    origin: env_1.config.FRONTEND_URL || 'http://localhost:5173',
+    origin: function (origin, callback) {
+        if (!origin)
+            return callback(null, true);
+        if (env_1.config.NODE_ENV === 'development' && origin.includes('://localhost:')) {
+            return callback(null, true);
+        }
+        const allowedOrigins = [
+            env_1.config.FRONTEND_URL || 'http://localhost:5173',
+            'http://localhost:3001',
+            'http://localhost:8000',
+        ];
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 app.use((0, morgan_1.default)('combined', {
@@ -43,6 +65,11 @@ app.use('/api/users', user_routes_1.default);
 app.use('/api/manufacturing', mo_routes_1.default);
 app.use('/api/search', search_routes_1.default);
 app.use('/api/priority', priority_routes_1.default);
+app.use('/api/bom', bom_routes_1.default);
+app.use('/api/stock', stock_routes_1.default);
+app.use('/api/workcenters', workcenter_routes_1.default);
+app.use('/api/workorders', workorder_routes_1.default);
+app.use('/api/products', product_routes_1.default);
 app.get('/api/docs', (req, res) => {
     res.json({
         title: 'Manufacturing Management System API',

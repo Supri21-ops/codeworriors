@@ -8,8 +8,8 @@ class KafkaService {
     constructor() {
         this.consumers = new Map();
         this.kafka = new kafkajs_1.Kafka({
-            clientId: env_1.config.KAFKA_CLIENT_ID,
-            brokers: env_1.config.KAFKA_BROKERS,
+            clientId: env_1.config.KAFKA_CLIENT_ID || 'manufacturing-service',
+            brokers: env_1.config.KAFKA_BROKERS || ['localhost:9092'],
             retry: {
                 initialRetryTime: 100,
                 retries: 8

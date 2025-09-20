@@ -24,13 +24,13 @@ class VectorService {
     async indexDocument(id, content, metadata = {}, collection = 'documents') {
         try {
             const embedding = await this.createEmbedding(content);
-            await pool.query(`INSERT INTO vector_documents (id, content, embedding, metadata, collection, createdAt, updatedAt)
+            await pool.query(`INSERT INTO vector_documents (id, content, embedding, metadata, collection, created_at, updated_at)
          VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
          ON CONFLICT (id) DO UPDATE SET
            content = EXCLUDED.content,
            embedding = EXCLUDED.embedding,
            metadata = EXCLUDED.metadata,
-           updatedAt = NOW()`, [id, content, embedding, metadata, collection]);
+           updated_at = NOW()`, [id, content, embedding, metadata, collection]);
             logger_1.logger.info(`Document indexed: ${id} in collection ${collection}`);
         }
         catch (error) {
@@ -74,10 +74,10 @@ class VectorService {
                 filters
             });
             const enrichedResults = await Promise.all(results.map(async (result) => {
-                const { rows: orderRows } = await pool.query(`SELECT mo.*, p.*, u.firstName, u.lastName, u.email
+                const { rows: orderRows } = await pool.query(`SELECT mo.*, p.*, u.name, u.email
              FROM manufacturing_orders mo
-             JOIN products p ON mo.productId = p.id
-             JOIN users u ON mo.createdById = u.id
+             JOIN products p ON mo.product_id = p.id
+             JOIN users u ON mo.created_by_id = u.id
              WHERE mo.id = $1`, [result.id]);
                 return {
                     ...result,
@@ -116,7 +116,7 @@ class VectorService {
         try {
             const { rows: orderRows } = await pool.query(`SELECT mo.*, p.*
          FROM manufacturing_orders mo
-         JOIN products p ON mo.productId = p.id
+         JOIN products p ON mo.product_id = p.id
          WHERE mo.id = $1`, [orderId]);
             const order = orderRows[0];
             if (!order) {

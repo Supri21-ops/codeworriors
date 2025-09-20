@@ -1,0 +1,1 @@
+{"version":3,"file":"mock.service.d.ts","sourceRoot":"","sources":["../../src/services/mock.service.ts"],"names":[],"mappings":"AAIA,qBAAa,WAAW;IACtB,SAAS,CAAC,IAAI,EAAE,GAAG,EAAE,CAAM;IAC3B,SAAS,CAAC,SAAS,SAAK;IAElB,OAAO;IAKP,QAAQ,CAAC,EAAE,EAAE,MAAM;IAMnB,MAAM,CAAC,IAAI,EAAE,GAAG;IAahB,MAAM,CAAC,EAAE,EAAE,MAAM,EAAE,IAAI,EAAE,GAAG;IAc5B,MAAM,CAAC,EAAE,EAAE,MAAM;CASxB"}

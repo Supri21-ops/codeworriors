@@ -6,17 +6,27 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-  '@': path.resolve(process.cwd(), './src'),
+      '@': path.resolve(process.cwd(), './src'),
     },
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
   },
   server: {
     port: 5173,
-    host: true,
+    host: true, // This allows access from both localhost and IP
+    strictPort: false,
+    open: true, // Auto-open browser
+    cors: true,
+    hmr: {
+      port: 5174,
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
     },
   },

@@ -1,6 +1,7 @@
-import { prisma } from '../../config/prisma';
+import { DatabaseService } from '../../services/database.service';
 import { AppError } from '../../libs/errors';
 import { logger } from '../../config/logger';
+import { db } from '../../config/prisma';
 
 export interface CreateBomData {
   name: string;
@@ -25,240 +26,114 @@ export interface UpdateBomData {
   }[];
 }
 
-export class BomService {
-  async getAllBoms() {
-    try {
-      const boms = await prisma.bom.findMany({
-        include: {
-          items: {
-            include: {
-              product: {
-                select: {
-                  id: true,
-                  name: true,
-                  sku: true,
-                  unit: true
-                }
-              }
-            }
-          }
-        },
-        orderBy: {
-          createdAt: 'desc'
-        }
-      });
+export class BomService extends DatabaseService {
+  constructor() {
+    super('boms');
+  }
 
-      return boms;
-    } catch (error) {
-      logger.error('Get all BOMs service error:', error);
-      throw new AppError('Failed to fetch BOMs', 500);
-    }
+  // Alias methods for controller compatibility
+  async getAllBoms() {
+    return this.findAll({ orderBy: 'created_at DESC' });
   }
 
   async getBomById(id: string) {
-    try {
-      const bom = await prisma.bom.findUnique({
-        where: { id },
-        include: {
-          items: {
-            include: {
-              product: {
-                select: {
-                  id: true,
-                  name: true,
-                  sku: true,
-                  unit: true,
-                  description: true
-                }
-              }
-            }
-          }
-        }
-      });
-
-      if (!bom) {
-        throw new AppError('BOM not found', 404);
-      }
-
-      return bom;
-    } catch (error) {
-      logger.error('Get BOM by ID service error:', error);
-      if (error instanceof AppError) {
-        throw error;
-      }
-      throw new AppError('Failed to fetch BOM', 500);
+    const bom = await this.findById(id);
+    if (!bom) {
+      throw new AppError('BOM not found', 404);
     }
+    
+    // Get BOM items
+    const itemsResult = await db.query(
+      'SELECT bi.*, p.name as product_name FROM bom_items bi LEFT JOIN products p ON bi.product_id = p.id WHERE bi.bom_id = $1',
+      [id]
+    );
+    
+    return {
+      ...bom,
+      items: itemsResult.rows
+    };
   }
 
   async createBom(data: CreateBomData) {
     try {
-      // Validate that all referenced products exist
-      const productIds = data.items.map(item => item.productId);
-      const products = await prisma.product.findMany({
-        where: {
-          id: { in: productIds }
+      // Generate UUID for the BOM
+      const bomId = require('crypto').randomUUID();
+      
+      // Create the BOM
+      const bomData = {
+        id: bomId,
+        name: data.name,
+        description: data.description || '',
+        version: data.version || '1.0',
+        is_active: true
+      };
+      
+      const bom = await this.create(bomData);
+      
+      // Create BOM items if provided
+      if (data.items && data.items.length > 0) {
+        for (const item of data.items) {
+          await db.query(
+            'INSERT INTO bom_items (id, bom_id, product_id, quantity, unit, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, NOW(), NOW())',
+            [require('crypto').randomUUID(), bomId, item.productId, item.quantity, item.unit || 'pcs']
+          );
         }
-      });
-
-      if (products.length !== productIds.length) {
-        throw new AppError('One or more referenced products not found', 400);
       }
-
-      const bom = await prisma.bom.create({
-        data: {
-          name: data.name,
-          description: data.description,
-          version: data.version || '1.0',
-          items: {
-            create: data.items.map(item => ({
-              productId: item.productId,
-              quantity: item.quantity,
-              unit: item.unit || 'pcs'
-            }))
-          }
-        },
-        include: {
-          items: {
-            include: {
-              product: {
-                select: {
-                  id: true,
-                  name: true,
-                  sku: true,
-                  unit: true
-                }
-              }
-            }
-          }
-        }
-      });
-
-      logger.info(`BOM created: ${bom.id} - ${bom.name}`);
-      return bom;
+      
+      return await this.getBomById(bomId);
     } catch (error) {
-      logger.error('Create BOM service error:', error);
-      if (error instanceof AppError) {
-        throw error;
-      }
+      logger.error('Error creating BOM:', error);
       throw new AppError('Failed to create BOM', 500);
     }
   }
 
   async updateBom(id: string, data: UpdateBomData) {
     try {
-      // Check if BOM exists
-      const existingBom = await prisma.bom.findUnique({
-        where: { id }
-      });
-
-      if (!existingBom) {
-        throw new AppError('BOM not found', 404);
-      }
-
-      // If items are being updated, validate products exist
-      if (data.items && data.items.length > 0) {
-        const productIds = data.items.map(item => item.productId);
-        const products = await prisma.product.findMany({
-          where: {
-            id: { in: productIds }
-          }
-        });
-
-        if (products.length !== productIds.length) {
-          throw new AppError('One or more referenced products not found', 400);
-        }
-      }
-
       const updateData: any = {};
-      
       if (data.name) updateData.name = data.name;
       if (data.description !== undefined) updateData.description = data.description;
       if (data.version) updateData.version = data.version;
-      if (data.isActive !== undefined) updateData.isActive = data.isActive;
-
-      // Update BOM and items in a transaction
-      const bom = await prisma.$transaction(async (tx: any) => {
-        // Update the BOM
-        const updatedBom = await tx.bom.update({
-          where: { id },
-          data: updateData
-        });
-
-        // If items are provided, replace all items
-        if (data.items) {
-          // Delete existing items
-          await tx.bomItem.deleteMany({
-            where: { bomId: id }
-          });
-
-          // Create new items
-          await tx.bomItem.createMany({
-            data: data.items.map(item => ({
-              bomId: id,
-              productId: item.productId,
-              quantity: item.quantity,
-              unit: item.unit || 'pcs'
-            }))
-          });
+      if (data.isActive !== undefined) updateData.is_active = data.isActive;
+      
+      const bom = await this.update(id, updateData);
+      
+      // Update BOM items if provided
+      if (data.items) {
+        // Delete existing items
+        await db.query('DELETE FROM bom_items WHERE bom_id = $1', [id]);
+        
+        // Create new items
+        for (const item of data.items) {
+          await db.query(
+            'INSERT INTO bom_items (id, bom_id, product_id, quantity, unit, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, NOW(), NOW())',
+            [require('crypto').randomUUID(), id, item.productId, item.quantity, item.unit || 'pcs']
+          );
         }
-
-        return updatedBom;
-      });
-
-      // Fetch the complete updated BOM with items
-      const completeBom = await prisma.bom.findUnique({
-        where: { id },
-        include: {
-          items: {
-            include: {
-              product: {
-                select: {
-                  id: true,
-                  name: true,
-                  sku: true,
-                  unit: true
-                }
-              }
-            }
-          }
-        }
-      });
-
-      logger.info(`BOM updated: ${id} - ${data.name || existingBom.name}`);
-      return completeBom;
-    } catch (error) {
-      logger.error('Update BOM service error:', error);
-      if (error instanceof AppError) {
-        throw error;
       }
+      
+      return await this.getBomById(id);
+    } catch (error) {
+      logger.error('Error updating BOM:', error);
+      if (error instanceof AppError) throw error;
       throw new AppError('Failed to update BOM', 500);
     }
   }
 
   async deleteBom(id: string) {
     try {
-      // Check if BOM exists
-      const existingBom = await prisma.bom.findUnique({
-        where: { id }
-      });
-
-      if (!existingBom) {
+      // Delete BOM items first
+      await db.query('DELETE FROM bom_items WHERE bom_id = $1', [id]);
+      
+      // Delete the BOM
+      const deleted = await this.delete(id);
+      if (!deleted) {
         throw new AppError('BOM not found', 404);
       }
-
-      // Check if BOM is being used in any manufacturing orders
-      // TODO: Add this check when manufacturing order service is created
       
-      await prisma.bom.delete({
-        where: { id }
-      });
-
-      logger.info(`BOM deleted: ${id} - ${existingBom.name}`);
+      return true;
     } catch (error) {
-      logger.error('Delete BOM service error:', error);
-      if (error instanceof AppError) {
-        throw error;
-      }
+      logger.error('Error deleting BOM:', error);
+      if (error instanceof AppError) throw error;
       throw new AppError('Failed to delete BOM', 500);
     }
   }

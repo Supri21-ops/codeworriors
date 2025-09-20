@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useManufacturingStore } from '../../store/manufacturing.store';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { StatsCards } from '../../components/dashboard/StatsCards';
@@ -10,12 +10,27 @@ import { Notifications } from '../../components/dashboard/Notifications';
 
 export const DashboardPage: React.FC = () => {
   const { fetchManufacturingOrders, fetchOrdersStats, fetchWorkOrders } = useManufacturingStore();
+  const dataFetched = useRef(false);
 
   useEffect(() => {
-    // Fetch initial data
-    fetchManufacturingOrders({ limit: 5 });
-    fetchOrdersStats();
-    fetchWorkOrders({ limit: 10 });
+    if (dataFetched.current) return;
+    
+    const fetchData = async () => {
+      try {
+        dataFetched.current = true;
+        // Fetch initial data with error handling
+        await Promise.allSettled([
+          fetchManufacturingOrders({ limit: 5 }),
+          fetchOrdersStats(),
+          fetchWorkOrders({ limit: 10 })
+        ]);
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error);
+        dataFetched.current = false; // Reset on error to allow retry
+      }
+    };
+
+    fetchData();
   }, [fetchManufacturingOrders, fetchOrdersStats, fetchWorkOrders]);
 
   return (

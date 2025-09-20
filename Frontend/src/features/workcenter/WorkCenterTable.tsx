@@ -9,6 +9,7 @@ export interface WorkCenter {
   cost: number;
   status: string;
   downtime: number;
+  usage: number[];
 }
 
 interface Props {

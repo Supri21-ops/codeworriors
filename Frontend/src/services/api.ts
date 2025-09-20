@@ -4,10 +4,21 @@ import { toast } from 'react-hot-toast';
 // API Configuration
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
+// Helper function to resolve localhost issues
+const resolveApiUrl = (baseUrl: string): string => {
+  // If we're accessing the app via IP, replace localhost in API URL with the current host IP
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return baseUrl.replace('localhost', window.location.hostname);
+  }
+  return baseUrl;
+};
+
+const RESOLVED_API_URL = resolveApiUrl(API_BASE_URL);
+
 // Create axios instance
 const api: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
+  baseURL: RESOLVED_API_URL,
+  timeout: 30000, // Increased timeout to 30 seconds
   headers: {
     'Content-Type': 'application/json',
   },
@@ -42,7 +53,7 @@ api.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
-          const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+          const response = await axios.post(`${RESOLVED_API_URL}/auth/refresh`, {
             refreshToken,
           });
 

@@ -1,10 +1,10 @@
-import { pool } from '../../config/prisma';
+import { db } from '../../config/prisma';
 import { logger } from '../../config/logger';
-import { AppError } from '../../libs/errors';
 import { CreateManufacturingOrderDto, UpdateManufacturingOrderDto } from './dto';
 import { kafkaService } from '../../config/kafka';
 import { vectorService } from '../../services/vector.service';
 import { priorityService } from '../../services/priority.service';
+import { AppError } from '../../libs/errors';
 
 export class ManufacturingOrderService {
   async createManufacturingOrder(data: CreateManufacturingOrderDto, userId: string) {
@@ -13,15 +13,15 @@ export class ManufacturingOrderService {
       const orderNumber = await this.generateOrderNumber();
 
       // Check if product exists
-      const productRes = await pool.query('SELECT * FROM products WHERE id = $1', [data.productId]);
+      const productRes = await db.query('SELECT * FROM products WHERE id = $1', [data.productId]);
       const product = productRes.rows[0];
       if (!product) {
         throw new AppError('Product not found', 404);
       }
 
       // Create manufacturing order
-      const insertRes = await pool.query(
-        `INSERT INTO manufacturing_orders (orderNumber, productId, quantity, priority, dueDate, notes, createdById)
+      const insertRes = await db.query(
+        `INSERT INTO manufacturing_orders (order_number, product_id, quantity, priority, due_date, notes, created_by_id)
          VALUES ($1, $2, $3, $4, $5, $6, $7)
          RETURNING *`,
         [orderNumber, data.productId, data.quantity, data.priority || 'NORMAL', data.dueDate, data.notes, userId]
@@ -81,16 +81,16 @@ export class ManufacturingOrderService {
         paramIdx++;
       }
       if (filters.productId) {
-        whereClauses.push(`productId = $${paramIdx}`);
+        whereClauses.push(`product_id = $${paramIdx}`);
         params.push(filters.productId);
         paramIdx++;
       }
       const whereSQL = whereClauses.length ? `WHERE ${whereClauses.join(' AND ')}` : '';
-      const ordersRes = await pool.query(
-        `SELECT * FROM manufacturing_orders ${whereSQL} ORDER BY createdAt DESC LIMIT $${paramIdx} OFFSET $${paramIdx + 1}`,
+      const ordersRes = await db.query(
+        `SELECT * FROM manufacturing_orders ${whereSQL} ORDER BY created_at DESC LIMIT $${paramIdx} OFFSET $${paramIdx + 1}`,
         [...params, limit, offset]
       );
-      const countRes = await pool.query(
+      const countRes = await db.query(
         `SELECT COUNT(*) FROM manufacturing_orders ${whereSQL}`,
         params
       );
@@ -112,7 +112,7 @@ export class ManufacturingOrderService {
 
   async getManufacturingOrderById(id: string) {
     try {
-      const orderRes = await pool.query('SELECT * FROM manufacturing_orders WHERE id = $1', [id]);
+      const orderRes = await db.query('SELECT * FROM manufacturing_orders WHERE id = $1', [id]);
       const order = orderRes.rows[0];
       if (!order) {
         throw new AppError('Manufacturing order not found', 404);
@@ -126,7 +126,7 @@ export class ManufacturingOrderService {
 
   async updateManufacturingOrder(id: string, data: UpdateManufacturingOrderDto, userId: string) {
     try {
-      const orderRes = await pool.query('SELECT * FROM manufacturing_orders WHERE id = $1', [id]);
+      const orderRes = await db.query('SELECT * FROM manufacturing_orders WHERE id = $1', [id]);
       const existingOrder = orderRes.rows[0];
       if (!existingOrder) {
         throw new AppError('Manufacturing order not found', 404);
@@ -138,16 +138,16 @@ export class ManufacturingOrderService {
       if (data.quantity !== undefined) { updateFields.push(`quantity = $${paramIdx}`); params.push(data.quantity); paramIdx++; }
       if (data.priority) { updateFields.push(`priority = $${paramIdx}`); params.push(data.priority); paramIdx++; }
       if (data.status) { updateFields.push(`status = $${paramIdx}`); params.push(data.status); paramIdx++; }
-      if (data.startDate) { updateFields.push(`startDate = $${paramIdx}`); params.push(data.startDate); paramIdx++; }
-      if (data.endDate) { updateFields.push(`endDate = $${paramIdx}`); params.push(data.endDate); paramIdx++; }
-      if (data.dueDate) { updateFields.push(`dueDate = $${paramIdx}`); params.push(data.dueDate); paramIdx++; }
+      if (data.startDate) { updateFields.push(`start_date = $${paramIdx}`); params.push(data.startDate); paramIdx++; }
+      if (data.endDate) { updateFields.push(`end_date = $${paramIdx}`); params.push(data.endDate); paramIdx++; }
+      if (data.dueDate) { updateFields.push(`due_date = $${paramIdx}`); params.push(data.dueDate); paramIdx++; }
       if (data.notes !== undefined) { updateFields.push(`notes = $${paramIdx}`); params.push(data.notes); paramIdx++; }
       if (updateFields.length === 0) {
         throw new AppError('No fields to update', 400);
       }
       params.push(id);
       const updateSQL = `UPDATE manufacturing_orders SET ${updateFields.join(', ')} WHERE id = $${paramIdx} RETURNING *`;
-      const updateRes = await pool.query(updateSQL, params);
+      const updateRes = await db.query(updateSQL, params);
       const updatedOrder = updateRes.rows[0];
 
       // Create event
@@ -168,17 +168,17 @@ export class ManufacturingOrderService {
 
   async deleteManufacturingOrder(id: string, userId: string) {
     try {
-      const orderRes = await pool.query('SELECT * FROM manufacturing_orders WHERE id = $1', [id]);
+      const orderRes = await db.query('SELECT * FROM manufacturing_orders WHERE id = $1', [id]);
       const existingOrder = orderRes.rows[0];
       if (!existingOrder) {
         throw new AppError('Manufacturing order not found', 404);
       }
       // Check if order has work orders
-      const workOrdersRes = await pool.query('SELECT * FROM work_orders WHERE manufacturingOrderId = $1', [id]);
+      const workOrdersRes = await db.query('SELECT * FROM work_orders WHERE manufacturing_order_id = $1', [id]);
       if (workOrdersRes.rows.length > 0) {
         throw new AppError('Cannot delete manufacturing order with existing work orders', 400);
       }
-      await pool.query('DELETE FROM manufacturing_orders WHERE id = $1', [id]);
+      await db.query('DELETE FROM manufacturing_orders WHERE id = $1', [id]);
       logger.info(`Manufacturing order deleted: ${existingOrder.orderNumber}`);
       return { message: 'Manufacturing order deleted successfully' };
     } catch (error) {
@@ -189,12 +189,12 @@ export class ManufacturingOrderService {
 
   async getManufacturingOrderStats() {
     try {
-      const totalRes = await pool.query('SELECT COUNT(*) FROM manufacturing_orders');
-      const plannedRes = await pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'PLANNED'");
-      const inProgressRes = await pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'IN_PROGRESS'");
-      const completedRes = await pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'COMPLETED'");
-      const cancelledRes = await pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'CANCELLED'");
-      const urgentRes = await pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE priority = 'URGENT'");
+      const totalRes = await db.query('SELECT COUNT(*) FROM manufacturing_orders');
+      const plannedRes = await db.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'PLANNED'");
+      const inProgressRes = await db.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'IN_PROGRESS'");
+      const completedRes = await db.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'COMPLETED'");
+      const cancelledRes = await db.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'CANCELLED'");
+      const urgentRes = await db.query("SELECT COUNT(*) FROM manufacturing_orders WHERE priority = 'URGENT'");
       return {
         total: parseInt(totalRes.rows[0].count, 10),
         planned: parseInt(plannedRes.rows[0].count, 10),
@@ -210,7 +210,7 @@ export class ManufacturingOrderService {
   }
 
   private async generateOrderNumber(): Promise<string> {
-    const countRes = await pool.query('SELECT COUNT(*) FROM manufacturing_orders');
+    const countRes = await db.query('SELECT COUNT(*) FROM manufacturing_orders');
     const count = parseInt(countRes.rows[0].count, 10);
     const orderNumber = `MO-${String(count + 1).padStart(4, '0')}`;
     return orderNumber;
@@ -218,8 +218,8 @@ export class ManufacturingOrderService {
 
   private async createEvent(type: string, data: any, userId: string) {
     try {
-      await pool.query(
-        `INSERT INTO events (type, title, message, data, userId)
+      await db.query(
+        `INSERT INTO events (type, title, message, data, user_id)
          VALUES ($1, $2, $3, $4, $5)`,
         [
           type,

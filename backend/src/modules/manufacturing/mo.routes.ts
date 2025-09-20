@@ -9,11 +9,11 @@ const router = Router();
 const manufacturingOrderController = new ManufacturingOrderController();
 const workOrderController = new WorkOrderController();
 
-// All routes require authentication
-router.use(authMiddleware);
-
-// Get manufacturing order statistics
+// Get manufacturing order statistics (no auth required for dashboard stats)
 router.get('/stats', manufacturingOrderController.getManufacturingOrderStats);
+
+// All other routes require authentication
+router.use(authMiddleware);
 
 // Get all manufacturing orders
 router.get('/orders', manufacturingOrderController.getManufacturingOrders);

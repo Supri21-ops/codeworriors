@@ -5,7 +5,7 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
-import { useAuthStore } from '../../store/auth.store';
+import { useAuthStore } from '../../stores/authStore';
 import { toast } from 'react-hot-toast';
 
 interface LoginFormData {

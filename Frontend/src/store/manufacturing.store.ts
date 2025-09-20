@@ -2,6 +2,19 @@ import { create } from 'zustand';
 import { ManufacturingOrder, WorkOrder, ManufacturingOrderStats } from '../services/manufacturing.service';
 import { manufacturingService } from '../services/manufacturing.service';
 
+interface UpdateWorkOrderPayload {
+  status?: 'PLANNED' | 'RELEASED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ON_HOLD';
+  priority?: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+  plannedStartDate?: string;
+  plannedEndDate?: string;
+  actualStartDate?: string;
+  actualEndDate?: string;
+  assignedUserId?: string;
+  notes?: string;
+  estimatedDuration?: number;
+  actualDuration?: number;
+}
+
 interface ManufacturingState {
   // Manufacturing Orders
   manufacturingOrders: ManufacturingOrder[];
@@ -9,6 +22,8 @@ interface ManufacturingState {
   ordersStats: ManufacturingOrderStats | null;
   ordersLoading: boolean;
   ordersError: string | null;
+  statsLoading: boolean;
+  statsError: string | null;
   
   // Work Orders
   workOrders: WorkOrder[];
@@ -63,7 +78,7 @@ interface ManufacturingState {
   fetchWorkOrders: (filters?: any) => Promise<void>;
   fetchWorkOrderById: (id: string) => Promise<void>;
   createWorkOrder: (data: any) => Promise<void>;
-  updateWorkOrder: (id: string, data: any) => Promise<void>;
+  updateWorkOrder: (id: string, data: UpdateWorkOrderPayload) => Promise<void>;
   deleteWorkOrder: (id: string) => Promise<void>;
   
   setOrdersFilters: (filters: any) => void;
@@ -80,6 +95,8 @@ export const useManufacturingStore = create<ManufacturingState>((set, get) => ({
   ordersStats: null,
   ordersLoading: false,
   ordersError: null,
+  statsLoading: false,
+  statsError: null,
   
   workOrders: [],
   currentWorkOrder: null,
@@ -188,11 +205,36 @@ export const useManufacturingStore = create<ManufacturingState>((set, get) => ({
   },
 
   fetchOrdersStats: async () => {
+    const { statsLoading } = get();
+    if (statsLoading) return; // Prevent multiple simultaneous requests
+    
+    set({ statsLoading: true, statsError: null });
+    
     try {
       const stats = await manufacturingService.getManufacturingOrderStats();
-      set({ ordersStats: stats });
+      set({ 
+        ordersStats: stats, 
+        statsLoading: false, 
+        statsError: null 
+      });
     } catch (error: any) {
       console.error('Failed to fetch orders stats:', error);
+      set({ 
+        statsLoading: false, 
+        statsError: error.message || 'Failed to fetch orders stats'
+      });
+      
+      // Set mock data to prevent infinite retries
+      set({
+        ordersStats: {
+          total: 0,
+          planned: 0,
+          inProgress: 0,
+          completed: 0,
+          cancelled: 0,
+          urgent: 0
+        }
+      });
     }
   },
 

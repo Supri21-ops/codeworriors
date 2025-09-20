@@ -10,7 +10,6 @@ import {
   CubeIcon,
   DocumentTextIcon,
   UserGroupIcon,
-  BellIcon,
   Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 
@@ -25,9 +24,11 @@ const navigation = [
   { name: 'Manufacturing Orders', href: '/manufacturing-orders', icon: ClipboardDocumentListIcon },
   { name: 'Work Orders', href: '/work-orders', icon: CogIcon },
   { name: 'Inventory', href: '/inventory', icon: CubeIcon },
+  { name: 'Stock Ledger', href: '/stock', icon: CubeIcon },
   { name: 'Work Centers', href: '/work-centers', icon: BuildingOfficeIcon },
   { name: 'Products', href: '/products', icon: DocumentTextIcon },
   { name: 'Bills of Materials', href: '/bom', icon: DocumentTextIcon },
+  { name: 'Operator Dashboard', href: '/operator', icon: UserGroupIcon },
   { name: 'Reports', href: '/reports', icon: ChartBarIcon },
   { name: 'Users', href: '/users', icon: UserGroupIcon },
   { name: 'Settings', href: '/settings', icon: Cog6ToothIcon },
@@ -36,10 +37,13 @@ const navigation = [
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) => {
   const location = useLocation();
 
+  console.log('Sidebar: isOpen prop:', isOpen);
+  console.log('Sidebar: current location:', location.pathname);
+
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
+      <div className="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg lg:block hidden">
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 shadow-sm">
           <div className="flex h-16 shrink-0 items-center">
             <div className="flex items-center">
@@ -65,6 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) =
                       <li key={item.name}>
                         <Link
                           to={item.href}
+                          onClick={() => console.log('Desktop nav: Navigating to:', item.href)}
                           className={clsx(
                             isActive
                               ? 'bg-blue-50 text-blue-700'
@@ -105,7 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) =
 
       {/* Mobile Sidebar */}
       <div className={clsx(
-        'fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:hidden',
+        'fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out lg:hidden',
         isOpen ? 'translate-x-0' : '-translate-x-full'
       )}>
         <div className="flex h-full flex-col">
@@ -133,7 +138,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) =
                       <li key={item.name}>
                         <Link
                           to={item.href}
-                          onClick={onClose}
+                          onClick={() => {
+                            console.log('Mobile nav: Navigating to:', item.href);
+                            onClose();
+                          }}
                           className={clsx(
                             isActive
                               ? 'bg-blue-50 text-blue-700'
@@ -171,6 +179,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) =
           </nav>
         </div>
       </div>
+
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
+          onClick={onClose}
+        />
+      )}
     </>
   );
 };

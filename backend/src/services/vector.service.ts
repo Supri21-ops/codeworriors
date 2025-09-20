@@ -47,13 +47,13 @@ export class VectorService {
       
       // Store in vector database (using pgvector extension)
       await pool.query(
-        `INSERT INTO vector_documents (id, content, embedding, metadata, collection, createdAt, updatedAt)
+        `INSERT INTO vector_documents (id, content, embedding, metadata, collection, created_at, updated_at)
          VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
          ON CONFLICT (id) DO UPDATE SET
            content = EXCLUDED.content,
            embedding = EXCLUDED.embedding,
            metadata = EXCLUDED.metadata,
-           updatedAt = NOW()`,
+           updated_at = NOW()`,
         [id, content, embedding, metadata, collection]
       );
       logger.info(`Document indexed: ${id} in collection ${collection}`);
@@ -111,10 +111,10 @@ export class VectorService {
         results.map(async (result) => {
           // Example: fetch order data from manufacturing_orders and products
           const { rows: orderRows } = await pool.query(
-            `SELECT mo.*, p.*, u.firstName, u.lastName, u.email
+            `SELECT mo.*, p.*, u.name, u.email
              FROM manufacturing_orders mo
-             JOIN products p ON mo.productId = p.id
-             JOIN users u ON mo.createdById = u.id
+             JOIN products p ON mo.product_id = p.id
+             JOIN users u ON mo.created_by_id = u.id
              WHERE mo.id = $1`,
             [result.id]
           );
@@ -168,7 +168,7 @@ export class VectorService {
       const { rows: orderRows } = await pool.query(
         `SELECT mo.*, p.*
          FROM manufacturing_orders mo
-         JOIN products p ON mo.productId = p.id
+         JOIN products p ON mo.product_id = p.id
          WHERE mo.id = $1`,
         [orderId]
       );

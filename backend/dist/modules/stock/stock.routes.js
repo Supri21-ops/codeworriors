@@ -1,0 +1,19 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const stock_controller_1 = require("./stock.controller");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const router = (0, express_1.Router)();
+const stockController = new stock_controller_1.StockController();
+router.use(auth_middleware_1.authMiddleware);
+router.get('/items', stockController.getStockItems);
+router.get('/items/:id', stockController.getStockItemById);
+router.post('/items', stockController.createStockItem);
+router.put('/items/:id', stockController.updateStockItem);
+router.delete('/items/:id', stockController.deleteStockItem);
+router.get('/movements', stockController.getStockMovements);
+router.post('/movements', stockController.createStockMovement);
+router.get('/reports/summary', stockController.getStockSummary);
+router.get('/reports/low-stock', stockController.getLowStockItems);
+exports.default = router;
+//# sourceMappingURL=stock.routes.js.map

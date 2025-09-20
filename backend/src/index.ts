@@ -19,8 +19,8 @@ const PORT = config.PORT || 5000;
 async function startServer() {
   try {
     // Test database connection
-    const { prisma } = await import('./config/prisma');
-    await prisma.$connect();
+    const { db } = await import('./config/prisma');
+    await db.connect();
     logger.info('Database connected successfully');
 
     // Connect to Kafka

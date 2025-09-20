@@ -22,7 +22,7 @@ const mockOrders: Order[] = [
 ];
 
 const DashboardPage: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const [orders] = useState<Order[]>(mockOrders);
   const [state, setState] = useState('');
   const [priority, setPriority] = useState('');
   const [product, setProduct] = useState('');

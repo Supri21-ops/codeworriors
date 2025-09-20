@@ -1,3 +1,2 @@
-import { Pool } from 'pg';
-export declare const pool: Pool;
+export { db } from './database-docker';
 //# sourceMappingURL=prisma.d.ts.map

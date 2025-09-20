@@ -16,7 +16,7 @@ export const ChartDonut: React.FC<Props> = ({ data, title, colors = ['#6C63FF', 
           <PieChart>
             <Tooltip />
             <Pie data={data} dataKey="value" nameKey="name" innerRadius={60} outerRadius={90} paddingAngle={4} label>
-              {data.map((entry, idx) => (
+              {data.map((_, idx) => (
                 <Cell key={`cell-${idx}`} fill={colors[idx % colors.length]} />
               ))}
             </Pie>
