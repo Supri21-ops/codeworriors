@@ -3,7 +3,7 @@ import { ManufacturingOrder, WorkOrder, ManufacturingOrderStats } from '../servi
 import { manufacturingService } from '../services/manufacturing.service';
 
 interface UpdateWorkOrderPayload {
-  status?: 'PLANNED' | 'RELEASED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ON_HOLD';
+  status?: 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'TO_CLOSE' | 'DONE' | 'CANCELLED';
   priority?: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
   plannedStartDate?: string;
   plannedEndDate?: string;

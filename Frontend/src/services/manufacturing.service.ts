@@ -12,7 +12,7 @@ export interface ManufacturingOrder {
   };
   quantity: number;
   priority: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
-  status: 'PLANNED' | 'RELEASED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ON_HOLD';
+  status: 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'TO_CLOSE' | 'DONE' | 'CANCELLED';
   startDate?: string;
   endDate?: string;
   dueDate: string;
@@ -40,7 +40,7 @@ export interface WorkOrder {
     name: string;
     code: string;
   };
-  status: 'PLANNED' | 'RELEASED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ON_HOLD';
+  status: 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'TO_CLOSE' | 'DONE' | 'CANCELLED';
   priority: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
   plannedStartDate?: string;
   plannedEndDate?: string;
@@ -73,7 +73,7 @@ export interface CreateManufacturingOrderData {
 export interface UpdateManufacturingOrderData {
   quantity?: number;
   priority?: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
-  status?: 'PLANNED' | 'RELEASED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ON_HOLD';
+  status?: 'DRAFT' | 'CONFIRMED' | 'IN_PROGRESS' | 'TO_CLOSE' | 'DONE' | 'CANCELLED';
   startDate?: string;
   endDate?: string;
   dueDate?: string;

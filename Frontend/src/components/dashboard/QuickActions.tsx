@@ -19,32 +19,39 @@ const quickActions = [
     color: 'bg-blue-600 hover:bg-blue-700',
   },
   {
+    name: 'View Manufacturing Orders',
+    description: 'View and manage all manufacturing orders',
+    href: '/manufacturing-orders',
+    icon: ClipboardDocumentListIcon,
+    color: 'bg-green-600 hover:bg-green-700',
+  },
+  {
     name: 'View Work Orders',
     description: 'Manage work orders and schedules',
     href: '/work-orders',
     icon: ClipboardDocumentListIcon,
-    color: 'bg-green-600 hover:bg-green-700',
+    color: 'bg-yellow-600 hover:bg-yellow-700',
   },
   {
     name: 'Manage Inventory',
     description: 'Track and update inventory levels',
     href: '/inventory',
     icon: CubeIcon,
-    color: 'bg-yellow-600 hover:bg-yellow-700',
+    color: 'bg-purple-600 hover:bg-purple-700',
   },
   {
     name: 'Work Centers',
     description: 'Configure work centers and resources',
     href: '/work-centers',
     icon: CogIcon,
-    color: 'bg-purple-600 hover:bg-purple-700',
+    color: 'bg-indigo-600 hover:bg-indigo-700',
   },
   {
     name: 'Generate Reports',
     description: 'View production and performance reports',
     href: '/reports',
     icon: ChartBarIcon,
-    color: 'bg-indigo-600 hover:bg-indigo-700',
+    color: 'bg-pink-600 hover:bg-pink-700',
   },
 ];
 

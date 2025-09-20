@@ -17,18 +17,18 @@ import {
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'PLANNED':
+    case 'DRAFT':
       return 'bg-gray-100 text-gray-800';
-    case 'RELEASED':
+    case 'CONFIRMED':
       return 'bg-blue-100 text-blue-800';
     case 'IN_PROGRESS':
       return 'bg-yellow-100 text-yellow-800';
-    case 'COMPLETED':
+    case 'TO_CLOSE':
+      return 'bg-orange-100 text-orange-800';
+    case 'DONE':
       return 'bg-green-100 text-green-800';
     case 'CANCELLED':
       return 'bg-red-100 text-red-800';
-    case 'ON_HOLD':
-      return 'bg-purple-100 text-purple-800';
     default:
       return 'bg-gray-100 text-gray-800';
   }
@@ -136,12 +136,12 @@ export const ManufacturingOrdersPage: React.FC = () => {
                   className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">All Status</option>
-                  <option value="PLANNED">Planned</option>
-                  <option value="RELEASED">Released</option>
+                  <option value="DRAFT">Draft</option>
+                  <option value="CONFIRMED">Confirmed</option>
                   <option value="IN_PROGRESS">In Progress</option>
-                  <option value="COMPLETED">Completed</option>
+                  <option value="TO_CLOSE">To Close</option>
+                  <option value="DONE">Done</option>
                   <option value="CANCELLED">Cancelled</option>
-                  <option value="ON_HOLD">On Hold</option>
                 </select>
               </div>
               <div>
