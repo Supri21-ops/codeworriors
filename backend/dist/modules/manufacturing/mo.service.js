@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManufacturingOrderService = void 0;
-const prisma_1 = require("../../config/prisma");
 const logger_1 = require("../../config/logger");
 const errors_1 = require("../../libs/errors");
 const kafka_1 = require("../../config/kafka");
@@ -11,13 +10,13 @@ class ManufacturingOrderService {
     async createManufacturingOrder(data, userId) {
         try {
             const orderNumber = await this.generateOrderNumber();
-            const product = await prisma_1.prisma.product.findUnique({
+            const product = await prisma.product.findUnique({
                 where: { id: data.productId }
             });
             if (!product) {
                 throw new errors_1.AppError('Product not found', 404);
             }
-            const manufacturingOrder = await prisma_1.prisma.manufacturingOrder.create({
+            const manufacturingOrder = await prisma.manufacturingOrder.create({
                 data: {
                     orderNumber,
                     productId: data.productId,
@@ -77,7 +76,7 @@ class ManufacturingOrderService {
                 where.productId = filters.productId;
             }
             const [orders, total] = await Promise.all([
-                prisma_1.prisma.manufacturingOrder.findMany({
+                prisma.manufacturingOrder.findMany({
                     where,
                     skip,
                     take: limit,
@@ -106,7 +105,7 @@ class ManufacturingOrderService {
                     },
                     orderBy: { createdAt: 'desc' }
                 }),
-                prisma_1.prisma.manufacturingOrder.count({ where })
+                prisma.manufacturingOrder.count({ where })
             ]);
             return {
                 orders,
@@ -125,7 +124,7 @@ class ManufacturingOrderService {
     }
     async getManufacturingOrderById(id) {
         try {
-            const order = await prisma_1.prisma.manufacturingOrder.findUnique({
+            const order = await prisma.manufacturingOrder.findUnique({
                 where: { id },
                 include: {
                     product: true,
@@ -168,7 +167,7 @@ class ManufacturingOrderService {
     }
     async updateManufacturingOrder(id, data, userId) {
         try {
-            const existingOrder = await prisma_1.prisma.manufacturingOrder.findUnique({
+            const existingOrder = await prisma.manufacturingOrder.findUnique({
                 where: { id }
             });
             if (!existingOrder) {
@@ -189,7 +188,7 @@ class ManufacturingOrderService {
                 updateData.dueDate = new Date(data.dueDate);
             if (data.notes !== undefined)
                 updateData.notes = data.notes;
-            const updatedOrder = await prisma_1.prisma.manufacturingOrder.update({
+            const updatedOrder = await prisma.manufacturingOrder.update({
                 where: { id },
                 data: updateData,
                 include: {
@@ -219,19 +218,19 @@ class ManufacturingOrderService {
     }
     async deleteManufacturingOrder(id, userId) {
         try {
-            const existingOrder = await prisma_1.prisma.manufacturingOrder.findUnique({
+            const existingOrder = await prisma.manufacturingOrder.findUnique({
                 where: { id }
             });
             if (!existingOrder) {
                 throw new errors_1.AppError('Manufacturing order not found', 404);
             }
-            const workOrders = await prisma_1.prisma.workOrder.findMany({
+            const workOrders = await prisma.workOrder.findMany({
                 where: { manufacturingOrderId: id }
             });
             if (workOrders.length > 0) {
                 throw new errors_1.AppError('Cannot delete manufacturing order with existing work orders', 400);
             }
-            await prisma_1.prisma.manufacturingOrder.delete({
+            await prisma.manufacturingOrder.delete({
                 where: { id }
             });
             logger_1.logger.info(`Manufacturing order deleted: ${existingOrder.orderNumber}`);
@@ -245,12 +244,12 @@ class ManufacturingOrderService {
     async getManufacturingOrderStats() {
         try {
             const [total, planned, inProgress, completed, cancelled, urgent] = await Promise.all([
-                prisma_1.prisma.manufacturingOrder.count(),
-                prisma_1.prisma.manufacturingOrder.count({ where: { status: 'PLANNED' } }),
-                prisma_1.prisma.manufacturingOrder.count({ where: { status: 'IN_PROGRESS' } }),
-                prisma_1.prisma.manufacturingOrder.count({ where: { status: 'COMPLETED' } }),
-                prisma_1.prisma.manufacturingOrder.count({ where: { status: 'CANCELLED' } }),
-                prisma_1.prisma.manufacturingOrder.count({ where: { priority: 'URGENT' } })
+                prisma.manufacturingOrder.count(),
+                prisma.manufacturingOrder.count({ where: { status: 'PLANNED' } }),
+                prisma.manufacturingOrder.count({ where: { status: 'IN_PROGRESS' } }),
+                prisma.manufacturingOrder.count({ where: { status: 'COMPLETED' } }),
+                prisma.manufacturingOrder.count({ where: { status: 'CANCELLED' } }),
+                prisma.manufacturingOrder.count({ where: { priority: 'URGENT' } })
             ]);
             return {
                 total,
@@ -267,13 +266,13 @@ class ManufacturingOrderService {
         }
     }
     async generateOrderNumber() {
-        const count = await prisma_1.prisma.manufacturingOrder.count();
+        const count = await prisma.manufacturingOrder.count();
         const orderNumber = `MO-${String(count + 1).padStart(4, '0')}`;
         return orderNumber;
     }
     async createEvent(type, data, userId) {
         try {
-            await prisma_1.prisma.event.create({
+            await prisma.event.create({
                 data: {
                     type: type,
                     title: `Manufacturing Order ${type.split('_').join(' ').toLowerCase()}`,

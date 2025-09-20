@@ -1,4 +1,4 @@
-import { prisma } from '../../config/prisma';
+import { pool } from '../../config/prisma';
 import { logger } from '../../config/logger';
 import { AppError } from '../../libs/errors';
 import { CreateManufacturingOrderDto, UpdateManufacturingOrderDto } from './dto';

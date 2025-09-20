@@ -19,10 +19,12 @@ class KafkaService {
       requestTimeout: 25000
     });
 
+    const { Partitioners } = require('kafkajs');
     this.producer = this.kafka.producer({
       maxInFlightRequests: 1,
       idempotent: true,
-      transactionTimeout: 30000
+      transactionTimeout: 30000,
+      createPartitioner: Partitioners.LegacyPartitioner
     });
   }
 

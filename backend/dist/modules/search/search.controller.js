@@ -12,11 +12,11 @@ class SearchController {
                 return res.status(400).json({ success: false, message: 'Search query is required' });
             }
             const results = await vector_service_1.vectorService.searchManufacturingOrders(query, filters);
-            res.json({ success: true, data: results, total: results.length });
+            return res.json({ success: true, data: results, total: results.length });
         }
         catch (error) {
             logger_1.logger.error('Search manufacturing orders error:', error);
-            res.status(500).json({ success: false, message: 'Internal server error' });
+            return res.status(500).json({ success: false, message: 'Internal server error' });
         }
     }
     async searchWorkOrders(req, res) {
@@ -27,11 +27,25 @@ class SearchController {
                 return res.status(400).json({ success: false, message: 'Search query is required' });
             }
             const results = await vector_service_1.vectorService.searchManufacturingOrders(query, { ...filters, type: 'work_order' });
-            res.json({ success: true, data: results, total: results.length });
+            return res.json({ success: true, data: results, total: results.length });
         }
         catch (error) {
             logger_1.logger.error('Search work orders error:', error);
-            res.status(500).json({ success: false, message: 'Internal server error' });
+            return res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+    }
+    async searchProducts(req, res) {
+        try {
+            const { query, filters = {} } = req.body;
+            if (!query) {
+                return res.status(400).json({ success: false, message: 'Search query is required' });
+            }
+            const results = await vector_service_1.vectorService.searchProducts(query, filters);
+            return res.json({ success: true, data: results, total: results.length });
+        }
+        catch (error) {
+            logger_1.logger.error('Search products error:', error);
+            return res.status(500).json({ success: false, message: 'Internal server error' });
         }
     }
     async getRecommendations(req, res) {

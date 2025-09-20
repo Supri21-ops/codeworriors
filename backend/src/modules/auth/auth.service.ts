@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../../config/prisma';
+import { pool } from '../../config/prisma';
 import { config } from '../../config/env';
 import { logger } from '../../config/logger';
 import { AppError } from '../../libs/errors';
@@ -9,44 +9,24 @@ import { LoginDto, SignupDto } from './dto';
 export class AuthService {
   async signup(data: SignupDto) {
     try {
-      // Check if user already exists
-      const existingUser = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { email: data.email },
-            { username: data.username }
-          ]
-        }
-      });
-
-      if (existingUser) {
-        throw new AppError('User with this email or username already exists', 400);
+      // Check if user already exists (by email)
+      const existingUserRes = await pool.query(
+        'SELECT * FROM users WHERE email = $1',
+        [data.email]
+      );
+      if (existingUserRes.rows.length > 0) {
+        throw new AppError('User with this email already exists', 400);
       }
 
       // Hash password
       const hashedPassword = await bcrypt.hash(data.password, 12);
 
       // Create user
-      const user = await prisma.user.create({
-        data: {
-          email: data.email,
-          username: data.username,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          password: hashedPassword,
-          role: data.role || 'USER'
-        },
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-          role: true,
-          isActive: true,
-          createdAt: true
-        }
-      });
+      const insertRes = await pool.query(
+        `INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role, createdAt, updatedAt`,
+        [data.email, hashedPassword, data.firstName + ' ' + data.lastName, data.role || 'USER']
+      );
+      const user = insertRes.rows[0];
 
       // Generate tokens
       const tokens = this.generateTokens(user.id);
@@ -65,17 +45,12 @@ export class AuthService {
 
   async login(data: LoginDto) {
     try {
-      // Find user
-      const user = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { email: data.emailOrUsername },
-            { username: data.emailOrUsername }
-          ],
-          isActive: true
-        }
-      });
-
+      // Find user by email
+      const userRes = await pool.query(
+        'SELECT * FROM users WHERE email = $1',
+        [data.emailOrUsername]
+      );
+      const user = userRes.rows[0];
       if (!user) {
         throw new AppError('Invalid credentials', 401);
       }
@@ -89,11 +64,8 @@ export class AuthService {
       // Generate tokens
       const tokens = this.generateTokens(user.id);
 
-      // Update last login
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { updatedAt: new Date() }
-      });
+      // Update last login timestamp
+      await pool.query('UPDATE users SET updatedAt = CURRENT_TIMESTAMP WHERE id = $1', [user.id]);
 
       logger.info(`User logged in: ${user.email}`);
 
@@ -101,12 +73,10 @@ export class AuthService {
         user: {
           id: user.id,
           email: user.email,
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          name: user.name,
           role: user.role,
-          isActive: user.isActive,
-          createdAt: user.createdAt
+          createdAt: user.createdat,
+          updatedAt: user.updatedat
         },
         ...tokens
       };
@@ -120,22 +90,10 @@ export class AuthService {
     try {
       // Verify refresh token
       const decoded = jwt.verify(refreshToken, config.JWT_SECRET) as { userId: string };
-      
-      // Check if user still exists and is active
-      const user = await prisma.user.findUnique({
-        where: { id: decoded.userId, isActive: true },
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-          role: true,
-          isActive: true,
-          createdAt: true
-        }
-      });
 
+      // Check if user still exists
+      const userRes = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+      const user = userRes.rows[0];
       if (!user) {
         throw new AppError('User not found or inactive', 401);
       }
@@ -167,14 +125,18 @@ export class AuthService {
 
   private generateTokens(userId: string) {
     const payload = { userId };
-    
-    const accessToken = jwt.sign(payload, config.JWT_SECRET, {
-      expiresIn: config.JWT_EXPIRES_IN
-    });
+    const secret = String(config.JWT_SECRET);
+    const accessToken = jwt.sign(
+      payload,
+      secret,
+      { expiresIn: String(config.JWT_EXPIRES_IN) } as jwt.SignOptions
+    );
 
-    const refreshToken = jwt.sign(payload, config.JWT_SECRET, {
-      expiresIn: config.JWT_REFRESH_EXPIRES_IN
-    });
+    const refreshToken = jwt.sign(
+      payload,
+      secret,
+      { expiresIn: String(config.JWT_REFRESH_EXPIRES_IN) } as jwt.SignOptions
+    );
 
     return {
       accessToken,
@@ -186,20 +148,9 @@ export class AuthService {
   async verifyToken(token: string) {
     try {
       const decoded = jwt.verify(token, config.JWT_SECRET) as { userId: string };
-      
-      const user = await prisma.user.findUnique({
-        where: { id: decoded.userId, isActive: true },
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-          role: true,
-          isActive: true
-        }
-      });
 
+      const userRes = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+      const user = userRes.rows[0];
       if (!user) {
         throw new AppError('User not found or inactive', 401);
       }

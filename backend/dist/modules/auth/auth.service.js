@@ -13,38 +13,13 @@ const errors_1 = require("../../libs/errors");
 class AuthService {
     async signup(data) {
         try {
-            const existingUser = await prisma_1.prisma.user.findFirst({
-                where: {
-                    OR: [
-                        { email: data.email },
-                        { username: data.username }
-                    ]
-                }
-            });
-            if (existingUser) {
-                throw new errors_1.AppError('User with this email or username already exists', 400);
+            const existingUserRes = await prisma_1.pool.query('SELECT * FROM users WHERE email = $1', [data.email]);
+            if (existingUserRes.rows.length > 0) {
+                throw new errors_1.AppError('User with this email already exists', 400);
             }
             const hashedPassword = await bcryptjs_1.default.hash(data.password, 12);
-            const user = await prisma_1.prisma.user.create({
-                data: {
-                    email: data.email,
-                    username: data.username,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    password: hashedPassword,
-                    role: data.role || 'USER'
-                },
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    firstName: true,
-                    lastName: true,
-                    role: true,
-                    isActive: true,
-                    createdAt: true
-                }
-            });
+            const insertRes = await prisma_1.pool.query(`INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role, createdAt, updatedAt`, [data.email, hashedPassword, data.firstName + ' ' + data.lastName, data.role || 'USER']);
+            const user = insertRes.rows[0];
             const tokens = this.generateTokens(user.id);
             logger_1.logger.info(`New user registered: ${user.email}`);
             return {
@@ -59,15 +34,8 @@ class AuthService {
     }
     async login(data) {
         try {
-            const user = await prisma_1.prisma.user.findFirst({
-                where: {
-                    OR: [
-                        { email: data.emailOrUsername },
-                        { username: data.emailOrUsername }
-                    ],
-                    isActive: true
-                }
-            });
+            const userRes = await prisma_1.pool.query('SELECT * FROM users WHERE email = $1', [data.emailOrUsername]);
+            const user = userRes.rows[0];
             if (!user) {
                 throw new errors_1.AppError('Invalid credentials', 401);
             }
@@ -76,21 +44,16 @@ class AuthService {
                 throw new errors_1.AppError('Invalid credentials', 401);
             }
             const tokens = this.generateTokens(user.id);
-            await prisma_1.prisma.user.update({
-                where: { id: user.id },
-                data: { updatedAt: new Date() }
-            });
+            await prisma_1.pool.query('UPDATE users SET updatedAt = CURRENT_TIMESTAMP WHERE id = $1', [user.id]);
             logger_1.logger.info(`User logged in: ${user.email}`);
             return {
                 user: {
                     id: user.id,
                     email: user.email,
-                    username: user.username,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
+                    name: user.name,
                     role: user.role,
-                    isActive: user.isActive,
-                    createdAt: user.createdAt
+                    createdAt: user.createdat,
+                    updatedAt: user.updatedat
                 },
                 ...tokens
             };
@@ -103,19 +66,8 @@ class AuthService {
     async refreshToken(refreshToken) {
         try {
             const decoded = jsonwebtoken_1.default.verify(refreshToken, env_1.config.JWT_SECRET);
-            const user = await prisma_1.prisma.user.findUnique({
-                where: { id: decoded.userId, isActive: true },
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    firstName: true,
-                    lastName: true,
-                    role: true,
-                    isActive: true,
-                    createdAt: true
-                }
-            });
+            const userRes = await prisma_1.pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+            const user = userRes.rows[0];
             if (!user) {
                 throw new errors_1.AppError('User not found or inactive', 401);
             }
@@ -142,12 +94,9 @@ class AuthService {
     }
     generateTokens(userId) {
         const payload = { userId };
-        const accessToken = jsonwebtoken_1.default.sign(payload, env_1.config.JWT_SECRET, {
-            expiresIn: env_1.config.JWT_EXPIRES_IN
-        });
-        const refreshToken = jsonwebtoken_1.default.sign(payload, env_1.config.JWT_SECRET, {
-            expiresIn: env_1.config.JWT_REFRESH_EXPIRES_IN
-        });
+        const secret = String(env_1.config.JWT_SECRET);
+        const accessToken = jsonwebtoken_1.default.sign(payload, secret, { expiresIn: String(env_1.config.JWT_EXPIRES_IN) });
+        const refreshToken = jsonwebtoken_1.default.sign(payload, secret, { expiresIn: String(env_1.config.JWT_REFRESH_EXPIRES_IN) });
         return {
             accessToken,
             refreshToken,
@@ -157,18 +106,8 @@ class AuthService {
     async verifyToken(token) {
         try {
             const decoded = jsonwebtoken_1.default.verify(token, env_1.config.JWT_SECRET);
-            const user = await prisma_1.prisma.user.findUnique({
-                where: { id: decoded.userId, isActive: true },
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    firstName: true,
-                    lastName: true,
-                    role: true,
-                    isActive: true
-                }
-            });
+            const userRes = await prisma_1.pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+            const user = userRes.rows[0];
             if (!user) {
                 throw new errors_1.AppError('User not found or inactive', 401);
             }

@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 export declare class SearchController {
-    searchManufacturingOrders(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    searchWorkOrders(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
+    searchManufacturingOrders(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
+    searchWorkOrders(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
+    searchProducts(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
     getRecommendations(req: Request, res: Response): Promise<void>;
     getSearchAnalytics(req: Request, res: Response): Promise<void>;
 }

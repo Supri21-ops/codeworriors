@@ -1,7 +1,16 @@
+import { logger } from './config/logger';
+// Global error handlers
+process.on('uncaughtException', (err) => {
+  logger.error('Uncaught Exception:', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
+});
 import { app } from './app';
 import { config } from './config/env';
-import { logger } from './config/logger';
-import { prisma } from './config/prisma';
 import { kafkaService } from './config/kafka';
 import { eventConsumers } from './events/consumers';
 
@@ -10,8 +19,7 @@ const PORT = config.PORT || 3000;
 async function startServer() {
   try {
     // Test database connection
-    await prisma.$connect();
-    logger.info('Database connected successfully');
+  
 
     // Connect to Kafka
     await kafkaService.connect();
@@ -41,7 +49,6 @@ process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully');
   await eventConsumers.stopAllConsumers();
   await kafkaService.disconnect();
-  await prisma.$disconnect();
   process.exit(0);
 });
 
@@ -49,7 +56,6 @@ process.on('SIGINT', async () => {
   logger.info('SIGINT received, shutting down gracefully');
   await eventConsumers.stopAllConsumers();
   await kafkaService.disconnect();
-  await prisma.$disconnect();
   process.exit(0);
 });
 

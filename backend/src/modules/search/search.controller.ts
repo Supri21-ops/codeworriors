@@ -5,33 +5,46 @@ import { AppError } from '../../libs/errors';
 
 export class SearchController {
   async searchManufacturingOrders(req: Request, res: Response) {
-    try {
-      const { query, filters = {} } = req.body;
-      const userId = (req as any).user?.id;
-      if (!query) {
-        return res.status(400).json({ success: false, message: 'Search query is required' });
+      try {
+        const { query, filters = {} } = req.body;
+        const userId = (req as any).user?.id;
+        if (!query) {
+          return res.status(400).json({ success: false, message: 'Search query is required' });
+        }
+        const results = await vectorService.searchManufacturingOrders(query, filters);
+        return res.json({ success: true, data: results, total: results.length });
+      } catch (error) {
+        logger.error('Search manufacturing orders error:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
       }
-      const results = await vectorService.searchManufacturingOrders(query, filters);
-      res.json({ success: true, data: results, total: results.length });
-    } catch (error) {
-      logger.error('Search manufacturing orders error:', error);
-      res.status(500).json({ success: false, message: 'Internal server error' });
-    }
   }
 
   async searchWorkOrders(req: Request, res: Response) {
+      try {
+        const { query, filters = {} } = req.body;
+        const userId = (req as any).user?.id;
+        if (!query) {
+          return res.status(400).json({ success: false, message: 'Search query is required' });
+        }
+        // No searchWorkOrders in vectorService, fallback to manufacturingOrders or products
+        const results = await vectorService.searchManufacturingOrders(query, { ...filters, type: 'work_order' });
+        return res.json({ success: true, data: results, total: results.length });
+      } catch (error) {
+        logger.error('Search work orders error:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+      }
+  }
+  async searchProducts(req: Request, res: Response) {
     try {
       const { query, filters = {} } = req.body;
-      const userId = (req as any).user?.id;
       if (!query) {
         return res.status(400).json({ success: false, message: 'Search query is required' });
       }
-  // No searchWorkOrders in vectorService, fallback to manufacturingOrders or products
-  const results = await vectorService.searchManufacturingOrders(query, { ...filters, type: 'work_order' });
-      res.json({ success: true, data: results, total: results.length });
+      const results = await vectorService.searchProducts(query, filters);
+      return res.json({ success: true, data: results, total: results.length });
     } catch (error) {
-      logger.error('Search work orders error:', error);
-      res.status(500).json({ success: false, message: 'Internal server error' });
+      logger.error('Search products error:', error);
+      return res.status(500).json({ success: false, message: 'Internal server error' });
     }
   }
 

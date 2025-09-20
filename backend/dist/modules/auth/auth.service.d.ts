@@ -1,29 +1,27 @@
 import { LoginDto, SignupDto } from './dto';
 export declare class AuthService {
     signup(data: SignupDto): Promise<{
-        accessToken: never;
-        refreshToken: never;
+        accessToken: string;
+        refreshToken: string;
         expiresIn: string;
         user: any;
     }>;
     login(data: LoginDto): Promise<{
-        accessToken: never;
-        refreshToken: never;
+        accessToken: string;
+        refreshToken: string;
         expiresIn: string;
         user: {
             id: any;
             email: any;
-            username: any;
-            firstName: any;
-            lastName: any;
+            name: any;
             role: any;
-            isActive: any;
             createdAt: any;
+            updatedAt: any;
         };
     }>;
     refreshToken(refreshToken: string): Promise<{
-        accessToken: never;
-        refreshToken: never;
+        accessToken: string;
+        refreshToken: string;
         expiresIn: string;
         user: any;
     }>;
