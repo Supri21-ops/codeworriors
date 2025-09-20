@@ -1,1 +1,385 @@
-// schema.prisma
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Management
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  firstName String
+  lastName  String
+  role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  manufacturingOrders ManufacturingOrder[]
+  workOrders         WorkOrder[]
+  workCenters        WorkCenter[]
+  stockMovements     StockMovement[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  SUPERVISOR
+  OPERATOR
+  USER
+}
+
+// Product Management
+model Product {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  sku         String  @unique
+  category    String
+  unit        String  @default("pcs")
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bomItems        BomItem[]
+  stockMovements  StockMovement[]
+  workOrderItems  WorkOrderItem[]
+
+  @@map("products")
+}
+
+// Bill of Materials
+model Bom {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  version     String  @default("1.0")
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  items BomItem[]
+
+  @@map("boms")
+}
+
+model BomItem {
+  id        String @id @default(cuid())
+  bomId     String
+  productId String
+  quantity  Float
+  unit      String @default("pcs")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  bom     Bom     @relation(fields: [bomId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([bomId, productId])
+  @@map("bom_items")
+}
+
+// Work Centers
+model WorkCenter {
+  id              String  @id @default(cuid())
+  name            String
+  description     String?
+  code            String  @unique
+  capacity        Int     @default(1)
+  currentWorkload Int     @default(0)
+  isActive        Boolean @default(true)
+  managerId       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  manager     User?         @relation(fields: [managerId], references: [id])
+  workOrders  WorkOrder[]
+  stockItems  StockItem[]
+
+  @@map("work_centers")
+}
+
+// Stock Management
+model StockItem {
+  id           String  @id @default(cuid())
+  productId    String
+  workCenterId String?
+  quantity     Float   @default(0)
+  reservedQty  Float   @default(0)
+  minQty       Float   @default(0)
+  maxQty       Float   @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  product    Product       @relation(fields: [productId], references: [id])
+  workCenter WorkCenter?   @relation(fields: [workCenterId], references: [id])
+  movements  StockMovement[]
+
+  @@unique([productId, workCenterId])
+  @@map("stock_items")
+}
+
+model StockMovement {
+  id          String            @id @default(cuid())
+  productId   String
+  workCenterId String?
+  quantity    Float
+  type        StockMovementType
+  reason      String
+  reference   String? // Reference to MO, WO, etc.
+  userId      String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  product    Product     @relation(fields: [productId], references: [id])
+  workCenter WorkCenter? @relation(fields: [workCenterId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
+
+  @@map("stock_movements")
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  TRANSFER
+  ADJUSTMENT
+}
+
+// Manufacturing Orders
+model ManufacturingOrder {
+  id            String                @id @default(cuid())
+  orderNumber   String                @unique
+  productId     String
+  quantity      Float
+  priority      ManufacturingPriority @default(NORMAL)
+  status        ManufacturingStatus   @default(PLANNED)
+  startDate     DateTime?
+  endDate       DateTime?
+  dueDate       DateTime
+  notes         String?
+  priorityScore Float?
+  customerTier  CustomerTier          @default(BRONZE)
+  createdById   String
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  // Relations
+  product     Product      @relation(fields: [productId], references: [id])
+  createdBy   User         @relation(fields: [createdById], references: [id])
+  workOrders  WorkOrder[]
+
+  @@map("manufacturing_orders")
+}
+
+enum ManufacturingPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum CustomerTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum ManufacturingStatus {
+  PLANNED
+  RELEASED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  ON_HOLD
+}
+
+// Work Orders
+model WorkOrder {
+  id                   String        @id @default(cuid())
+  orderNumber          String        @unique
+  manufacturingOrderId String
+  workCenterId         String
+  status               WorkOrderStatus @default(PLANNED)
+  priority             WorkOrderPriority @default(NORMAL)
+  plannedStartDate     DateTime?
+  plannedEndDate       DateTime?
+  actualStartDate      DateTime?
+  actualEndDate        DateTime?
+  assignedUserId       String?
+  notes                String?
+  priorityScore        Float?
+  schedulePosition     Int?
+  estimatedDuration    Float?
+  actualDuration       Float?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  // Relations
+  manufacturingOrder ManufacturingOrder @relation(fields: [manufacturingOrderId], references: [id], onDelete: Cascade)
+  workCenter         WorkCenter         @relation(fields: [workCenterId], references: [id])
+  assignedUser       User?              @relation(fields: [assignedUserId], references: [id])
+  items              WorkOrderItem[]
+
+  @@map("work_orders")
+}
+
+enum WorkOrderStatus {
+  PLANNED
+  RELEASED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  ON_HOLD
+}
+
+enum WorkOrderPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+model WorkOrderItem {
+  id           String  @id @default(cuid())
+  workOrderId  String
+  productId    String
+  quantity     Float
+  unit         String  @default("pcs")
+  completedQty Float   @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id])
+
+  @@unique([workOrderId, productId])
+  @@map("work_order_items")
+}
+
+// Quality Control
+model QualityCheck {
+  id          String            @id @default(cuid())
+  workOrderId String
+  checkType   QualityCheckType
+  status      QualityStatus
+  notes       String?
+  checkedBy   String
+  checkedAt   DateTime          @default(now())
+  createdAt   DateTime          @default(now())
+
+  // Relations
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  checker   User      @relation(fields: [checkedBy], references: [id])
+
+  @@map("quality_checks")
+}
+
+enum QualityCheckType {
+  INCOMING
+  IN_PROCESS
+  FINAL
+  RANDOM
+}
+
+enum QualityStatus {
+  PASS
+  FAIL
+  PENDING
+}
+
+// Events and Notifications
+model Event {
+  id        String      @id @default(cuid())
+  type      EventType
+  title     String
+  message   String
+  data      Json?
+  userId    String?
+  isRead    Boolean     @default(false)
+  createdAt DateTime    @default(now())
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("events")
+}
+
+enum EventType {
+  MANUFACTURING_ORDER_CREATED
+  MANUFACTURING_ORDER_UPDATED
+  MANUFACTURING_ORDER_COMPLETED
+  WORK_ORDER_CREATED
+  WORK_ORDER_UPDATED
+  WORK_ORDER_COMPLETED
+  STOCK_LOW
+  STOCK_OUT
+  QUALITY_ISSUE
+  SYSTEM_ALERT
+}
+
+// Vector Search
+model VectorDocument {
+  id        String   @id @default(cuid())
+  content   String
+  embedding String   // JSON string of vector
+  metadata  Json?
+  collection String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("vector_documents")
+}
+
+// Search Analytics
+model SearchAnalytics {
+  id          String   @id @default(cuid())
+  query       String
+  resultsCount Int
+  userId      String?
+  createdAt   DateTime @default(now())
+
+  @@map("search_analytics")
+}
+
+// Priority Queue
+model PriorityQueue {
+  id          String   @id @default(cuid())
+  orderId     String
+  orderType   String   // MANUFACTURING_ORDER or WORK_ORDER
+  priority    Float
+  dueDate     DateTime
+  workCenterId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("priority_queue")
+}
+
+// Add missing relations
+model User {
+  // ... existing fields ...
+  qualityChecks QualityCheck[]
+  events        Event[]
+}
+
+model WorkOrder {
+  // ... existing fields ...
+  qualityChecks QualityCheck[]
+}
