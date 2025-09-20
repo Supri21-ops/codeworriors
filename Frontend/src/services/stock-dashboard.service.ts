@@ -108,7 +108,7 @@ export interface PaginatedResponse<T> {
 }
 
 export class StockDashboardService {
-  private baseUrl = '/api/stock';
+  private baseUrl = '/stock';
 
   // Get stock dashboard summary
   async getDashboardSummary(): Promise<StockDashboardSummary> {

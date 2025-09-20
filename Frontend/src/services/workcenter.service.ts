@@ -49,7 +49,7 @@ export interface PaginatedResponse<T> {
 }
 
 class WorkCenterService {
-  private BASE_URL = '/workcenter';
+  private BASE_URL = '/workcenters';
 
   async getWorkCenters(): Promise<WorkCenter[]> {
     const response = await apiService.get<{success: boolean, data: WorkCenter[]}>(this.BASE_URL);

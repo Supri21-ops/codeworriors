@@ -121,7 +121,7 @@ export interface ExportOptions {
 }
 
 export class ReportsService {
-  private baseUrl = '/api/reports';
+  private baseUrl = '/reports';
 
   // Get report summary/KPIs
   async getReportSummary(filters?: ReportFilters): Promise<ReportSummary> {
