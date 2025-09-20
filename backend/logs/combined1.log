@@ -3465,3 +3465,30 @@
 {"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:13"}
 {"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:13"}
 {"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:13"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:30"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:30"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:30"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:30"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:30"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:30"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:41"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:41"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:45"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:45"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:48"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:48"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:51"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:51"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:55"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:55"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:55"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:55"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:55"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:55"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:55"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:55"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:55"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:56"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:56"}
+{"level":"info","message":"User logged in: vuday8370@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:57"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:17:57 +0000] \"POST /api/auth/login HTTP/1.1\" 200 683 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:57"}
