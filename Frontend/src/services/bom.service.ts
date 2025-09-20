@@ -136,7 +136,7 @@ export interface BOMCostAnalysis {
 }
 
 export class BOMService {
-  private baseUrl = '/api/bom';
+  private baseUrl = '/bom';
 
   // Get all BOMs with optional filters
   async getBOMs(filters?: BOMFilters): Promise<PaginatedResponse<BOM>> {

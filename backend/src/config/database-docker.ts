@@ -22,7 +22,8 @@ export const db = {
           value = 'NULL';
         } else if (typeof param === 'string') {
           // Handle single quotes and potential command injection
-          value = `'${param.replace(/'/g, "''").replace(/\\/g, '\\\\')}'`;
+          // Also escape $ characters to prevent shell variable substitution (important for bcrypt hashes)
+          value = `'${param.replace(/'/g, "''").replace(/\\/g, '\\\\').replace(/\$/g, '$$')}'`;
         } else if (typeof param === 'boolean') {
           value = param ? 'true' : 'false';
         } else if (param instanceof Date) {

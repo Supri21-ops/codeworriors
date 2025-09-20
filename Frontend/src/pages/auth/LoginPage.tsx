@@ -58,13 +58,6 @@ export const LoginPage: React.FC = () => {
             <CardTitle className="text-2xl text-center">Sign in to your account</CardTitle>
             <CardDescription className="text-center">
               Enter your credentials to access the manufacturing dashboard
-              {import.meta.env.DEV && (
-                <div className="mt-3 text-xs text-amber-600 bg-amber-50 p-2 rounded text-left">
-                  <strong>Development Mode:</strong> Backend may be unavailable. Mock authentication will be used if needed.
-                  <br />
-                  Use any email/username and password to login.
-                </div>
-              )}
             </CardDescription>
           </CardHeader>
           <CardContent>

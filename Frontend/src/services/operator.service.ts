@@ -154,7 +154,7 @@ export interface PaginatedResponse<T> {
 }
 
 export class OperatorService {
-  private baseUrl = '/api/operator';
+  private baseUrl = '/operator';
 
   // Get operator dashboard summary
   async getDashboardSummary(operatorId?: string): Promise<OperatorDashboardSummary> {

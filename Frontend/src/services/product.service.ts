@@ -110,7 +110,7 @@ export interface PaginatedResponse<T> {
 }
 
 export class ProductService {
-  private baseUrl = '/api/product';
+  private baseUrl = '/product';
 
   // Get all products with optional filters
   async getProducts(filters?: ProductFilters): Promise<PaginatedResponse<Product>> {

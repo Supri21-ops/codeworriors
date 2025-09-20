@@ -33,6 +33,12 @@ async function startServer() {
 
     // Start server
     app.listen(PORT, () => {
+      console.log('\n🚀 SERVER STARTED - DEBUG MODE ENABLED');
+      console.log(`📍 Port: ${PORT}`);
+      console.log(`🔧 Environment: ${config.NODE_ENV}`);
+      console.log('🔍 Full debugging enabled for authentication');
+      console.log('-------------------------------------------\n');
+      
       logger.info(`🚀 Manufacturing Management System running on port ${PORT}`);
       logger.info(`📊 Environment: ${config.NODE_ENV}`);
       logger.info(`🔗 API Documentation: http://localhost:${PORT}/api/docs`);

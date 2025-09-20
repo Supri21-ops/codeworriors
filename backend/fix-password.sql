@@ -1,0 +1,1 @@
+UPDATE users SET password = '$2a$12$2AhFCwWeAPtYMmDQEu6kKOy8zxuR63J3hopJlDARNV4axrEpYNULq', updated_at = NOW() WHERE email = 'vu3106252@gmail.com';

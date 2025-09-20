@@ -45,29 +45,42 @@ export class AuthController {
 
   login = async (req: Request, res: Response) => {
     try {
+      console.log('\n🚀 AUTH CONTROLLER - Login request received');
       const loginData: LoginDto = req.body;
+      console.log('📦 Request body:', JSON.stringify(loginData, null, 2));
       
       // Validate required fields
       if (!loginData.emailOrUsername || !loginData.password) {
+        console.log('❌ CONTROLLER VALIDATION FAILED - missing fields');
+        console.log(`   emailOrUsername: ${!!loginData.emailOrUsername}`);
+        console.log(`   password: ${!!loginData.password}`);
         throw new AppError('Email/username and password are required', 400);
       }
 
-  logger.info(`Login attempt for: ${loginData.emailOrUsername}`);
-  const result = await this.authService.login(loginData);
+      console.log('✅ Controller validation passed');
+      console.log('🔄 Calling auth service...');
+      const result = await this.authService.login(loginData);
+      console.log('✅ Auth service returned success');
       
       res.json({
         success: true,
         message: 'Login successful',
         data: result
       });
-    } catch (error) {
-      logger.error('Login controller error:', error);
+    } catch (error: any) {
+      console.log('\n💥 AUTH CONTROLLER ERROR:');
+      console.log('   Error type:', error instanceof AppError ? 'AppError' : 'Unknown');
+      console.log('   Error message:', error?.message || 'No message');
+      console.log('   Error stack:', error?.stack || 'No stack');
+      
       if (error instanceof AppError) {
+        console.log(`   Returning ${error.statusCode} status`);
         res.status(error.statusCode).json({
           success: false,
           message: error.message
         });
       } else {
+        console.log('   Returning 500 status (unknown error)');
         res.status(500).json({
           success: false,
           message: 'Internal server error'
