@@ -3051,3 +3051,417 @@
 {"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:85:15)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:56:18)","statusCode":401,"timestamp":"2025-09-21 02:06:18"}
 {"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:85:15)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:56:18)","statusCode":401,"timestamp":"2025-09-21 02:06:18"}
 {"level":"info","message":"::1 - - [20/Sep/2025:20:36:18 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:18"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:47"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:47"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:47"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:47"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:47"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:47"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:51"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:51"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:55"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:55"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:58"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:06:58"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:02"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:02"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:05"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:05"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:05"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:05"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:05"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:05"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:05"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:05"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:05"}
+{"level":"info","message":"Login attempt for: vu3106252@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:13"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:13"}
+{"level":"info","message":"Login: user found for vu3106252@gmail.com. Password hash present: true. hashPrefix=uday v.","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:13"}
+{"level":"info","message":"Login: password comparison result for vu3106252@gmail.com: false","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:13"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:07:13"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:07:13"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:37:13 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:13"}
+{"level":"info","message":"Login attempt for: vu310625@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:19"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:19"}
+{"level":"info","message":"Login: user found for vu310625@gmail.com. Password hash present: true. hashPrefix=uday v.","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:19"}
+{"level":"info","message":"Login: password comparison result for vu310625@gmail.com: false","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:19"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:07:19"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:07:19"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:37:19 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:07:19"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:20"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:20"}
+{"level":"info","message":"Found user for login check: vu310625@gmail.com (id=6665a716-4067-48b9-80f0-c2bac526a360)","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:21"}
+{"level":"info","message":"New user registered: vu310625@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:21"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:38:21 +0000] \"POST /api/auth/signup HTTP/1.1\" 201 708 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:21"}
+{"level":"info","message":"Login attempt for: vu310625@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:22"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:22"}
+{"level":"info","message":"Login: user found for vu310625@gmail.com. Password hash present: true. hashPrefix=uday v.","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:23"}
+{"level":"info","message":"Login: password comparison result for vu310625@gmail.com: false","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:23"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:08:23"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:08:23"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:38:23 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:08:23"}
+{"level":"info","message":"Login attempt for: vu310625@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:09:05"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:09:05"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:43:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:09:06"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:43:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:09:06"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:39:06 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:09:06"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"manufacturing-backend","timestamp":"2025-09-21 02:13:15"}
+{"level":"info","message":"Stopping all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:13:15"}
+{"level":"info","message":"Kafka disconnected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:13:34"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:13"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:13"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:13"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:13"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:13"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:13"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:16"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:16"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:20"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:20"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:23"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:23"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:26"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:26"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:30"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:30"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:30"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:30"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:30"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:30"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:30"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:30"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:18:30"}
+{"level":"info","message":"Login attempt for: test@example.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:05"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:05"}
+{"level":"info","message":"Login: user found for test@example.com. Password hash present: true. hashPrefix=Test Us","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:06"}
+{"level":"info","message":"Login: password comparison result for test@example.com: false","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:06"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:19:06"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:19:06"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:49:06 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:06"}
+{"level":"info","message":"Login attempt for: vu3106252.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:24"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:24"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:43:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:19:24"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:43:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:19:24"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:49:24 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:24"}
+{"level":"info","message":"Login attempt for: vu3106252@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:28"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:28"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:43:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:19:28"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:43:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:19:28"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:49:28 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:28"}
+{"level":"info","message":"Login attempt for: vu310625@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:34"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:34"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:43:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:19:35"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:43:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:19:35"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:49:35 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:19:35"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:47"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:48"}
+{"level":"info","message":"Found user for login check: vuday8370@gmail.com (id=fba4c18a-8628-4048-8deb-de35ccd39856)","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:49"}
+{"level":"info","message":"New user registered: vuday8370@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:49"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:53:49 +0000] \"POST /api/auth/signup HTTP/1.1\" 201 709 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:49"}
+{"level":"info","message":"Login attempt for: vuday8370@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:50"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:50"}
+{"level":"info","message":"Login: user found for vuday8370@gmail.com. Password hash present: true. hashPrefix=uday v.","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:51"}
+{"level":"info","message":"Login: password comparison result for vuday8370@gmail.com: false","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:51"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:23:51"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:23:51"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:53:51 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:23:51"}
+{"level":"info","message":"Login attempt for: test@example.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:37"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:37"}
+{"level":"info","message":"Login: user found for test@example.com. Password hash present: true. hashPrefix=Test Us","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:37"}
+{"level":"info","message":"Login: password comparison result for test@example.com: false","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:37"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:25:37"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:25:37"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:55:37 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:37"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:49"}
+{"level":"info","message":"Stopping all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:49"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:53"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:53"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:53"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:53"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:53"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:53"}
+{"level":"info","message":"Login attempt for: test@example.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:56"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:56"}
+{"level":"info","message":"Login: user found for test@example.com. Password hash present: true. hashPrefix=Test Us","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:57"}
+{"level":"info","message":"Login: password comparison result for test@example.com: false","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:57"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:25:57"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:25:57"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:55:57 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:57"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:57"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:25:57"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:00"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:00"}
+{"level":"info","message":"Login attempt for: test@example.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:01"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:01"}
+{"level":"info","message":"Login: user found for test@example.com. Password hash present: true. hashPrefix=Test Us","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:01"}
+{"level":"info","message":"Login: password comparison result for test@example.com: false","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:01"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:26:01"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:26:01"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:56:01 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:01"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:04"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:04"}
+{"level":"info","message":"Kafka disconnected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:05"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:07"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:07"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:10"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:10"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:10"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:10"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:10"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:10"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:10"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:10"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:10"}
+{"level":"info","message":"Login attempt for: test@example.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:17"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:17"}
+{"level":"info","message":"Login: user found for test@example.com. Password hash present: true. hashPrefix=Test Us","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:17"}
+{"level":"info","message":"Login: password comparison result for test@example.com: false","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:17"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:26:17"}
+{"isOperational":true,"level":"error","message":"Login controller error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.service.js:58:23)\n    at async AuthController.login (D:\\hackathon\\codewarrior\\backend\\dist\\modules\\auth\\auth.controller.js:45:32)","statusCode":401,"timestamp":"2025-09-21 02:26:17"}
+{"level":"info","message":"::1 - - [20/Sep/2025:20:56:17 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:26:17"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:51"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:51"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:51"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:51"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:51"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:51"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:55"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:55"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:58"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:31:58"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:01"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:01"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:05"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:05"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:08"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:87:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:62:22)","statusCode":401,"timestamp":"2025-09-21 02:32:09"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:02:09 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:09"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:41"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:87:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:62:22)","statusCode":401,"timestamp":"2025-09-21 02:32:41"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Sep/2025:21:02:41 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:41"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:58"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:59"}
+{"level":"info","message":"User logged in: test@example.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:59"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:02:59 +0000] \"POST /api/auth/login HTTP/1.1\" 200 684 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:32:59"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/stock/dashboard/summary HTTP/1.1\" 304 - \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/stock/dashboard/distribution HTTP/1.1\" 304 - \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/stock/dashboard/summary HTTP/1.1\" 304 - \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/stock/dashboard/distribution HTTP/1.1\" 304 - \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/stock/dashboard/top-consumed?limit=5 HTTP/1.1\" 304 - \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/stock/alerts/low-stock HTTP/1.1\" 200 548 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/stock/dashboard/top-consumed?limit=5 HTTP/1.1\" 304 - \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/stock/alerts/low-stock HTTP/1.1\" 200 548 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"Mock service findAll called, returning 1 items","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/workcenters HTTP/1.1\" 200 204 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"Mock service findAll called, returning 1 items","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/workcenters HTTP/1.1\" 304 - \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"Mock service findAll called, returning 1 items","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:16 +0000] \"GET /api/stock/items?limit=20 HTTP/1.1\" 200 202 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:16"}
+{"level":"info","message":"Mock service findAll called, returning 1 items","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:17"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:03:17 +0000] \"GET /api/stock/items?limit=20 HTTP/1.1\" 304 - \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:17"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:51"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:51"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:51"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:51"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:51"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:33:51"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:19"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:19"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:23"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:23"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:23"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:23"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:23"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:23"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:53"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:53"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:56"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:56"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:59"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:34:59"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:03"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:03"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:06"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:06"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:06"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:06"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:06"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:06"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:06"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:06"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:06"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:07"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:69:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:62:22)","statusCode":401,"timestamp":"2025-09-21 02:35:07"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:05:07 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:07"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:44"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:44"}
+{"level":"info","message":"Found user for login check: vuday8370@gmail.com (id=5447365d-4aca-42cc-9ca4-eb8ce9750141)","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:45"}
+{"level":"info","message":"New user registered: vuday8370@gmail.com","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:45"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:05:45 +0000] \"POST /api/auth/signup HTTP/1.1\" 201 709 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:45"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:46"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:87:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:62:22)","statusCode":401,"timestamp":"2025-09-21 02:35:46"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:05:46 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:35:46"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:40"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:40"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:40"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:40"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:40"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:40"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:44"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:44"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:47"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:47"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:51"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:51"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:54"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:54"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:57"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:57"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:57"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:57"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:57"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:57"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:57"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:57"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:37:57"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:41:38"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:41:38"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:41:38"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:41:38"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:41:38"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:41:38"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:04"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:04"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:04"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:04"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:04"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:04"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:05"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:05"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:08"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:08"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:12"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:12"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:15"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:15"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:18"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:18"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:18"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:18"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:18"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:18"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:18"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:18"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:18"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:25"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:98:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:62:22)","statusCode":401,"timestamp":"2025-09-21 02:42:25"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:12:25 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:42:25"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:01"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:01"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:01"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:01"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:01"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:01"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:01"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:01"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:04"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:04"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:07"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:07"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:11"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:11"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:14"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:14"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:14"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:14"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:14"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:14"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:14"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:14"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:43:14"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:10"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:10"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:10"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:10"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:10"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:10"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:21"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:21"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:21"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:21"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:21"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:44:21"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:06"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:06"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:09"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:09"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:12"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:12"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:16"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:16"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:19"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:19"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:19"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:19"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:19"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:19"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:19"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:19"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:19"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:42"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:42"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:42"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:42"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:42"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:42"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:45"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:45"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:48"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:100:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:62:22)","statusCode":401,"timestamp":"2025-09-21 02:45:49"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:15:49 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:49"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:49"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:100:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:62:22)","statusCode":401,"timestamp":"2025-09-21 02:45:50"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:15:50 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:50"}
+{"level":"info","message":"Executing command:","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:54"}
+{"isOperational":true,"level":"error","message":"Login error: Invalid credentials","service":"manufacturing-backend","stack":"Error: Invalid credentials\n    at AuthService.login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:100:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async login (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:62:22)","statusCode":401,"timestamp":"2025-09-21 02:45:55"}
+{"level":"info","message":"::1 - - [20/Sep/2025:21:15:55 +0000] \"POST /api/auth/login HTTP/1.1\" 401 49 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-21 02:45:55"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:46:37"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:46:37"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:46:37"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:46:37"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:46:37"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:46:37"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:46:57"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:46:57"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:00"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:00"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:04"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:04"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:07"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:07"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:10"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:10"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:10"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:10"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:10"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:10"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:10"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:10"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:10"}
+{"level":"info","message":"Database connected successfully via Docker exec","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:13"}
+{"level":"info","message":"Database connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:13"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:13"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:13"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:13"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-21 02:47:13"}

@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { db } from '../../config/prisma';
 import { config } from '../../config/env';
@@ -19,14 +18,25 @@ export class AuthService {
         throw new AppError('User with this email already exists', 400);
       }
 
-      // Hash password
-      const hashedPassword = await bcrypt.hash(data.password, 12);
+      // Store password as plain text (no hashing)
+      const plainPassword = data.password;
+      const fullName = `${data.firstName} ${data.lastName}`;
+      const userRole = data.role || 'USER';
+
+      console.log('\n📝 SIGNUP DEBUG - SQL Parameters:');
+      console.log(`   $1 (email): "${data.email}"`);
+      console.log(`   $2 (password): "${plainPassword}"`);
+      console.log(`   $3 (name): "${fullName}"`);
+      console.log(`   $4 (role): "${userRole}"`);
 
       // Create user - note: we'll ignore username for now and use name instead
       const userResult = await db.query(
-        'INSERT INTO users (email, password, name, role, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id, email, name, role, created_at, updated_at',
-        [data.email, hashedPassword, `${data.firstName} ${data.lastName}`, data.role || 'USER']
+        'INSERT INTO users (email, password, name, role, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id, email, name, role, created_at, updated_at, password',
+        [data.email, plainPassword, fullName, userRole]
       );
+      
+      console.log('✅ User created in database');
+      console.log('📊 Returned user data:', JSON.stringify(userResult.rows[0], null, 2));
       
       const user = userResult.rows[0];
 
@@ -52,38 +62,45 @@ export class AuthService {
 
   async login(data: LoginDto) {
     try {
+      console.log('\n🔐 LOGIN DEBUG - Starting login process');
+      console.log(`📧 Email/Username: ${data.emailOrUsername}`);
+      console.log(`🔑 Password length: ${data.password?.length || 0} chars`);
+      
       // Find user by email (treating emailOrUsername as email for now)
+      console.log('🔍 Searching for user in database...');
       const userResult = await db.query(
-        'SELECT id, email, name, role, password, created_at, updated_at FROM users WHERE email = $1',
+        'SELECT id, email, password, name, role, created_at, updated_at FROM users WHERE email = $1',
         [data.emailOrUsername]
       );
       
+      console.log(`📊 Database query returned ${userResult.rows.length} users`);
+      
       if (userResult.rows.length === 0) {
+        console.log('❌ USER NOT FOUND - throwing 401');
         throw new AppError('Invalid credentials', 401);
       }
       
       const user = userResult.rows[0];
+      console.log(`✅ User found: ${user.email} (ID: ${user.id})`);
+      console.log('� FULL USER OBJECT FROM DB:', JSON.stringify(user, null, 2));
+      console.log(`📝 user.password field: "${user.password}" (length: ${user.password?.length || 0})`);
+      console.log(`📝 user.name field: "${user.name}"`);
+      console.log(`📝 Input password: "${data.password}" (length: ${data.password?.length || 0})`);
 
-      // Debug: log presence of user and hash format (no plaintext)
-      try {
-        logger.info(`Login: user found for ${user.email}. Password hash present: ${!!user.password}. hashPrefix=${String(user.password).slice(0,7)}`);
-      } catch (e) {
-        // ignore logging errors
-      }
-
-      // Check password
-      const isPasswordValid = await bcrypt.compare(data.password, user.password);
-
-      // Debug: log comparison result (do NOT log supplied password)
-      try {
-        logger.info(`Login: password comparison result for ${user.email}: ${isPasswordValid}`);
-      } catch (e) {
-        // ignore logging errors
-      }
-
+      // Check password (plain text comparison)
+      const isPasswordValid = data.password === user.password;
+      console.log(`🔐 Password comparison: ${isPasswordValid ? '✅ MATCH' : '❌ NO MATCH'}`);
+      
       if (!isPasswordValid) {
+        console.log('❌ PASSWORD MISMATCH - throwing 401');
+        console.log(`   Expected: "${user.password}"`);
+        console.log(`   Received: "${data.password}"`);
+        console.log(`   Strict equality: ${data.password === user.password}`);
+        console.log(`   Type check - stored: ${typeof user.password}, input: ${typeof data.password}`);
         throw new AppError('Invalid credentials', 401);
       }
+
+      console.log('✅ LOGIN SUCCESS - generating tokens');
 
       // Generate tokens
       const tokens = this.generateTokens(user.id);

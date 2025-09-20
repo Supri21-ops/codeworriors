@@ -4,6 +4,9 @@ import { AppError } from '../libs/errors';
 
 export const validateRequest = (schema: Joi.ObjectSchema) => {
   return (req: Request, res: Response, next: NextFunction) => {
+    console.log('\n🔍 VALIDATION MIDDLEWARE - Processing request');
+    console.log('📦 Original request body:', JSON.stringify(req.body, null, 2));
+    
     const { error, value } = schema.validate(req.body, {
       abortEarly: false,
       allowUnknown: false,
@@ -11,6 +14,11 @@ export const validateRequest = (schema: Joi.ObjectSchema) => {
     });
 
     if (error) {
+      console.log('❌ VALIDATION FAILED:');
+      error.details.forEach((detail, index) => {
+        console.log(`   ${index + 1}. ${detail.message}`);
+      });
+      
       const errorMessage = error.details
         .map(detail => detail.message)
         .join(', ');
@@ -18,6 +26,9 @@ export const validateRequest = (schema: Joi.ObjectSchema) => {
       throw new AppError(`Validation error: ${errorMessage}`, 400);
     }
 
+    console.log('✅ Validation passed');
+    console.log('📦 Validated body:', JSON.stringify(value, null, 2));
+    
     // Replace req.body with validated and sanitized data
     req.body = value;
     next();
