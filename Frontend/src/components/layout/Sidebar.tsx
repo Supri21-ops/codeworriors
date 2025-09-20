@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
+import { useAuthStore } from '../../stores/authStore';
 import {
   HomeIcon,
   CogIcon,
@@ -36,6 +37,14 @@ const navigation = [
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) => {
   const location = useLocation();
+  const { user } = useAuthStore();
+
+  // define role access for certain routes
+  const accessMap: Record<string, string[] | undefined> = {
+    '/settings': ['admin', 'manager'],
+    '/reports': ['manager', 'admin'],
+    '/users': ['admin'],
+  };
 
   return (
     <>
@@ -61,6 +70,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) =
               <li>
                 <ul role="list" className="-mx-2 space-y-1">
                   {navigation.map((item) => {
+                    // If route has access restrictions, hide it when user doesn't have role
+                    const allowed = accessMap[item.href];
+                    if (allowed && (!user || !allowed.includes(user.role))) return null;
+
                     const isActive = location.pathname === item.href;
                     return (
                       <li key={item.name}>

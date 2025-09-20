@@ -14,7 +14,6 @@ import { SignupPage } from './pages/auth/SignupPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import OtpVerifyPage from './pages/auth/OtpVerifyPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
-import { DashboardLayout } from './components/layout/DashboardLayout';
 import OperatorDashboard from './pages/OperatorDashboard';
 import { ManufacturingOrdersPage } from './pages/manufacturing/ManufacturingOrdersPage';
 import { WorkOrdersPage } from './pages/work-orders/WorkOrdersPage';
@@ -149,13 +148,13 @@ function App() {
         { path: '/manufacturing-orders', element: <ProtectedRoute><ManufacturingOrdersPage /></ProtectedRoute> },
         { path: '/work-orders', element: <ProtectedRoute><WorkOrdersPage /></ProtectedRoute> },
         { path: '/inventory', element: <ProtectedRoute><InventoryPage /></ProtectedRoute> },
-  { path: '/work-centers', element: <ProtectedRoute><DashboardLayout><WorkCenterDashboard /></DashboardLayout></ProtectedRoute> },
+  { path: '/work-centers', element: <ProtectedRoute><WorkCenterDashboard /></ProtectedRoute> },
         { path: '/reports', element: <RoleRoute allowedRoles={["manager","admin"]}><ReportsPage /></RoleRoute> },
         { path: '/products', element: <ProtectedRoute><ProductsPage /></ProtectedRoute> },
         { path: '/bom', element: <ProtectedRoute><BOMPage /></ProtectedRoute> },
         { path: '/users', element: <RoleRoute allowedRoles={["admin"]}><UsersPage /></RoleRoute> },
         { path: '/settings', element: <RoleRoute allowedRoles={["admin","manager"]}><SettingsPage /></RoleRoute> },
-        { path: '/operator', element: <ProtectedRoute><OperatorDashboard /></ProtectedRoute> },
+  { path: '/operator', element: <ProtectedRoute><OperatorDashboard /></ProtectedRoute> },
         { path: '/stock', element: <ProtectedRoute><StockDashboard /></ProtectedRoute> },
         { path: '/search', element: <ProtectedRoute><SearchResultsPage /></ProtectedRoute> },
         { path: '/auth/login', element: <PublicRoute><LoginPage /></PublicRoute> },

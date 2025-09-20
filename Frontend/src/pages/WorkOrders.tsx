@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-// Sidebar provided by app layout; remove local Sidebar import
-import { Topbar } from '../components/Topbar';
+import React, { useState, useEffect } from 'react';
+import { DashboardLayout } from '../components/layout/DashboardLayout';
+import { useManufacturingStore } from '../store/manufacturing.store';
 import { COLORS } from '../theme';
+import toast from 'react-hot-toast';
 
 interface WorkOrder {
   id: string;
@@ -57,8 +58,57 @@ const sampleWorkOrders: WorkOrder[] = [
 ];
 
 export const WorkOrders: React.FC = () => {
-  const [workOrders] = useState<WorkOrder[]>(sampleWorkOrders);
+  const { 
+    workOrders, 
+    workOrdersLoading, 
+    workOrdersError,
+    fetchWorkOrders,
+    setWorkOrdersFilters,
+    workOrdersFilters,
+    updateWorkOrder,
+    deleteWorkOrder 
+  } = useManufacturingStore();
+  
   const [filter, setFilter] = useState<'ALL' | 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED'>('ALL');
+
+  useEffect(() => {
+    // Fetch work orders on component mount
+    fetchWorkOrders();
+  }, [fetchWorkOrders]);
+
+  const handleFilterChange = (newFilter: 'ALL' | 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED') => {
+    setFilter(newFilter);
+    if (newFilter === 'ALL') {
+      setWorkOrdersFilters({ ...workOrdersFilters, status: undefined });
+      fetchWorkOrders({ ...workOrdersFilters, status: undefined });
+    } else {
+      setWorkOrdersFilters({ ...workOrdersFilters, status: newFilter });
+      fetchWorkOrders({ ...workOrdersFilters, status: newFilter });
+    }
+  };
+
+  const handleViewWorkOrder = (id: string) => {
+    toast(`Viewing work order ${id} - Feature coming soon`);
+  };
+
+  const handleEditWorkOrder = (id: string) => {
+    toast(`Editing work order ${id} - Feature coming soon`);
+  };
+
+  const handleDeleteWorkOrder = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this work order?')) {
+      try {
+        await deleteWorkOrder(id);
+        toast.success('Work order deleted successfully');
+      } catch (error) {
+        toast.error('Failed to delete work order');
+      }
+    }
+  };
+
+  const handleCreateWorkOrder = () => {
+    toast('Create Work Order - Feature coming soon');
+  };
 
   const getStatusColor = (status: WorkOrder['status']) => {
     switch (status) {
@@ -86,16 +136,40 @@ export const WorkOrders: React.FC = () => {
     filter === 'ALL' || order.status === filter
   );
 
+  if (workOrdersError) {
+    return (
+      <DashboardLayout>
+        <div style={{ padding: 20, textAlign: 'center' }}>
+          <h1 style={{ color: COLORS.priority.urgent }}>Error loading work orders</h1>
+          <p>{workOrdersError}</p>
+          <button 
+            onClick={() => fetchWorkOrders()}
+            style={{ 
+              background: COLORS.primary.blue, 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: 8, 
+              padding: '12px 24px',
+              cursor: 'pointer'
+            }}
+          >
+            Retry
+          </button>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: COLORS.background.lightGray }}>
-      <div style={{ flex: 1 }}>
-        <Topbar />
-        <main style={{ padding: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 700, color: COLORS.primary.navy, margin: 0 }}>
-              Work Orders
-            </h1>
-            <button style={{
+    <DashboardLayout>
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: COLORS.primary.navy, margin: 0 }}>
+            Work Orders
+          </h1>
+          <button 
+            onClick={handleCreateWorkOrder}
+            style={{
               background: COLORS.primary.blue,
               color: 'white',
               border: 'none',
@@ -104,10 +178,11 @@ export const WorkOrders: React.FC = () => {
               fontSize: 16,
               fontWeight: 600,
               cursor: 'pointer'
-            }}>
-              Create Work Order
-            </button>
-          </div>
+            }}
+          >
+            Create Work Order
+          </button>
+        </div>
 
           {/* Filters */}
           <div style={{ marginBottom: 24 }}>

@@ -1,6 +1,5 @@
 import React from 'react';
-// Sidebar provided by layout; remove local Sidebar import
-import { Topbar } from '../components/Topbar';
+import { DashboardLayout } from '../components/layout/DashboardLayout';
 import { KpiCard } from '../components/KpiCard';
 import { TaskList } from '../components/TaskList';
 import type { Task } from '../components/TaskList';
@@ -15,25 +14,22 @@ const sampleTasks: Task[] = [
 
 const OperatorDashboard: React.FC = () => {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: COLORS.background.lightGray }}>
-      <div style={{ flex: 1 }}>
-        <Topbar />
-        <main style={{ padding: 20 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>My Work Orders</h2>
+    <DashboardLayout>
+      <div>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>My Work Orders</h2>
 
-          <section style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
-            <KpiCard label="Assigned Work Orders" value={12} color={COLORS.primary.blue} />
-            <KpiCard label="Completed Today" value={4} color={COLORS.status.success} />
-            <KpiCard label="Delayed Tasks" value={1} color={COLORS.priority.urgent} />
-          </section>
+        <section style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+          <KpiCard label="Assigned Work Orders" value={12} color={COLORS.primary.blue} />
+          <KpiCard label="Completed Today" value={4} color={COLORS.status.success} />
+          <KpiCard label="Delayed Tasks" value={1} color={COLORS.priority.urgent} />
+        </section>
 
-          <section style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
-            <TaskList tasks={sampleTasks} />
-            <MiniCalendar />
-          </section>
-        </main>
+        <section style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
+          <TaskList tasks={sampleTasks} />
+          <MiniCalendar />
+        </section>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
