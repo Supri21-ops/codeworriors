@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useManufacturingStore } from '../../store/manufacturing.store';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
@@ -56,17 +56,16 @@ export const ManufacturingOrdersPage: React.FC = () => {
     ordersPagination,
     ordersFilters,
     setOrdersFilters,
-    fetchManufacturingOrders,
     deleteManufacturingOrder,
+    triggerRefresh,
   } = useManufacturingStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
 
-  useEffect(() => {
-    fetchManufacturingOrders();
-  }, [fetchManufacturingOrders]);
+  // Automatic fetch on mount disabled. Use explicit triggerRefresh when needed.
+  // Example: get the store and call triggerRefresh() from UI events.
 
   const handleSearch = () => {
     setOrdersFilters({
@@ -76,7 +75,7 @@ export const ManufacturingOrdersPage: React.FC = () => {
       priority: priorityFilter || undefined,
       page: 1,
     });
-    fetchManufacturingOrders({
+    triggerRefresh({
       search: searchQuery,
       status: statusFilter || undefined,
       priority: priorityFilter || undefined,
@@ -96,7 +95,7 @@ export const ManufacturingOrdersPage: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setOrdersFilters({ ...ordersFilters, page });
-    fetchManufacturingOrders({ ...ordersFilters, page });
+    triggerRefresh({ ...ordersFilters, page });
   };
 
   return (

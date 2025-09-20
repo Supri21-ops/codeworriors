@@ -4,12 +4,14 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "dev:localhost": "vite --host localhost",
+    "dev": "vite --host localhost",
+    "dev:clean": "npm run clean && vite --host localhost",
+    "dev:ip": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rmdir /s /q node_modules\\.vite 2>nul & rmdir /s /q dist 2>nul & echo Cache cleared"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Sidebar } from '../../components/Sidebar';
+// Sidebar provided by layout; remove local Sidebar import
 import { Topbar } from '../../components/Topbar';
 import WorkOrderList from '../../features/operator/WorkOrderList';
 import type { WorkOrder } from '../../features/operator/WorkOrderRow';
@@ -44,7 +44,6 @@ const OperatorDashboard: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: COLORS.background.lightGray }}>
-      <Sidebar />
       <div style={{ flex: 1 }}>
         <Topbar />
         <main style={{ padding: 20 }}>

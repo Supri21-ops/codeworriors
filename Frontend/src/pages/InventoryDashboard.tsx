@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sidebar } from '../components/Sidebar';
+// Sidebar provided by layout; remove local Sidebar import
 import { Topbar } from '../components/Topbar';
 import { KpiCard } from '../components/KpiCard';
 import { ChartBar } from '../components/ChartBar';
@@ -23,7 +23,6 @@ const InventoryDashboard: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: COLORS.background.lightGray }}>
-      <Sidebar />
       <div style={{ flex: 1 }}>
         <Topbar />
         <main style={{ padding: 20 }}>

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { db } from '../../config/database-docker';
+import { db } from '../../config/prisma';
 import { config } from '../../config/env';
 import { logger } from '../../config/logger';
 import { AppError } from '../../libs/errors';
@@ -29,6 +29,8 @@ export class AuthService {
       );
       
       const user = userResult.rows[0];
+
+  logger.info(`Found user for login check: ${user.email} (id=${user.id})`);
 
       // Generate tokens
       const tokens = this.generateTokens(user.id);
@@ -62,8 +64,23 @@ export class AuthService {
       
       const user = userResult.rows[0];
 
+      // Debug: log presence of user and hash format (no plaintext)
+      try {
+        logger.info(`Login: user found for ${user.email}. Password hash present: ${!!user.password}. hashPrefix=${String(user.password).slice(0,7)}`);
+      } catch (e) {
+        // ignore logging errors
+      }
+
       // Check password
       const isPasswordValid = await bcrypt.compare(data.password, user.password);
+
+      // Debug: log comparison result (do NOT log supplied password)
+      try {
+        logger.info(`Login: password comparison result for ${user.email}: ${isPasswordValid}`);
+      } catch (e) {
+        // ignore logging errors
+      }
+
       if (!isPasswordValid) {
         throw new AppError('Invalid credentials', 401);
       }

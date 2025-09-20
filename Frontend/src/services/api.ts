@@ -6,11 +6,27 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 // Helper function to resolve localhost issues
 const resolveApiUrl = (baseUrl: string): string => {
-  // If we're accessing the app via IP, replace localhost in API URL with the current host IP
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return baseUrl.replace('localhost', window.location.hostname);
+  try {
+    // If window is not available (SSR), return the base URL
+    if (typeof window === 'undefined') {
+      return baseUrl;
+    }
+    
+    const currentHost = window.location.hostname;
+    const currentProtocol = window.location.protocol;
+    
+    // If accessing via IP address, update API URL to use the same IP
+    if (currentHost !== 'localhost' && currentHost !== '127.0.0.1' && /^\d+\.\d+\.\d+\.\d+$/.test(currentHost)) {
+      // Extract port from the original API URL
+      const urlObj = new URL(baseUrl);
+      return `${currentProtocol}//${currentHost}:${urlObj.port || '3000'}${urlObj.pathname}`;
+    }
+    
+    return baseUrl;
+  } catch (error) {
+    console.warn('Error resolving API URL:', error);
+    return baseUrl;
   }
-  return baseUrl;
 };
 
 const RESOLVED_API_URL = resolveApiUrl(API_BASE_URL);
@@ -44,6 +60,14 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
+    // Handle network errors (backend not available)
+    if (!error.response) {
+      console.warn('Network error - backend may not be available');
+      const networkError = new Error('Network Error: Backend server is not available');
+      (networkError as any).code = 'NETWORK_ERROR';
+      return Promise.reject(networkError);
+    }
+
     const originalRequest = error.config;
 
     // Handle 401 errors (token expired)
@@ -65,10 +89,16 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshError) {
-        // Refresh failed, redirect to login
+        // Refresh failed: clear tokens and notify app to handle logout
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        try {
+          // Dispatch an event so React Router can handle navigation inside the app
+          window.dispatchEvent(new CustomEvent('auth:logout'));
+        } catch (e) {
+          // Fallback to a safe replace if events are not available
+          try { window.location.replace('/login'); } catch (_) { /* ignore */ }
+        }
         return Promise.reject(refreshError);
       }
     }

@@ -41,7 +41,17 @@ export const SignupPage: React.FC = () => {
     try {
       await signup(data);
       toast.success('Account created successfully!');
-      navigate('/dashboard');
+      // After signup we don't automatically keep the user authenticated in the app.
+      // Force a redirect to the login page so they explicitly sign in.
+      // Clear any residual auth state stored in localStorage by the signup flow.
+      try {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+      } catch (e) {
+        // ignore localStorage errors
+      }
+      navigate('/login');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Signup failed';
       toast.error(errorMessage);

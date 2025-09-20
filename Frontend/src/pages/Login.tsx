@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { COLORS } from '../theme';
 
 export const Login: React.FC = () => {
@@ -20,13 +21,15 @@ export const Login: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Redirect to dashboard on success
-      window.location.href = '/dashboard';
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -169,16 +172,9 @@ export const Login: React.FC = () => {
           color: COLORS.background.steel
         }}>
           Don't have an account?{' '}
-          <a
-            href="/signup"
-            style={{
-              color: COLORS.primary.blue,
-              textDecoration: 'none',
-              fontWeight: 600
-            }}
-          >
+          <Link to="/signup" style={{ color: COLORS.primary.blue, textDecoration: 'none', fontWeight: 600 }}>
             Sign up
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -37,9 +37,6 @@ const navigation = [
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) => {
   const location = useLocation();
 
-  console.log('Sidebar: isOpen prop:', isOpen);
-  console.log('Sidebar: current location:', location.pathname);
-
   return (
     <>
       {/* Desktop Sidebar */}
@@ -69,7 +66,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) =
                       <li key={item.name}>
                         <Link
                           to={item.href}
-                          onClick={() => console.log('Desktop nav: Navigating to:', item.href)}
                           className={clsx(
                             isActive
                               ? 'bg-blue-50 text-blue-700'
@@ -138,10 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) =
                       <li key={item.name}>
                         <Link
                           to={item.href}
-                          onClick={() => {
-                            console.log('Mobile nav: Navigating to:', item.href);
-                            onClose();
-                          }}
+                          onClick={onClose}
                           className={clsx(
                             isActive
                               ? 'bg-blue-50 text-blue-700'

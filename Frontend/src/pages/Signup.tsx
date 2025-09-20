@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { COLORS } from '../theme';
 
 export const Signup: React.FC = () => {
@@ -13,6 +14,7 @@ export const Signup: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const navigate = useNavigate();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -67,8 +69,8 @@ export const Signup: React.FC = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Redirect to login on success
-      window.location.href = '/login';
+  // Redirect to login on success using React Router
+  navigate('/login');
     } catch (error) {
       console.error('Signup error:', error);
     } finally {
@@ -375,16 +377,9 @@ export const Signup: React.FC = () => {
           color: COLORS.background.steel
         }}>
           Already have an account?{' '}
-          <a
-            href="/login"
-            style={{
-              color: COLORS.primary.blue,
-              textDecoration: 'none',
-              fontWeight: 600
-            }}
-          >
-            Sign in
-          </a>
+            <Link to="/login" style={{ color: COLORS.primary.blue, textDecoration: 'none', fontWeight: 600 }}>
+              Sign in
+            </Link>
         </div>
       </div>
     </div>

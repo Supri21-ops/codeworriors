@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
@@ -13,9 +13,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
-
-  console.log('DashboardLayout: sidebarOpen state:', sidebarOpen);
-  console.log('DashboardLayout: current route:', location.pathname);
+  const prevUserRef = useRef<typeof user | null>(null);
+  const didNavigateRef = useRef(false);
 
   const handleLogout = async () => {
     try {
@@ -27,18 +26,39 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   };
 
   const handleMenuClick = () => {
-    console.log('Menu clicked, toggling sidebar from:', sidebarOpen, 'to:', !sidebarOpen);
     setSidebarOpen(!sidebarOpen);
   };
 
   useEffect(() => {
-    if (!user) {
-      navigate('/login');
+    // Only redirect to login when the current route is not an auth route.
+    // Guard navigation so we only perform it when `user` transitions from a truthy
+    // value to falsy. This prevents navigation loops caused by repeated state updates.
+    const pathname = location.pathname || '';
+    const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname.startsWith('/auth') || pathname.startsWith('/forgot');
+
+    // If we're already on an auth route, do nothing.
+    if (isAuthRoute) {
+      prevUserRef.current = user;
+      didNavigateRef.current = false;
+      return;
     }
+
+    // If user existed and now is gone, navigate once to login.
+    if (prevUserRef.current && !user && !didNavigateRef.current) {
+      didNavigateRef.current = true;
+      navigate('/login', { replace: true });
+    }
+
+    // Update prevUser for next effect run.
+    prevUserRef.current = user;
+  // We intentionally keep `location.pathname` out of the dependency array to avoid
+  // re-running this effect on every route change; it should only watch `user`.
   }, [user, navigate]);
 
   if (!user) {
-    return <div>Redirecting...</div>;
+    // When not authenticated, don't render the dashboard UI. Return null so the
+    // router can show the login page without a visible 'Redirecting...' flash.
+    return null;
   }
 
   return (

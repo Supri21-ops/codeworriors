@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sidebar } from '../../components/Sidebar';
+// Sidebar provided by layout; remove local Sidebar import
 import { Topbar } from '../../components/Topbar';
 import { GlobalSearchBar } from '../../components/search/GlobalSearchBar';
 import { GroupedResults } from '../../features/search/GroupedResults';
@@ -27,7 +27,6 @@ const SearchResultsPage: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: COLORS.background.lightGray }}>
-      <Sidebar />
       <div style={{ flex: 1 }}>
   <Topbar right={<GlobalSearchBar onSelect={s => setQuery(s.title)} />} />
         <main style={{ padding: 20 }}>

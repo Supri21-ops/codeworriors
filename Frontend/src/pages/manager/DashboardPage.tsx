@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Sidebar } from '../../components/Sidebar';
+import { useNavigate } from 'react-router-dom';
+// Sidebar is provided by the app layout; remove local Sidebar import
 import { Topbar } from '../../components/Topbar';
 import KpiRow, { KpiData } from '../../features/manager/KpiRow';
 import OrdersByStatusChart, { StatusData } from '../../features/manager/OrdersByStatusChart';
@@ -37,9 +38,10 @@ const DashboardPage: React.FC = () => {
     // return () => sub.unsubscribe();
   }, [state, priority, product]);
 
+  const navigate = useNavigate();
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: COLORS.background.lightGray }}>
-      <Sidebar />
       <div style={{ flex: 1 }}>
         <Topbar />
         <main style={{ padding: 20 }}>
@@ -66,7 +68,7 @@ const DashboardPage: React.FC = () => {
               </select>
               <input value={product} onChange={e => setProduct(e.target.value)} placeholder="Search Product" style={{ padding: 8, borderRadius: 8, border: '1px solid #eee', flex: 1 }} />
             </div>
-            <ActiveOrdersTable data={orders} onView={id => window.location.href = `/manufacturing/orders/${id}`} onConfirm={id => alert(`Confirm order ${id}`)} />
+            <ActiveOrdersTable data={orders} onView={id => navigate(`/manufacturing/orders/${id}`)} onConfirm={id => alert(`Confirm order ${id}`)} />
           </section>
         </main>
       </div>

@@ -10,16 +10,32 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
+    include: [
+      'react', 
+      'react-dom', 
+      'react-router-dom',
+      '@tanstack/react-query',
+      'axios',
+      'zustand',
+      'react-hot-toast'
+    ],
+    force: false, // Allow Vite to cache dependencies properly
   },
   server: {
     port: 5173,
-    host: true, // This allows access from both localhost and IP
+    host: 'localhost', // Use localhost specifically to avoid WebSocket issues
     strictPort: false,
-    open: true, // Auto-open browser
+    open: true,
     cors: true,
     hmr: {
-      port: 5174,
+      port: 5173,
+      host: 'localhost',
+      clientPort: 5173,
+      overlay: true, // Show error overlay
+    },
+    watch: {
+      usePolling: false, // Disable polling for better performance
+      interval: 300,     // Polling interval if needed
     },
     proxy: {
       '/api': {
@@ -48,5 +64,8 @@ export default defineConfig({
   },
   define: {
     'process.env': {},
+  },
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
   },
 })

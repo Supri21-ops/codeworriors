@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { COLORS } from '../../theme';
 
 const OtpVerifyPage: React.FC = () => {
@@ -25,7 +26,7 @@ const OtpVerifyPage: React.FC = () => {
       if (res.ok && data.token) {
         setSuccess('OTP verified! Logging in...');
         localStorage.setItem('token', data.token);
-        setTimeout(() => window.location.href = '/dashboard', 1200);
+        setTimeout(() => navigate('/dashboard'), 1200);
       } else {
         setError(data.message || 'OTP verification failed.');
       }
@@ -33,6 +34,8 @@ const OtpVerifyPage: React.FC = () => {
       setError('Network error.');
     }
   };
+
+  const navigate = useNavigate();
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: COLORS.background.lightGray }}>

@@ -48,14 +48,15 @@ export const useAuthStore = create<AuthState>()(
 
       signup: async (userData: any) => {
         set({ isLoading: true, error: null });
-        
+
         try {
-          const response = await authService.signup(userData);
+          // Perform signup request, but do not automatically sign the user in.
+          // This avoids accidentally treating newly created accounts as active sessions.
+          await authService.signup(userData);
+          // Keep user null and isAuthenticated false — require explicit login.
           set({ 
-            user: response.user, 
-            isAuthenticated: true, 
             isLoading: false,
-            error: null 
+            error: null
           });
         } catch (error: any) {
           set({ 

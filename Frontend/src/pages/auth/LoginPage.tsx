@@ -19,6 +19,9 @@ export const LoginPage: React.FC = () => {
   const { login, isLoading, error } = useAuthStore();
   const navigate = useNavigate();
 
+  // Debug: Log component rendering
+  console.log('LoginPage rendering, isLoading:', isLoading, 'error:', error);
+
   const {
     register,
     handleSubmit,
@@ -26,11 +29,13 @@ export const LoginPage: React.FC = () => {
   } = useForm<LoginFormData>();
 
   const onSubmit = async (data: LoginFormData) => {
+    console.log('Login attempt with:', data);
     try {
       await login(data.emailOrUsername, data.password);
       toast.success('Welcome back!');
       navigate('/dashboard');
     } catch (error: any) {
+      console.error('Login error:', error);
       toast.error(error.message || 'Login failed');
     }
   };
@@ -53,6 +58,13 @@ export const LoginPage: React.FC = () => {
             <CardTitle className="text-2xl text-center">Sign in to your account</CardTitle>
             <CardDescription className="text-center">
               Enter your credentials to access the manufacturing dashboard
+              {import.meta.env.DEV && (
+                <div className="mt-3 text-xs text-amber-600 bg-amber-50 p-2 rounded text-left">
+                  <strong>Development Mode:</strong> Backend may be unavailable. Mock authentication will be used if needed.
+                  <br />
+                  Use any email/username and password to login.
+                </div>
+              )}
             </CardDescription>
           </CardHeader>
           <CardContent>

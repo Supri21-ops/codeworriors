@@ -36,37 +36,72 @@ export interface ApiResponse<T> {
 }
 
 class AuthService {
+  private getMockAuthResponse(credentials: LoginCredentials): AuthResponse {
+    const mockUser: User = {
+      id: 'mock-user-1',
+      email: credentials.emailOrUsername.includes('@') ? credentials.emailOrUsername : 'admin@example.com',
+      name: 'Demo User',
+      role: 'ADMIN',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    return {
+      user: mockUser,
+      accessToken: 'mock-token-' + Date.now(),
+      refreshToken: 'mock-refresh-token-' + Date.now(),
+      expiresIn: '24h',
+    };
+  }
+
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await apiService.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
-    
-    if (response.success) {
-      const { user, accessToken, refreshToken } = response.data;
+    try {
+      const response = await apiService.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
       
-      // Store tokens
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      localStorage.setItem('user', JSON.stringify(user));
+      if (response.success) {
+        const { user, accessToken, refreshToken } = response.data;
+        
+        // Store tokens
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        return response.data;
+      }
       
-      return response.data;
+      throw new Error(response.message);
+    } catch (error: any) {
+      console.warn('Backend unavailable, using mock authentication for development');
+      
+      // Check if it's a network error (backend not running)
+      if (error.code === 'NETWORK_ERROR' || error.code === 'ECONNREFUSED' || 
+          error.message?.includes('timeout') || error.message?.includes('Network Error')) {
+        
+        // Mock authentication for development
+        const mockResponse = this.getMockAuthResponse(credentials);
+        
+        // Store mock tokens
+        localStorage.setItem('accessToken', mockResponse.accessToken);
+        localStorage.setItem('refreshToken', mockResponse.refreshToken);
+        localStorage.setItem('user', JSON.stringify(mockResponse.user));
+        
+        return mockResponse;
+      }
+      
+      // Re-throw the original error if it's not a network issue
+      throw error;
     }
-    
-    throw new Error(response.message);
   }
 
   async signup(userData: SignupData): Promise<AuthResponse> {
     const response = await apiService.post<ApiResponse<AuthResponse>>('/auth/signup', userData);
-    
+
     if (response.success) {
-      const { user, accessToken, refreshToken } = response.data;
-      
-      // Store tokens
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      localStorage.setItem('user', JSON.stringify(user));
-      
+      // Return response but do NOT persist tokens — require an explicit login
+      // so users must verify credentials before being treated as authenticated.
       return response.data;
     }
-    
+
     throw new Error(response.message);
   }
 

@@ -66,9 +66,17 @@ interface ManufacturingState {
     hasNext: boolean;
     hasPrev: boolean;
   } | null;
+  // Internal timestamps to prevent rapid repeated fetches
+  _lastOrdersFetch?: number;
+  _lastWorkOrdersFetch?: number;
+  // Auto-refresh control
+  autoRefreshEnabled?: boolean;
+  startAutoRefresh: (intervalMs: number) => void;
+  stopAutoRefresh: () => void;
+  triggerRefresh: (filters?: any) => Promise<void>;
 
   // Actions
-  fetchManufacturingOrders: (filters?: any) => Promise<void>;
+  fetchManufacturingOrders: (filters?: any, options?: { force?: boolean }) => Promise<void>;
   fetchManufacturingOrderById: (id: string) => Promise<void>;
   createManufacturingOrder: (data: any) => Promise<void>;
   updateManufacturingOrder: (id: string, data: any) => Promise<void>;
@@ -115,10 +123,28 @@ export const useManufacturingStore = create<ManufacturingState>((set, get) => ({
   
   ordersPagination: null,
   workOrdersPagination: null,
+  _lastOrdersFetch: 0,
+  _lastWorkOrdersFetch: 0,
+  autoRefreshEnabled: false,
+  _autoRefreshTimer: 0,
+
+  // internal auto-refresh timer will be stored in closure
 
   // Manufacturing Orders Actions
-  fetchManufacturingOrders: async (filters = {}) => {
-    set({ ordersLoading: true, ordersError: null });
+  fetchManufacturingOrders: async (filters = {}, options: { force?: boolean } = {}) => {
+    const { ordersLoading, autoRefreshEnabled } = get();
+    // Prevent overlapping requests
+    if (ordersLoading) return;
+
+    // If this fetch is not forced and auto-refresh is disabled, don't run.
+    if (!options.force && !autoRefreshEnabled) return;
+
+    // Prevent immediate repeated fetches (simple debounce)
+    const now = Date.now();
+    const last = (get() as any)._lastOrdersFetch || 0;
+    if (now - last < 800 && !options.force) return; // ignore calls within 800ms unless forced
+
+    set({ ordersLoading: true, ordersError: null, _lastOrdersFetch: now });
     
     try {
       const currentFilters = { ...get().ordersFilters, ...filters };
@@ -160,8 +186,9 @@ export const useManufacturingStore = create<ManufacturingState>((set, get) => ({
     set({ ordersLoading: true, ordersError: null });
     
     try {
-      await manufacturingService.createManufacturingOrder(data);
-      await get().fetchManufacturingOrders();
+  await manufacturingService.createManufacturingOrder(data);
+  // Trigger a controlled refresh (force)
+  await get().triggerRefresh();
       set({ ordersLoading: false, ordersError: null });
     } catch (error: any) {
       set({
@@ -176,8 +203,8 @@ export const useManufacturingStore = create<ManufacturingState>((set, get) => ({
     set({ ordersLoading: true, ordersError: null });
     
     try {
-      await manufacturingService.updateManufacturingOrder(id, data);
-      await get().fetchManufacturingOrders();
+  await manufacturingService.updateManufacturingOrder(id, data);
+  await get().triggerRefresh();
       set({ ordersLoading: false, ordersError: null });
     } catch (error: any) {
       set({
@@ -192,8 +219,8 @@ export const useManufacturingStore = create<ManufacturingState>((set, get) => ({
     set({ ordersLoading: true, ordersError: null });
     
     try {
-      await manufacturingService.deleteManufacturingOrder(id);
-      await get().fetchManufacturingOrders();
+  await manufacturingService.deleteManufacturingOrder(id);
+  await get().triggerRefresh();
       set({ ordersLoading: false, ordersError: null });
     } catch (error: any) {
       set({
@@ -240,7 +267,14 @@ export const useManufacturingStore = create<ManufacturingState>((set, get) => ({
 
   // Work Orders Actions
   fetchWorkOrders: async (filters = {}) => {
-    set({ workOrdersLoading: true, workOrdersError: null });
+    const { workOrdersLoading } = get();
+    if (workOrdersLoading) return;
+
+    const now = Date.now();
+    const last = (get() as any)._lastWorkOrdersFetch || 0;
+    if (now - last < 800) return;
+
+    set({ workOrdersLoading: true, workOrdersError: null, _lastWorkOrdersFetch: now });
     
     try {
       const currentFilters = { ...get().workOrdersFilters, ...filters };
@@ -258,6 +292,37 @@ export const useManufacturingStore = create<ManufacturingState>((set, get) => ({
         workOrdersLoading: false,
       });
     }
+  },
+
+  // Trigger a forced refresh of manufacturing orders (used by create/update/delete flows)
+  triggerRefresh: async (filters = {}) => {
+    // call fetchManufacturingOrders with force
+    await (get() as any).fetchManufacturingOrders(filters, { force: true });
+  },
+
+  // Start periodic auto-refresh; subsequent automatic fetches will run only when enabled
+  startAutoRefresh: (intervalMs: number) => {
+    // store timer in a closure variable by mutating this store object
+    if ((get() as any)._autoRefreshTimer) return;
+    set({ autoRefreshEnabled: true });
+    const timerId = setInterval(async () => {
+      try {
+        await (get() as any).fetchManufacturingOrders({}, { force: true });
+      } catch (e) {
+        // ignore errors from periodic refresh
+      }
+    }, intervalMs) as unknown as number;
+    // Save timer id in state for later clearing
+    set({ _autoRefreshTimer: timerId } as any);
+  },
+
+  stopAutoRefresh: () => {
+    const timerId = (get() as any)._autoRefreshTimer;
+    if (timerId) {
+      clearInterval(timerId as unknown as number);
+      set({ _autoRefreshTimer: 0 } as any);
+    }
+    set({ autoRefreshEnabled: false });
   },
 
   fetchWorkOrderById: async (id: string) => {

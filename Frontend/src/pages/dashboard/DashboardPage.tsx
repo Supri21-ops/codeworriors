@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { useManufacturingStore } from '../../store/manufacturing.store';
+import React from 'react';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { StatsCards } from '../../components/dashboard/StatsCards';
 import { RecentOrders } from '../../components/dashboard/RecentOrders';
@@ -9,29 +8,9 @@ import { QuickActions } from '../../components/dashboard/QuickActions';
 import { Notifications } from '../../components/dashboard/Notifications';
 
 export const DashboardPage: React.FC = () => {
-  const { fetchManufacturingOrders, fetchOrdersStats, fetchWorkOrders } = useManufacturingStore();
-  const dataFetched = useRef(false);
-
-  useEffect(() => {
-    if (dataFetched.current) return;
-    
-    const fetchData = async () => {
-      try {
-        dataFetched.current = true;
-        // Fetch initial data with error handling
-        await Promise.allSettled([
-          fetchManufacturingOrders({ limit: 5 }),
-          fetchOrdersStats(),
-          fetchWorkOrders({ limit: 10 })
-        ]);
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-        dataFetched.current = false; // Reset on error to allow retry
-      }
-    };
-
-    fetchData();
-  }, [fetchManufacturingOrders, fetchOrdersStats, fetchWorkOrders]);
+  // NOTE: automatic data fetches have been disabled. Call explicit refresh
+  // using the manufacturing store's `triggerRefresh` or start auto-refresh
+  // via `startAutoRefresh(intervalMs)` where appropriate.
 
   return (
     <DashboardLayout>

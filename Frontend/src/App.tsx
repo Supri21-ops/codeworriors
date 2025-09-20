@@ -1,11 +1,12 @@
 import React from 'react';
 import './index.css';
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate, useNavigate, Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./stores/authStore";
 import { RoleRoute } from './components/navigation/ProtectedRoute';
+import { authService } from './services/auth.service';
 
 // Pages
 import { LoginPage } from './pages/auth/LoginPage';
@@ -13,6 +14,7 @@ import { SignupPage } from './pages/auth/SignupPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import OtpVerifyPage from './pages/auth/OtpVerifyPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
+import { DashboardLayout } from './components/layout/DashboardLayout';
 import OperatorDashboard from './pages/OperatorDashboard';
 import { ManufacturingOrdersPage } from './pages/manufacturing/ManufacturingOrdersPage';
 import { WorkOrdersPage } from './pages/work-orders/WorkOrdersPage';
@@ -38,7 +40,10 @@ const queryClient = new QueryClient({
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const { isLoading } = useAuthStore();
+  const token = authService.getToken();
+  const currentUser = authService.getCurrentUser();
+  const isAuthenticated = !!token && !!currentUser;
 
   if (isLoading) {
     return (
@@ -57,7 +62,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 // Public Route Component (redirect if authenticated)
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const { isLoading } = useAuthStore();
+  const token = authService.getToken();
+  const currentUser = authService.getCurrentUser();
+  const isAuthenticated = !!token && !!currentUser;
 
   if (isLoading) {
     return (
@@ -75,203 +83,103 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 function App() {
+  // Small component to listen for auth events and perform navigation inside React Router
+  const AuthEventListener: React.FC = () => {
+    const navigate = useNavigate();
+    React.useEffect(() => {
+      let last = 0;
+      const handler = () => {
+        try {
+          const now = Date.now();
+          // throttle repeated events within 1s
+          if (now - last < 1000) return;
+          last = now;
+
+          const current = window.location.pathname || '';
+          if (current === '/login' || current.startsWith('/auth') || current === '/') return;
+
+          navigate('/login', { replace: true });
+        } catch (e) {
+          // ignore
+        }
+      };
+      window.addEventListener('auth:logout', handler as EventListener);
+      return () => window.removeEventListener('auth:logout', handler as EventListener);
+    }, [navigate]);
+    return null;
+  };
+
+  // Build route objects for createBrowserRouter
+  // Root wrapper so we can place AuthEventListener, Toaster, and render child routes via Outlet
+  const RootApp: React.FC = () => (
+    <div className="App">
+      <AuthEventListener />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: { background: '#363636', color: '#fff' },
+          success: { duration: 3000, iconTheme: { primary: '#10B981', secondary: '#fff' } },
+          error: { duration: 5000, iconTheme: { primary: '#EF4444', secondary: '#fff' } },
+        }}
+      />
+      <Outlet />
+    </div>
+  );
+
+  // Index redirect that sends authenticated users to /dashboard, others to /login
+  const IndexRedirect: React.FC = () => {
+    const { isLoading } = useAuthStore();
+    if (isLoading) return <div />;
+    const token = authService.getToken();
+    const currentUser = authService.getCurrentUser();
+    const isAuthenticated = !!token && !!currentUser;
+    return isAuthenticated ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />;
+  };
+
+  const routes = [
+    {
+      path: '/',
+      element: <RootApp />,
+      children: [
+  { index: true, element: <IndexRedirect /> },
+        { path: '/login', element: <PublicRoute><LoginPage /></PublicRoute> },
+        { path: '/signup', element: <PublicRoute><SignupPage /></PublicRoute> },
+        { path: '/dashboard', element: <ProtectedRoute><DashboardPage /></ProtectedRoute> },
+        { path: '/manufacturing-orders', element: <ProtectedRoute><ManufacturingOrdersPage /></ProtectedRoute> },
+        { path: '/work-orders', element: <ProtectedRoute><WorkOrdersPage /></ProtectedRoute> },
+        { path: '/inventory', element: <ProtectedRoute><InventoryPage /></ProtectedRoute> },
+  { path: '/work-centers', element: <ProtectedRoute><DashboardLayout><WorkCenterDashboard /></DashboardLayout></ProtectedRoute> },
+        { path: '/reports', element: <RoleRoute allowedRoles={["manager","admin"]}><ReportsPage /></RoleRoute> },
+        { path: '/products', element: <ProtectedRoute><ProductsPage /></ProtectedRoute> },
+        { path: '/bom', element: <ProtectedRoute><BOMPage /></ProtectedRoute> },
+        { path: '/users', element: <RoleRoute allowedRoles={["admin"]}><UsersPage /></RoleRoute> },
+        { path: '/settings', element: <RoleRoute allowedRoles={["admin","manager"]}><SettingsPage /></RoleRoute> },
+        { path: '/operator', element: <ProtectedRoute><OperatorDashboard /></ProtectedRoute> },
+        { path: '/stock', element: <ProtectedRoute><StockDashboard /></ProtectedRoute> },
+        { path: '/search', element: <ProtectedRoute><SearchResultsPage /></ProtectedRoute> },
+        { path: '/auth/login', element: <PublicRoute><LoginPage /></PublicRoute> },
+        { path: '/auth/signup', element: <PublicRoute><SignupPage /></PublicRoute> },
+        { path: '/auth/forgot', element: <PublicRoute><ForgotPasswordPage /></PublicRoute> },
+        { path: '/auth/otp', element: <PublicRoute><OtpVerifyPage /></PublicRoute> },
+        { path: '*', element: <Navigate to="/dashboard" replace /> }
+      ]
+    }
+  ];
+
+  const futureFlags: any = {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true,
+  };
+
+  const router = createBrowserRouter(routes, {
+    // opt-in to v7 future behaviors to silence warnings and test new behavior
+    future: futureFlags,
+  });
+
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <div className="App">
-          <Routes>
-            {/* Public Routes */}
-            <Route
-              path="/login"
-              element={
-                <PublicRoute>
-                  <LoginPage />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <PublicRoute>
-                  <SignupPage />
-                </PublicRoute>
-              }
-            />
-
-            {/* Protected Routes */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/manufacturing-orders"
-              element={
-                <ProtectedRoute>
-                  <ManufacturingOrdersPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/work-orders"
-              element={
-                <ProtectedRoute>
-                  <WorkOrdersPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/inventory"
-              element={
-                <ProtectedRoute>
-                  <InventoryPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/work-centers"
-              element={
-                <ProtectedRoute>
-                  <WorkCenterDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/reports"
-              element={
-                <RoleRoute allowedRoles={["manager","admin"]}>
-                  <ReportsPage />
-                </RoleRoute>
-              }
-            />
-            <Route
-              path="/products"
-              element={
-                <ProtectedRoute>
-                  <ProductsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/bom"
-              element={
-                <ProtectedRoute>
-                  <BOMPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/users"
-              element={
-                <RoleRoute allowedRoles={["admin"]}>
-                  <UsersPage />
-                </RoleRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <RoleRoute allowedRoles={["admin","manager"]}>
-                  <SettingsPage />
-                </RoleRoute>
-              }
-            />
-            <Route
-              path="/operator"
-              element={
-                <ProtectedRoute>
-                  <OperatorDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/stock"
-              element={
-                <ProtectedRoute>
-                  <StockDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/search"
-              element={
-                <ProtectedRoute>
-                  <SearchResultsPage />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* Auth Routes */}
-            <Route
-              path="/auth/login"
-              element={
-                <PublicRoute>
-                  <LoginPage />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/auth/signup"
-              element={
-                <PublicRoute>
-                  <SignupPage />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/auth/forgot"
-              element={
-                <PublicRoute>
-                  <ForgotPasswordPage />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/auth/otp"
-              element={
-                <PublicRoute>
-                  <OtpVerifyPage />
-                </PublicRoute>
-              }
-            />
-
-            {/* Default redirect */}
-            <Route path="/" element={<Navigate to="/dashboard" replace={true} />} />
-            
-            {/* Catch all route */}
-            <Route path="*" element={<Navigate to="/dashboard" replace={true} />} />
-          </Routes>
-
-          {/* Toast Notifications */}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#363636',
-                color: '#fff',
-              },
-              success: {
-                duration: 3000,
-                iconTheme: {
-                  primary: '#10B981',
-                  secondary: '#fff',
-                },
-              },
-              error: {
-                duration: 5000,
-                iconTheme: {
-                  primary: '#EF4444',
-                  secondary: '#fff',
-                },
-              },
-            }}
-          />
-        </div>
-      </Router>
+      <RouterProvider router={router} fallbackElement={<div>Loading...</div>} />
     </QueryClientProvider>
   );
 }
