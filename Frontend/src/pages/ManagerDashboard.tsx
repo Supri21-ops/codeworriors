@@ -13,7 +13,7 @@ const sampleOrders: Order[] = [
   { id: 'MO-0003', product: 'Chair', quantity: 25, priority: 'medium', deadline: '2025-10-05', status: 'Planned' },
 ];
 
-export const ManagerDashboard: React.FC = () => {
+const ManagerDashboard: React.FC = () => {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: COLORS.background.lightGray }}>
       <Sidebar />
@@ -41,3 +41,5 @@ export const ManagerDashboard: React.FC = () => {
     </div>
   );
 };
+
+export default ManagerDashboard;

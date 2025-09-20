@@ -2,7 +2,11 @@ import React from 'react';
 import { Button } from './ui/Button';
 import { COLORS } from '../theme';
 
-export const Topbar: React.FC = () => (
+interface TopbarProps {
+  right?: React.ReactNode;
+}
+
+export const Topbar: React.FC<TopbarProps> = ({ right }) => (
   <header style={{
     height: 64,
     background: COLORS.primary.blue,
@@ -13,7 +17,8 @@ export const Topbar: React.FC = () => (
     padding: '0 1.5rem'
   }}>
     <div style={{ fontWeight: 700 }}>Manufacturing Overview</div>
-    <div style={{ display: 'flex', gap: 12 }}>
+    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+      {right}
       <Button variant="ghost">Profile</Button>
       <Button variant="primary">New Order</Button>
     </div>

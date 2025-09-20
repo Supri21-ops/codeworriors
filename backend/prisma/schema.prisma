@@ -1,1 +1,40 @@
-// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  password   String
+  name       String?
+  role       String   @default("operator") // admin, manager, operator, inventory
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  sku       String?  @unique
+  category  String?
+  unitCost  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ManufacturingOrder {
+  id            String   @id @default(uuid())
+  reference     String   @unique
+  finishedProd  String
+  quantity      Int
+  priority      Int      @default(50) // 0 = highest urgency
+  state         String   @default("draft") // draft, confirmed, in_progress, to_close, done, cancelled
+  scheduledAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

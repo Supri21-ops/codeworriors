@@ -1,9 +1,18 @@
 import React from 'react';
-import { ManagerDashboard } from './pages/ManagerDashboard';
-import './App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { appRoutes } from './routes';
 
 function App() {
-  return <ManagerDashboard />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        {appRoutes.map(r => (
+          <Route key={r.key} path={r.path} element={r.element} />
+        ))}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

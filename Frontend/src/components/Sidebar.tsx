@@ -1,15 +1,16 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { COLORS } from '../theme';
 
-export const Sidebar: React.FC = () => {
-  const menu = [
-    'Manufacturing Orders',
-    'Work Orders',
-    'Work Centers',
-    'Stock Ledger',
-    'Bills of Materials',
-  ];
+const links: { label: string; to: string }[] = [
+  { label: 'Manager Dashboard', to: '/' },
+  { label: 'Operator Dashboard', to: '/operator' },
+  { label: 'Inventory Dashboard', to: '/inventory' },
+  { label: 'Work Center Dashboard', to: '/work-centers' },
+  { label: 'Reports Dashboard', to: '/reports' },
+];
 
+export const Sidebar: React.FC = () => {
   return (
     <aside style={{
       width: 240,
@@ -20,9 +21,24 @@ export const Sidebar: React.FC = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 24 }}>CodeWarrior</div>
-      <nav>
-        {menu.map((m) => (
-          <div key={m} style={{ padding: '0.6rem 0', cursor: 'pointer', color: '#fff' }}>{m}</div>
+      <nav style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {links.map((l) => (
+          <NavLink
+            key={l.to}
+            to={l.to}
+            style={({ isActive }) => ({
+              padding: '0.6rem 0.4rem',
+              color: isActive ? COLORS.primary.blue : '#fff',
+              textDecoration: 'none',
+              fontWeight: isActive ? 700 : 500,
+              borderRadius: 6,
+              background: isActive ? 'rgba(26,115,232,0.15)' : 'transparent',
+              transition: 'background 0.2s, color 0.2s',
+              cursor: 'pointer',
+            })}
+          >
+            {l.label}
+          </NavLink>
         ))}
       </nav>
     </aside>
