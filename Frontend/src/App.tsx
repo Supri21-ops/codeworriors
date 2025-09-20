@@ -1,87 +1,168 @@
-<<<<<<< HEAD
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { appRoutes } from './routes';
-=======
-import React, { useState } from 'react';
-import { ManagerDashboard } from './pages/ManagerDashboard';
-import { Login } from './pages/Login';
-import { Signup } from './pages/Signup';
-import { WorkOrders } from './pages/WorkOrders';
-import { Inventory } from './pages/Inventory';
-import './App.css';
->>>>>>> 3f96c8f9e2887f062742e21efdbbf5fcf52c1b7f
+import './index.css';
 
-type Page = 'login' | 'signup' | 'dashboard' | 'workorders' | 'inventory';
+// TypeScript JSX fix
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: any;
+    }
+  }
+}
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
+import { useAuthStore } from "./store/auth.store";
+
+// Pages
+import { LoginPage } from './pages/auth/LoginPage';
+import { SignupPage } from './pages/auth/SignupPage';
+import { DashboardPage } from './pages/dashboard/DashboardPage';
+import { ManufacturingOrdersPage } from './pages/manufacturing/ManufacturingOrdersPage';
+import { WorkOrdersPage } from './pages/work-orders/WorkOrdersPage';
+import { InventoryPage } from './pages/inventory/InventoryPage';
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+// Protected Route Component
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuthStore();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+// Public Route Component (redirect if authenticated)
+const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuthStore();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <>{children}</>;
+};
 
 function App() {
-<<<<<<< HEAD
   return (
-    <BrowserRouter>
-      <Routes>
-        {appRoutes.map(r => (
-          <Route key={r.key} path={r.path} element={r.element} />
-        ))}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-=======
-  const [currentPage, setCurrentPage] = useState<Page>('dashboard');
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // For demo purposes
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <div className="App">
+          <Routes>
+            {/* Public Routes */}
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <LoginPage />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <PublicRoute>
+                  <SignupPage />
+                </PublicRoute>
+              }
+            />
 
-  // Simple routing logic
-  const renderPage = () => {
-    if (!isAuthenticated) {
-      switch (currentPage) {
-        case 'login':
-          return <Login />;
-        case 'signup':
-          return <Signup />;
-        default:
-          return <Login />;
-      }
-    }
+            {/* Protected Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manufacturing-orders"
+              element={
+                <ProtectedRoute>
+                  <ManufacturingOrdersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/work-orders"
+              element={
+                <ProtectedRoute>
+                  <WorkOrdersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <ProtectedRoute>
+                  <InventoryPage />
+                </ProtectedRoute>
+              }
+            />
 
-    switch (currentPage) {
-      case 'dashboard':
-        return <ManagerDashboard />;
-      case 'workorders':
-        return <WorkOrders />;
-      case 'inventory':
-        return <Inventory />;
-      default:
-        return <ManagerDashboard />;
-    }
-  };
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/dashboard" replace={true} />} />
+            
+            {/* Catch all route */}
+            <Route path="*" element={<Navigate to="/dashboard" replace={true} />} />
+          </Routes>
 
-  // Handle navigation from sidebar
-  const handleNavigation = (page: Page) => {
-    setCurrentPage(page);
-  };
-
-  // Handle authentication
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-    setCurrentPage('dashboard');
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setCurrentPage('login');
-  };
-
-  // Add navigation handlers to window for demo purposes
-  React.useEffect(() => {
-    (window as any).navigateTo = (page: Page) => setCurrentPage(page);
-    (window as any).handleLogin = handleLogin;
-    (window as any).handleLogout = handleLogout;
-  }, []);
-
-  return (
-    <div className="App">
-      {renderPage()}
-    </div>
->>>>>>> 3f96c8f9e2887f062742e21efdbbf5fcf52c1b7f
+          {/* Toast Notifications */}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+              },
+              success: {
+                duration: 3000,
+                iconTheme: {
+                  primary: '#10B981',
+                  secondary: '#fff',
+                },
+              },
+              error: {
+                duration: 5000,
+                iconTheme: {
+                  primary: '#EF4444',
+                  secondary: '#fff',
+                },
+              },
+            }}
+          />
+        </div>
+      </Router>
+    </QueryClientProvider>
   );
 }
 
