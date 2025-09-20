@@ -5,7 +5,13 @@ import { authMiddleware } from '../../middleware/auth.middleware';
 const router = Router();
 const stockController = new StockController();
 
-// All stock routes require authentication
+// Dashboard routes - no auth required for development
+router.get('/dashboard/summary', stockController.getDashboardSummary);
+router.get('/dashboard/top-consumed', stockController.getTopConsumedItems);
+router.get('/dashboard/distribution', stockController.getStockDistribution);
+router.get('/alerts/low-stock', stockController.getLowStockAlerts);
+
+// All other stock routes require authentication
 router.use(authMiddleware);
 
 // Stock routes

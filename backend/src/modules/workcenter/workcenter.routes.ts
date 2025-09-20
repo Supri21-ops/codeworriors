@@ -5,8 +5,8 @@ import { authMiddleware } from '../../middleware/auth.middleware';
 const router = Router();
 const workCenterController = new WorkCenterController();
 
-// All work center routes require authentication
-router.use(authMiddleware);
+// Work center routes - temporarily without auth for development
+// router.use(authMiddleware);
 
 // Work center routes
 router.get('/', workCenterController.getWorkCenters);

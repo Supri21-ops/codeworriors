@@ -11,5 +11,9 @@ export declare class StockController {
     createStockMovement: (req: Request, res: Response) => Promise<void>;
     getStockSummary: (req: Request, res: Response) => Promise<void>;
     getLowStockItems: (req: Request, res: Response) => Promise<void>;
+    getDashboardSummary: (req: Request, res: Response) => Promise<void>;
+    getTopConsumedItems: (req: Request, res: Response) => Promise<void>;
+    getStockDistribution: (req: Request, res: Response) => Promise<void>;
+    getLowStockAlerts: (req: Request, res: Response) => Promise<void>;
 }
 //# sourceMappingURL=stock.controller.d.ts.map

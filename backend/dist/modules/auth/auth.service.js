@@ -6,20 +6,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const database_docker_1 = require("../../config/database-docker");
+const prisma_1 = require("../../config/prisma");
 const env_1 = require("../../config/env");
 const logger_1 = require("../../config/logger");
 const errors_1 = require("../../libs/errors");
 class AuthService {
     async signup(data) {
         try {
-            const existingUserResult = await database_docker_1.db.query('SELECT id FROM users WHERE email = $1', [data.email]);
+            const existingUserResult = await prisma_1.db.query('SELECT id FROM users WHERE email = $1', [data.email]);
             if (existingUserResult.rows.length > 0) {
                 throw new errors_1.AppError('User with this email already exists', 400);
             }
             const hashedPassword = await bcryptjs_1.default.hash(data.password, 12);
-            const userResult = await database_docker_1.db.query('INSERT INTO users (email, password, name, role, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id, email, name, role, created_at, updated_at', [data.email, hashedPassword, `${data.firstName} ${data.lastName}`, data.role || 'USER']);
+            const userResult = await prisma_1.db.query('INSERT INTO users (email, password, name, role, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id, email, name, role, created_at, updated_at', [data.email, hashedPassword, `${data.firstName} ${data.lastName}`, data.role || 'USER']);
             const user = userResult.rows[0];
+            logger_1.logger.info(`Found user for login check: ${user.email} (id=${user.id})`);
             const tokens = this.generateTokens(user.id);
             logger_1.logger.info(`New user registered: ${user.email}`);
             return {
@@ -37,17 +38,27 @@ class AuthService {
     }
     async login(data) {
         try {
-            const userResult = await database_docker_1.db.query('SELECT id, email, name, role, password, created_at, updated_at FROM users WHERE email = $1', [data.emailOrUsername]);
+            const userResult = await prisma_1.db.query('SELECT id, email, name, role, password, created_at, updated_at FROM users WHERE email = $1', [data.emailOrUsername]);
             if (userResult.rows.length === 0) {
                 throw new errors_1.AppError('Invalid credentials', 401);
             }
             const user = userResult.rows[0];
+            try {
+                logger_1.logger.info(`Login: user found for ${user.email}. Password hash present: ${!!user.password}. hashPrefix=${String(user.password).slice(0, 7)}`);
+            }
+            catch (e) {
+            }
             const isPasswordValid = await bcryptjs_1.default.compare(data.password, user.password);
+            try {
+                logger_1.logger.info(`Login: password comparison result for ${user.email}: ${isPasswordValid}`);
+            }
+            catch (e) {
+            }
             if (!isPasswordValid) {
                 throw new errors_1.AppError('Invalid credentials', 401);
             }
             const tokens = this.generateTokens(user.id);
-            await database_docker_1.db.query('UPDATE users SET updated_at = NOW() WHERE id = $1', [user.id]);
+            await prisma_1.db.query('UPDATE users SET updated_at = NOW() WHERE id = $1', [user.id]);
             logger_1.logger.info(`User logged in: ${user.email}`);
             const userResponse = {
                 id: user.id,
@@ -73,7 +84,7 @@ class AuthService {
     async refreshToken(refreshToken) {
         try {
             const decoded = jsonwebtoken_1.default.verify(refreshToken, env_1.config.JWT_SECRET);
-            const userResult = await database_docker_1.db.query('SELECT id, email, name, role, created_at, updated_at FROM users WHERE id = $1', [decoded.userId]);
+            const userResult = await prisma_1.db.query('SELECT id, email, name, role, created_at, updated_at FROM users WHERE id = $1', [decoded.userId]);
             if (userResult.rows.length === 0) {
                 throw new errors_1.AppError('User not found or inactive', 401);
             }
@@ -119,7 +130,7 @@ class AuthService {
     async verifyToken(token) {
         try {
             const decoded = jsonwebtoken_1.default.verify(token, env_1.config.JWT_SECRET);
-            const userResult = await database_docker_1.db.query('SELECT id, email, name, role, created_at, updated_at FROM users WHERE id = $1', [decoded.userId]);
+            const userResult = await prisma_1.db.query('SELECT id, email, name, role, created_at, updated_at FROM users WHERE id = $1', [decoded.userId]);
             if (userResult.rows.length === 0) {
                 throw new errors_1.AppError('User not found or inactive', 401);
             }

@@ -41,6 +41,7 @@ class AuthController {
                 if (!loginData.emailOrUsername || !loginData.password) {
                     throw new errors_1.AppError('Email/username and password are required', 400);
                 }
+                logger_1.logger.info(`Login attempt for: ${loginData.emailOrUsername}`);
                 const result = await this.authService.login(loginData);
                 res.json({
                     success: true,
