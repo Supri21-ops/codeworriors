@@ -1,31 +1,12 @@
 import React, { useState } from 'react';
 import { COLORS } from '../theme';
 
-<<<<<<< HEAD
 interface TopbarProps {
+  title?: string;
   right?: React.ReactNode;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ right }) => (
-  <header style={{
-    height: 64,
-    background: COLORS.primary.blue,
-    color: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0 1.5rem'
-  }}>
-    <div style={{ fontWeight: 700 }}>Manufacturing Overview</div>
-    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-      {right}
-      <Button variant="ghost">Profile</Button>
-      <Button variant="primary">New Order</Button>
-    </div>
-  </header>
-);
-=======
-export const Topbar: React.FC = () => {
+export const Topbar: React.FC<TopbarProps> = ({ title = "Manufacturing Dashboard", right }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   return (
@@ -45,17 +26,17 @@ export const Topbar: React.FC = () => {
           color: COLORS.primary.navy,
           margin: 0
         }}>
-          Manufacturing Dashboard
+          {title}
         </h1>
         <div style={{
           padding: '4px 12px',
-          background: COLORS.status.success,
-          color: 'white',
+          background: COLORS.status.success + '20',
+          color: COLORS.status.success,
           borderRadius: 12,
           fontSize: 12,
-          fontWeight: 600
+          fontWeight: 500
         }}>
-          LIVE
+          System Online
         </div>
       </div>
 
@@ -67,22 +48,22 @@ export const Topbar: React.FC = () => {
             placeholder="Search..."
             style={{
               padding: '8px 16px 8px 40px',
-              border: '1px solid #E5E7EB',
-              borderRadius: 20,
-              fontSize: 14,
+              border: '1px solid #D1D5DB',
+              borderRadius: 8,
               width: 200,
-              outline: 'none'
+              fontSize: 14
             }}
           />
-          <div style={{
+          <span style={{
             position: 'absolute',
             left: 12,
             top: '50%',
             transform: 'translateY(-50%)',
-            color: COLORS.background.steel
+            color: '#6B7280',
+            fontSize: 16
           }}>
             🔍
-          </div>
+          </span>
         </div>
 
         {/* Notifications */}
@@ -90,13 +71,13 @@ export const Topbar: React.FC = () => {
           background: 'none',
           border: 'none',
           padding: 8,
+          borderRadius: 6,
           cursor: 'pointer',
+          color: '#6B7280',
           position: 'relative'
         }}>
-          <div style={{ fontSize: 20, color: COLORS.background.steel }}>
-            🔔
-          </div>
-          <div style={{
+          🔔
+          <span style={{
             position: 'absolute',
             top: 4,
             right: 4,
@@ -104,7 +85,7 @@ export const Topbar: React.FC = () => {
             height: 8,
             background: COLORS.priority.urgent,
             borderRadius: '50%'
-          }} />
+          }}></span>
         </button>
 
         {/* Profile */}
@@ -118,14 +99,15 @@ export const Topbar: React.FC = () => {
               background: 'none',
               border: 'none',
               padding: 8,
+              borderRadius: 8,
               cursor: 'pointer',
-              borderRadius: 8
+              color: COLORS.primary.navy
             }}
           >
             <div style={{
               width: 32,
               height: 32,
-              background: COLORS.primary.blue,
+              background: COLORS.secondary.teal,
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -136,17 +118,8 @@ export const Topbar: React.FC = () => {
             }}>
               JD
             </div>
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: COLORS.primary.navy }}>
-                John Doe
-              </div>
-              <div style={{ fontSize: 12, color: COLORS.background.steel }}>
-                Manager
-              </div>
-            </div>
-            <div style={{ fontSize: 12, color: COLORS.background.steel }}>
-              ▼
-            </div>
+            <span style={{ fontSize: 14, fontWeight: 500 }}>John Doe</span>
+            <span style={{ fontSize: 12, color: '#6B7280' }}>▼</span>
           </button>
 
           {isProfileOpen && (
@@ -154,51 +127,35 @@ export const Topbar: React.FC = () => {
               position: 'absolute',
               top: '100%',
               right: 0,
-              background: COLORS.background.white,
+              marginTop: 8,
+              background: 'white',
               border: '1px solid #E5E7EB',
               borderRadius: 8,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
               minWidth: 200,
               zIndex: 1000
             }}>
-              <div style={{ padding: '12px 16px', borderBottom: '1px solid #F3F4F6' }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: COLORS.primary.navy }}>
-                  John Doe
-                </div>
-                <div style={{ fontSize: 12, color: COLORS.background.steel }}>
-                  john.doe@company.com
-                </div>
+              <div style={{ padding: 16, borderBottom: '1px solid #E5E7EB' }}>
+                <div style={{ fontWeight: 600, fontSize: 14 }}>John Doe</div>
+                <div style={{ fontSize: 12, color: '#6B7280' }}>Manager</div>
+                <div style={{ fontSize: 12, color: '#6B7280' }}>john.doe@company.com</div>
               </div>
               <div style={{ padding: 8 }}>
                 <button style={{
                   width: '100%',
-                  padding: '8px 12px',
+                  padding: '8px 16px',
                   background: 'none',
                   border: 'none',
                   textAlign: 'left',
                   cursor: 'pointer',
                   borderRadius: 4,
-                  fontSize: 14,
-                  color: COLORS.primary.navy
+                  fontSize: 14
                 }}>
                   Profile Settings
                 </button>
                 <button style={{
                   width: '100%',
-                  padding: '8px 12px',
-                  background: 'none',
-                  border: 'none',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  borderRadius: 4,
-                  fontSize: 14,
-                  color: COLORS.primary.navy
-                }}>
-                  Preferences
-                </button>
-                <button style={{
-                  width: '100%',
-                  padding: '8px 12px',
+                  padding: '8px 16px',
                   background: 'none',
                   border: 'none',
                   textAlign: 'left',
@@ -213,8 +170,9 @@ export const Topbar: React.FC = () => {
             </div>
           )}
         </div>
+
+        {right}
       </div>
     </header>
   );
 };
->>>>>>> 3f96c8f9e2887f062742e21efdbbf5fcf52c1b7f

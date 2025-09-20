@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManufacturingOrderService = void 0;
+const prisma_1 = require("../../config/prisma");
 const logger_1 = require("../../config/logger");
 const errors_1 = require("../../libs/errors");
 const kafka_1 = require("../../config/kafka");
@@ -10,34 +11,15 @@ class ManufacturingOrderService {
     async createManufacturingOrder(data, userId) {
         try {
             const orderNumber = await this.generateOrderNumber();
-            const product = await prisma.product.findUnique({
-                where: { id: data.productId }
-            });
+            const productRes = await prisma_1.pool.query('SELECT * FROM products WHERE id = $1', [data.productId]);
+            const product = productRes.rows[0];
             if (!product) {
                 throw new errors_1.AppError('Product not found', 404);
             }
-            const manufacturingOrder = await prisma.manufacturingOrder.create({
-                data: {
-                    orderNumber,
-                    productId: data.productId,
-                    quantity: data.quantity,
-                    priority: data.priority || 'NORMAL',
-                    dueDate: new Date(data.dueDate),
-                    notes: data.notes,
-                    createdById: userId
-                },
-                include: {
-                    product: true,
-                    createdBy: {
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true,
-                            email: true
-                        }
-                    }
-                }
-            });
+            const insertRes = await prisma_1.pool.query(`INSERT INTO manufacturing_orders (orderNumber, productId, quantity, priority, dueDate, notes, createdById)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         RETURNING *`, [orderNumber, data.productId, data.quantity, data.priority || 'NORMAL', data.dueDate, data.notes, userId]);
+            const manufacturingOrder = insertRes.rows[0];
             await kafka_1.kafkaService.publishManufacturingOrderEvent('MANUFACTURING_ORDER_CREATED', {
                 orderId: manufacturingOrder.id,
                 orderNumber: manufacturingOrder.orderNumber,
@@ -64,51 +46,31 @@ class ManufacturingOrderService {
     }
     async getManufacturingOrders(page = 1, limit = 10, filters = {}) {
         try {
-            const skip = (page - 1) * limit;
-            const where = {};
+            const offset = (page - 1) * limit;
+            let whereClauses = [];
+            let params = [];
+            let paramIdx = 1;
             if (filters.status) {
-                where.status = filters.status;
+                whereClauses.push(`status = $${paramIdx}`);
+                params.push(filters.status);
+                paramIdx++;
             }
             if (filters.priority) {
-                where.priority = filters.priority;
+                whereClauses.push(`priority = $${paramIdx}`);
+                params.push(filters.priority);
+                paramIdx++;
             }
             if (filters.productId) {
-                where.productId = filters.productId;
+                whereClauses.push(`productId = $${paramIdx}`);
+                params.push(filters.productId);
+                paramIdx++;
             }
-            const [orders, total] = await Promise.all([
-                prisma.manufacturingOrder.findMany({
-                    where,
-                    skip,
-                    take: limit,
-                    include: {
-                        product: true,
-                        createdBy: {
-                            select: {
-                                id: true,
-                                firstName: true,
-                                lastName: true,
-                                email: true
-                            }
-                        },
-                        workOrders: {
-                            include: {
-                                workCenter: true,
-                                assignedUser: {
-                                    select: {
-                                        id: true,
-                                        firstName: true,
-                                        lastName: true
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    orderBy: { createdAt: 'desc' }
-                }),
-                prisma.manufacturingOrder.count({ where })
-            ]);
+            const whereSQL = whereClauses.length ? `WHERE ${whereClauses.join(' AND ')}` : '';
+            const ordersRes = await prisma_1.pool.query(`SELECT * FROM manufacturing_orders ${whereSQL} ORDER BY createdAt DESC LIMIT $${paramIdx} OFFSET $${paramIdx + 1}`, [...params, limit, offset]);
+            const countRes = await prisma_1.pool.query(`SELECT COUNT(*) FROM manufacturing_orders ${whereSQL}`, params);
+            const total = parseInt(countRes.rows[0].count, 10);
             return {
-                orders,
+                orders: ordersRes.rows,
                 pagination: {
                     page,
                     limit,
@@ -124,37 +86,8 @@ class ManufacturingOrderService {
     }
     async getManufacturingOrderById(id) {
         try {
-            const order = await prisma.manufacturingOrder.findUnique({
-                where: { id },
-                include: {
-                    product: true,
-                    createdBy: {
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true,
-                            email: true
-                        }
-                    },
-                    workOrders: {
-                        include: {
-                            workCenter: true,
-                            assignedUser: {
-                                select: {
-                                    id: true,
-                                    firstName: true,
-                                    lastName: true
-                                }
-                            },
-                            items: {
-                                include: {
-                                    product: true
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+            const orderRes = await prisma_1.pool.query('SELECT * FROM manufacturing_orders WHERE id = $1', [id]);
+            const order = orderRes.rows[0];
             if (!order) {
                 throw new errors_1.AppError('Manufacturing order not found', 404);
             }
@@ -167,42 +100,56 @@ class ManufacturingOrderService {
     }
     async updateManufacturingOrder(id, data, userId) {
         try {
-            const existingOrder = await prisma.manufacturingOrder.findUnique({
-                where: { id }
-            });
+            const orderRes = await prisma_1.pool.query('SELECT * FROM manufacturing_orders WHERE id = $1', [id]);
+            const existingOrder = orderRes.rows[0];
             if (!existingOrder) {
                 throw new errors_1.AppError('Manufacturing order not found', 404);
             }
-            const updateData = {};
-            if (data.quantity !== undefined)
-                updateData.quantity = data.quantity;
-            if (data.priority)
-                updateData.priority = data.priority;
-            if (data.status)
-                updateData.status = data.status;
-            if (data.startDate)
-                updateData.startDate = new Date(data.startDate);
-            if (data.endDate)
-                updateData.endDate = new Date(data.endDate);
-            if (data.dueDate)
-                updateData.dueDate = new Date(data.dueDate);
-            if (data.notes !== undefined)
-                updateData.notes = data.notes;
-            const updatedOrder = await prisma.manufacturingOrder.update({
-                where: { id },
-                data: updateData,
-                include: {
-                    product: true,
-                    createdBy: {
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true,
-                            email: true
-                        }
-                    }
-                }
-            });
+            let updateFields = [];
+            let params = [];
+            let paramIdx = 1;
+            if (data.quantity !== undefined) {
+                updateFields.push(`quantity = $${paramIdx}`);
+                params.push(data.quantity);
+                paramIdx++;
+            }
+            if (data.priority) {
+                updateFields.push(`priority = $${paramIdx}`);
+                params.push(data.priority);
+                paramIdx++;
+            }
+            if (data.status) {
+                updateFields.push(`status = $${paramIdx}`);
+                params.push(data.status);
+                paramIdx++;
+            }
+            if (data.startDate) {
+                updateFields.push(`startDate = $${paramIdx}`);
+                params.push(data.startDate);
+                paramIdx++;
+            }
+            if (data.endDate) {
+                updateFields.push(`endDate = $${paramIdx}`);
+                params.push(data.endDate);
+                paramIdx++;
+            }
+            if (data.dueDate) {
+                updateFields.push(`dueDate = $${paramIdx}`);
+                params.push(data.dueDate);
+                paramIdx++;
+            }
+            if (data.notes !== undefined) {
+                updateFields.push(`notes = $${paramIdx}`);
+                params.push(data.notes);
+                paramIdx++;
+            }
+            if (updateFields.length === 0) {
+                throw new errors_1.AppError('No fields to update', 400);
+            }
+            params.push(id);
+            const updateSQL = `UPDATE manufacturing_orders SET ${updateFields.join(', ')} WHERE id = $${paramIdx} RETURNING *`;
+            const updateRes = await prisma_1.pool.query(updateSQL, params);
+            const updatedOrder = updateRes.rows[0];
             await this.createEvent('MANUFACTURING_ORDER_UPDATED', {
                 orderId: updatedOrder.id,
                 orderNumber: updatedOrder.orderNumber,
@@ -218,21 +165,16 @@ class ManufacturingOrderService {
     }
     async deleteManufacturingOrder(id, userId) {
         try {
-            const existingOrder = await prisma.manufacturingOrder.findUnique({
-                where: { id }
-            });
+            const orderRes = await prisma_1.pool.query('SELECT * FROM manufacturing_orders WHERE id = $1', [id]);
+            const existingOrder = orderRes.rows[0];
             if (!existingOrder) {
                 throw new errors_1.AppError('Manufacturing order not found', 404);
             }
-            const workOrders = await prisma.workOrder.findMany({
-                where: { manufacturingOrderId: id }
-            });
-            if (workOrders.length > 0) {
+            const workOrdersRes = await prisma_1.pool.query('SELECT * FROM work_orders WHERE manufacturingOrderId = $1', [id]);
+            if (workOrdersRes.rows.length > 0) {
                 throw new errors_1.AppError('Cannot delete manufacturing order with existing work orders', 400);
             }
-            await prisma.manufacturingOrder.delete({
-                where: { id }
-            });
+            await prisma_1.pool.query('DELETE FROM manufacturing_orders WHERE id = $1', [id]);
             logger_1.logger.info(`Manufacturing order deleted: ${existingOrder.orderNumber}`);
             return { message: 'Manufacturing order deleted successfully' };
         }
@@ -243,21 +185,19 @@ class ManufacturingOrderService {
     }
     async getManufacturingOrderStats() {
         try {
-            const [total, planned, inProgress, completed, cancelled, urgent] = await Promise.all([
-                prisma.manufacturingOrder.count(),
-                prisma.manufacturingOrder.count({ where: { status: 'PLANNED' } }),
-                prisma.manufacturingOrder.count({ where: { status: 'IN_PROGRESS' } }),
-                prisma.manufacturingOrder.count({ where: { status: 'COMPLETED' } }),
-                prisma.manufacturingOrder.count({ where: { status: 'CANCELLED' } }),
-                prisma.manufacturingOrder.count({ where: { priority: 'URGENT' } })
-            ]);
+            const totalRes = await prisma_1.pool.query('SELECT COUNT(*) FROM manufacturing_orders');
+            const plannedRes = await prisma_1.pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'PLANNED'");
+            const inProgressRes = await prisma_1.pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'IN_PROGRESS'");
+            const completedRes = await prisma_1.pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'COMPLETED'");
+            const cancelledRes = await prisma_1.pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE status = 'CANCELLED'");
+            const urgentRes = await prisma_1.pool.query("SELECT COUNT(*) FROM manufacturing_orders WHERE priority = 'URGENT'");
             return {
-                total,
-                planned,
-                inProgress,
-                completed,
-                cancelled,
-                urgent
+                total: parseInt(totalRes.rows[0].count, 10),
+                planned: parseInt(plannedRes.rows[0].count, 10),
+                inProgress: parseInt(inProgressRes.rows[0].count, 10),
+                completed: parseInt(completedRes.rows[0].count, 10),
+                cancelled: parseInt(cancelledRes.rows[0].count, 10),
+                urgent: parseInt(urgentRes.rows[0].count, 10)
             };
         }
         catch (error) {
@@ -266,21 +206,21 @@ class ManufacturingOrderService {
         }
     }
     async generateOrderNumber() {
-        const count = await prisma.manufacturingOrder.count();
+        const countRes = await prisma_1.pool.query('SELECT COUNT(*) FROM manufacturing_orders');
+        const count = parseInt(countRes.rows[0].count, 10);
         const orderNumber = `MO-${String(count + 1).padStart(4, '0')}`;
         return orderNumber;
     }
     async createEvent(type, data, userId) {
         try {
-            await prisma.event.create({
-                data: {
-                    type: type,
-                    title: `Manufacturing Order ${type.split('_').join(' ').toLowerCase()}`,
-                    message: `Manufacturing order ${data.orderNumber} has been ${type.split('_')[2]?.toLowerCase()}`,
-                    data,
-                    userId
-                }
-            });
+            await prisma_1.pool.query(`INSERT INTO events (type, title, message, data, userId)
+         VALUES ($1, $2, $3, $4, $5)`, [
+                type,
+                `Manufacturing Order ${type.split('_').join(' ').toLowerCase()}`,
+                `Manufacturing order ${data.orderNumber} has been ${type.split('_')[2]?.toLowerCase()}`,
+                JSON.stringify(data),
+                userId
+            ]);
         }
         catch (error) {
             logger_1.logger.error('Create event error:', error);

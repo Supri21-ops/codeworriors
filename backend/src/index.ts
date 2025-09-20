@@ -14,12 +14,14 @@ import { config } from './config/env';
 import { kafkaService } from './config/kafka';
 import { eventConsumers } from './events/consumers';
 
-const PORT = config.PORT || 3000;
+const PORT = config.PORT || 5000;
 
 async function startServer() {
   try {
     // Test database connection
-  
+    const { prisma } = await import('./config/prisma');
+    await prisma.$connect();
+    logger.info('Database connected successfully');
 
     // Connect to Kafka
     await kafkaService.connect();

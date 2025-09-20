@@ -12,13 +12,39 @@ import userRoutes from './modules/users/user.routes';
 import manufacturingRoutes from './modules/manufacturing/mo.routes';
 import searchRoutes from './modules/search/search.routes';
 import priorityRoutes from './modules/priority/priority.routes';
+import bomRoutes from './modules/bom/bom.routes';
+import stockRoutes from './modules/stock/stock.routes';
+import workCenterRoutes from './modules/workcenter/workcenter.routes';
+import workOrderRoutes from './modules/workorder/workorder.routes';
+import productRoutes from './modules/product/product.routes';
 
 const app = express();
 
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: config.FRONTEND_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // In development, allow all localhost origins
+    if (config.NODE_ENV === 'development' && origin.includes('://localhost:')) {
+      return callback(null, true);
+    }
+    
+    // In production, only allow specified origins
+    const allowedOrigins = [
+      config.FRONTEND_URL || 'http://localhost:5173',
+      'http://localhost:3001',
+      'http://localhost:8000',
+    ];
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
@@ -49,6 +75,11 @@ app.use('/api/users', userRoutes);
 app.use('/api/manufacturing', manufacturingRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/priority', priorityRoutes);
+app.use('/api/bom', bomRoutes);
+app.use('/api/stock', stockRoutes);
+app.use('/api/workcenters', workCenterRoutes);
+app.use('/api/workorders', workOrderRoutes);
+app.use('/api/products', productRoutes);
 
 // API documentation endpoint
 app.get('/api/docs', (req, res) => {

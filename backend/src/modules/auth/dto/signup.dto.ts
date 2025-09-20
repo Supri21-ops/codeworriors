@@ -2,7 +2,6 @@ import Joi from 'joi';
 
 export interface SignupDto {
   email: string;
-  username: string;
   password: string;
   firstName: string;
   lastName: string;
@@ -14,13 +13,6 @@ export const signupSchema = Joi.object({
     'string.email': 'Please provide a valid email address',
     'string.empty': 'Email is required',
     'any.required': 'Email is required'
-  }),
-  username: Joi.string().alphanum().min(3).max(30).required().messages({
-    'string.alphanum': 'Username must contain only alphanumeric characters',
-    'string.min': 'Username must be at least 3 characters long',
-    'string.max': 'Username must not exceed 30 characters',
-    'string.empty': 'Username is required',
-    'any.required': 'Username is required'
   }),
   password: Joi.string().min(6).required().messages({
     'string.min': 'Password must be at least 6 characters long',

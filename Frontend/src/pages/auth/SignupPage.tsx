@@ -12,7 +12,6 @@ interface SignupFormData {
   firstName: string;
   lastName: string;
   email: string;
-  username: string;
   password: string;
   confirmPassword: string;
   role: 'ADMIN' | 'MANAGER' | 'SUPERVISOR' | 'OPERATOR' | 'USER';
@@ -43,8 +42,9 @@ export const SignupPage: React.FC = () => {
       await signup(data);
       toast.success('Account created successfully!');
       navigate('/dashboard');
-    } catch (error: any) {
-      toast.error(error.message || 'Signup failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Signup failed';
+      toast.error(errorMessage);
     }
   };
 
@@ -117,27 +117,7 @@ export const SignupPage: React.FC = () => {
                 }
               />
 
-              <Input
-                label="Username"
-                placeholder="Choose a username"
-                {...register('username', {
-                  required: 'Username is required',
-                  minLength: {
-                    value: 3,
-                    message: 'Must be at least 3 characters',
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z0-9_]+$/,
-                    message: 'Username can only contain letters, numbers, and underscores',
-                  },
-                })}
-                error={errors.username?.message}
-                leftIcon={
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                }
-              />
+
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input

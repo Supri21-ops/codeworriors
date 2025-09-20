@@ -3,12 +3,10 @@ import { apiService } from './api';
 export interface User {
   id: string;
   email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   role: 'ADMIN' | 'MANAGER' | 'SUPERVISOR' | 'OPERATOR' | 'USER';
-  isActive: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface LoginCredentials {
@@ -18,7 +16,6 @@ export interface LoginCredentials {
 
 export interface SignupData {
   email: string;
-  username: string;
   password: string;
   firstName: string;
   lastName: string;

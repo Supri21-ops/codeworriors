@@ -16,8 +16,8 @@ export class AuthController {
       const signupData: SignupDto = req.body;
       
       // Validate required fields
-      if (!signupData.email || !signupData.username || !signupData.password) {
-        throw new AppError('Email, username, and password are required', 400);
+      if (!signupData.email || !signupData.firstName || !signupData.lastName || !signupData.password) {
+        throw new AppError('Email, first name, last name, and password are required', 400);
       }
 
       const result = await this.authService.signup(signupData);

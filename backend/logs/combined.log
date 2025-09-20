@@ -1,0 +1,338 @@
+{"cause":{"broker":"localhost:9092","code":"ECONNREFUSED","name":"KafkaJSConnectionError","retriable":true},"level":"error","message":"Failed to connect Kafka producer: Connection error: ","name":"KafkaJSNumberOfRetriesExceeded","retriable":false,"retryCount":8,"retryTime":30000,"service":"manufacturing-backend","stack":"KafkaJSNonRetriableError\n  Caused by: KafkaJSConnectionError: Connection error: \n    at Socket.onError (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\network\\connection.js:210:23)\n    at Socket.emit (node:events:518:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)","timestamp":"2025-09-20 18:58:14"}
+{"cause":{"broker":"localhost:9092","code":"ECONNREFUSED","name":"KafkaJSConnectionError","retriable":true},"level":"error","message":"Failed to connect Kafka producer: Connection error: ","name":"KafkaJSNumberOfRetriesExceeded","retriable":false,"retryCount":8,"retryTime":16462,"service":"manufacturing-backend","stack":"KafkaJSNonRetriableError\n  Caused by: KafkaJSConnectionError: Connection error: \n    at Socket.onError (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\network\\connection.js:210:23)\n    at Socket.emit (node:events:518:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)","timestamp":"2025-09-20 19:00:26"}
+{"cause":{"broker":"localhost:9092","code":"ECONNREFUSED","name":"KafkaJSConnectionError","retriable":true},"level":"error","message":"Failed to connect Kafka producer: Connection error: ","name":"KafkaJSNumberOfRetriesExceeded","retriable":false,"retryCount":8,"retryTime":30000,"service":"manufacturing-backend","stack":"KafkaJSNonRetriableError\n  Caused by: KafkaJSConnectionError: Connection error: \n    at Socket.onError (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\network\\connection.js:210:23)\n    at Socket.emit (node:events:518:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)","timestamp":"2025-09-20 19:02:56"}
+{"cause":{"broker":"localhost:9092","code":"ECONNREFUSED","name":"KafkaJSConnectionError","retriable":true},"level":"error","message":"Failed to connect Kafka producer: Connection error: ","name":"KafkaJSNumberOfRetriesExceeded","retriable":false,"retryCount":8,"retryTime":30000,"service":"manufacturing-backend","stack":"KafkaJSNonRetriableError\n  Caused by: KafkaJSConnectionError: Connection error: \n    at Socket.onError (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\network\\connection.js:210:23)\n    at Socket.emit (node:events:518:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)","timestamp":"2025-09-20 19:03:41"}
+{"cause":{"broker":"localhost:9092","code":"ECONNREFUSED","name":"KafkaJSConnectionError","retriable":true},"level":"error","message":"Failed to connect Kafka producer: Connection error: ","name":"KafkaJSNumberOfRetriesExceeded","retriable":false,"retryCount":8,"retryTime":21226,"service":"manufacturing-backend","stack":"KafkaJSNonRetriableError\n  Caused by: KafkaJSConnectionError: Connection error: \n    at Socket.onError (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\network\\connection.js:210:23)\n    at Socket.emit (node:events:518:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)","timestamp":"2025-09-20 19:06:18"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:13:08"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:13:08"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:13:08"}
+{"code":3,"level":"error","message":"Failed to create consumer for group manufacturing-orders-group: This server does not host this topic-partition","name":"KafkaJSProtocolError","retriable":true,"service":"manufacturing-backend","stack":"KafkaJSProtocolError: This server does not host this topic-partition\n    at createErrorFromCode (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\protocol\\error.js:581:10)\n    at Object.parse (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\protocol\\requests\\metadata\\v0\\response.js:55:11)\n    at Connection.send (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\network\\connection.js:433:35)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async [private:Broker:sendRequest] (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\broker\\index.js:904:14)\n    at async Broker.metadata (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\broker\\index.js:177:12)\n    at async D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\cluster\\brokerPool.js:158:25\n    at async D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\cluster\\index.js:111:14\n    at async Cluster.refreshMetadata (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\cluster\\index.js:172:5)\n    at async Cluster.addMultipleTargetTopics (D:\\hackathon\\codewarrior\\backend\\node_modules\\kafkajs\\src\\cluster\\index.js:230:11)","timestamp":"2025-09-20 19:13:08","type":"UNKNOWN_TOPIC_OR_PARTITION"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:03"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:03"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:03"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:03"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:07"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:07"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:10"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:10"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:13"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:13"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:16"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:16"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:19"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:19"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:19"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:19"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:19"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:19"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:19"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:19"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:15:19"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:19:50"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:19:50"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:19:50"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:19:50"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:19:58"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:19:58"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:01"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:01"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:05"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:05"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:08"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:08"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:11"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:11"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:11"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:11"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:11"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:11"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:11"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:11"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:20:11"}
+{"level":"info","message":"::1 - - [20/Sep/2025:13:51:20 +0000] \"GET /api/health HTTP/1.1\" 404 62 \"-\" \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.26100.6584\"","service":"manufacturing-backend","timestamp":"2025-09-20 19:21:20"}
+{"level":"info","message":"::1 - - [20/Sep/2025:13:51:25 +0000] \"GET /health HTTP/1.1\" 200 102 \"-\" \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.26100.6584\"","service":"manufacturing-backend","timestamp":"2025-09-20 19:21:25"}
+{"error":"Validation error: Email or username is required","ip":"::1","level":"error","message":"Error occurred:","method":"POST","service":"manufacturing-backend","stack":"Error: Validation error: Email or username is required\n    at <anonymous> (D:\\hackathon\\codewarrior\\backend\\src\\middleware\\validation.middleware.ts:18:13)\n    at Layer.handle [as handle_request] (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Function.handle (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)\n    at router (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)","timestamp":"2025-09-20 19:22:02","url":"/api/auth/login","userAgent":"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.26100.6584"}
+{"level":"info","message":"::1 - - [20/Sep/2025:13:52:02 +0000] \"POST /api/auth/login HTTP/1.1\" 400 77 \"-\" \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.26100.6584\"","service":"manufacturing-backend","timestamp":"2025-09-20 19:22:02"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:25:58"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:25:58"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:25:58"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:25:58"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:01"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:01"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:04"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:04"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:07"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:07"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:10"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:10"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:13"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:13"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:13"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:13"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:13"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:13"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:13"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:13"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:13"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:52"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:52"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:52"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:52"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:57"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:57"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:57"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:26:57"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:41"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:41"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:44"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:44"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:47"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:47"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:50"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:50"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:53"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:53"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:53"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:53"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:53"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:53"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:53"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:53"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:27:53"}
+{"level":"info","message":"::1 - - [20/Sep/2025:13:59:00 +0000] \"GET /health HTTP/1.1\" 200 103 \"-\" \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.26100.6584\"","service":"manufacturing-backend","timestamp":"2025-09-20 19:29:00"}
+{"level":"info","message":"::1 - - [20/Sep/2025:13:59:30 +0000] \"GET /api HTTP/1.1\" 404 55 \"-\" \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.26100.6584\"","service":"manufacturing-backend","timestamp":"2025-09-20 19:29:30"}
+{"level":"info","message":"::1 - - [20/Sep/2025:13:59:38 +0000] \"GET /api/docs HTTP/1.1\" 200 796 \"-\" \"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-IN) WindowsPowerShell/5.1.26100.6584\"","service":"manufacturing-backend","timestamp":"2025-09-20 19:29:38"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:07"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:07"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:07"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:07"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:29"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:29"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:29"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:29"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:32"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:32"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:32"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:32"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:38"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:38"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:38"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:30:38"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:02"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:02"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:05"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:05"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:08"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:08"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:11"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:11"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:14"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:14"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:14"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:14"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:14"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:14"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:14"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:14"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:14"}
+{"code":"28P01","file":"auth.c","length":100,"level":"error","line":"332","message":"Signup error: password authentication failed for user \"user\"","name":"error","routine":"auth_failed","service":"manufacturing-backend","severity":"FATAL","stack":"error: password authentication failed for user \"user\"\n    at D:\\hackathon\\codewarrior\\backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthService.signup (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:13:31)\n    at async signup (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:23:22)","timestamp":"2025-09-20 19:31:25"}
+{"code":"28P01","file":"auth.c","length":100,"level":"error","line":"332","message":"Signup controller error: password authentication failed for user \"user\"","name":"error","routine":"auth_failed","service":"manufacturing-backend","severity":"FATAL","stack":"error: password authentication failed for user \"user\"\n    at D:\\hackathon\\codewarrior\\backend\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AuthService.signup (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.service.ts:13:31)\n    at async signup (D:\\hackathon\\codewarrior\\backend\\src\\modules\\auth\\auth.controller.ts:23:22)","timestamp":"2025-09-20 19:31:25"}
+{"level":"info","message":"::1 - - [20/Sep/2025:14:01:25 +0000] \"POST /api/auth/signup HTTP/1.1\" 500 51 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-20 19:31:25"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:16"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:16"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:16"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:16"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:42"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:42"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:45"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:45"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:48"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:48"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:51"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:51"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:54"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:54"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:54"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:54"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:54"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:54"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:54"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:54"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:33:54"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:35:59"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:35:59"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:35:59"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:35:59"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:23"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:23"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:26"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:26"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:29"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:29"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:32"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:32"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:35"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:35"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:35"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:35"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:35"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:35"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:35"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:35"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:35"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:46"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:46"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:46"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:36:46"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:13"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:13"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:16"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:16"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:19"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:19"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:22"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:22"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:25"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:25"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:25"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:25"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:25"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:25"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:25"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:25"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:37:25"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:13"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:13"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:13"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:13"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:18"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:18"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:18"}
+{"level":"info","message":"Stopping all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:18"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:21"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:21"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:24"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:24"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:27"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:27"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:30"}
+{"level":"info","message":"Kafka disconnected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:38:35"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:01"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:01"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:01"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:01"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:04"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:04"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:07"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:07"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:10"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:10"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:13"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:13"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:40:16"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:48:55"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:48:55"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:48:55"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:48:55"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:48:58"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:48:58"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:01"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:01"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:04"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:04"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:07"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:07"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:10"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:10"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:10"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:10"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:10"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:10"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:10"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:10"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:10"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:43"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:43"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:43"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:49:43"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:08"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:08"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:11"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:11"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:14"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:14"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:18"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:18"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:18"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:18"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:41"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:41"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:41"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:41"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:43"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:43"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:46"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:46"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:49"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:49"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:52"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:52"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:55"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:55"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:55"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:55"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:55"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:55"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:55"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:55"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 19:50:55"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:44"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:44"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:44"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:44"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:47"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:47"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:50"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:50"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:53"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:53"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:56"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:56"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:59"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:59"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:59"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:59"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:59"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:59"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:59"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:59"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 20:15:59"}
+{"error":"Validation error: Username is required","ip":"::1","level":"error","message":"Error occurred:","method":"POST","service":"manufacturing-backend","stack":"Error: Validation error: Username is required\n    at D:\\hackathon\\codewarrior\\backend\\dist\\middleware\\validation.middleware.js:16:19\n    at Layer.handle [as handle_request] (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Function.handle (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)\n    at router (D:\\hackathon\\codewarrior\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)","timestamp":"2025-09-20 20:17:48","url":"/api/auth/signup","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"}
+{"level":"info","message":"::1 - - [20/Sep/2025:14:47:48 +0000] \"POST /api/auth/signup HTTP/1.1\" 400 1238 \"http://localhost:5173/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","service":"manufacturing-backend","timestamp":"2025-09-20 20:17:48"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"manufacturing-backend","timestamp":"2025-09-20 20:20:41"}
+{"level":"info","message":"Stopping all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 20:20:41"}
+{"level":"info","message":"Kafka disconnected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:20:55"}
+{"level":"info","message":"Kafka producer connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:32"}
+{"level":"info","message":"Kafka connected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:32"}
+{"level":"info","message":"Starting all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:32"}
+{"level":"info","message":"Consumer created for group manufacturing-orders-group on topics: manufacturing-orders","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:32"}
+{"level":"info","message":"Consumer started for group manufacturing-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:35"}
+{"level":"info","message":"Consumer created for group work-orders-group on topics: work-orders","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:35"}
+{"level":"info","message":"Consumer started for group work-orders-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:38"}
+{"level":"info","message":"Consumer created for group inventory-group on topics: inventory","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:38"}
+{"level":"info","message":"Consumer started for group inventory-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:41"}
+{"level":"info","message":"Consumer created for group priority-group on topics: priority-queue","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:41"}
+{"level":"info","message":"Consumer started for group priority-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:44"}
+{"level":"info","message":"Consumer created for group vector-search-group on topics: vector-search","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:44"}
+{"level":"info","message":"Consumer started for group vector-search-group","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:47"}
+{"level":"info","message":"All event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:47"}
+{"level":"info","message":"Event consumers started successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:47"}
+{"level":"info","message":"🚀 Manufacturing Management System running on port 3000","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:47"}
+{"level":"info","message":"📊 Environment: development","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:47"}
+{"level":"info","message":"🔗 API Documentation: http://localhost:3000/api/docs","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:47"}
+{"level":"info","message":"🔍 Vector Search: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:47"}
+{"level":"info","message":"⚡ Priority System: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:47"}
+{"level":"info","message":"📡 Event Streaming: Enabled","service":"manufacturing-backend","timestamp":"2025-09-20 20:21:47"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"manufacturing-backend","timestamp":"2025-09-20 20:26:01"}
+{"level":"info","message":"Stopping all event consumers...","service":"manufacturing-backend","timestamp":"2025-09-20 20:26:01"}
+{"level":"info","message":"Kafka disconnected successfully","service":"manufacturing-backend","timestamp":"2025-09-20 20:26:18"}

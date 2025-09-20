@@ -3,7 +3,7 @@ import { app } from './app';
 import { config } from './config/env';
 import { logger } from './config/logger';
 
-const PORT = config.PORT || 3000;
+const PORT = config.PORT || 5000;
 
 // Create HTTP server
 const server = createServer(app);

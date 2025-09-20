@@ -2,11 +2,11 @@ import { CreateManufacturingOrderDto, UpdateManufacturingOrderDto } from './dto'
 export declare class ManufacturingOrderService {
     createManufacturingOrder(data: CreateManufacturingOrderDto, userId: string): Promise<any>;
     getManufacturingOrders(page?: number, limit?: number, filters?: any): Promise<{
-        orders: any;
+        orders: any[];
         pagination: {
             page: number;
             limit: number;
-            total: any;
+            total: number;
             pages: number;
         };
     }>;
@@ -16,12 +16,12 @@ export declare class ManufacturingOrderService {
         message: string;
     }>;
     getManufacturingOrderStats(): Promise<{
-        total: any;
-        planned: any;
-        inProgress: any;
-        completed: any;
-        cancelled: any;
-        urgent: any;
+        total: number;
+        planned: number;
+        inProgress: number;
+        completed: number;
+        cancelled: number;
+        urgent: number;
     }>;
     private generateOrderNumber;
     private createEvent;

@@ -9,8 +9,8 @@ class KafkaService {
 
   constructor() {
     this.kafka = new Kafka({
-      clientId: config.KAFKA_CLIENT_ID,
-      brokers: config.KAFKA_BROKERS,
+      clientId: config.KAFKA_CLIENT_ID||'manufacturing-service',
+      brokers: config.KAFKA_BROKERS || ['localhost:9092'],
       retry: {
         initialRetryTime: 100,
         retries: 8
