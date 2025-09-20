@@ -26,6 +26,8 @@ import { ProductsPage } from './pages/products/ProductsPage';
 import { BOMPage } from './pages/bom/BOMPage';
 import { UsersPage } from './pages/users/UsersPage';
 import { SettingsPage } from './pages/settings/SettingsPage';
+import WorkOrdersAnalysisPage from './pages/reports/WorkOrdersAnalysisPage';
+import ProfilePage from './pages/profile/ProfilePage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -161,6 +163,8 @@ function App() {
         { path: '/auth/signup', element: <PublicRoute><SignupPage /></PublicRoute> },
         { path: '/auth/forgot', element: <PublicRoute><ForgotPasswordPage /></PublicRoute> },
         { path: '/auth/otp', element: <PublicRoute><OtpVerifyPage /></PublicRoute> },
+        { path: '/work-orders-analysis', element: <ProtectedRoute><WorkOrdersAnalysisPage /></ProtectedRoute> },
+        { path: '/profile', element: <ProtectedRoute><ProfilePage /></ProtectedRoute> },
         { path: '*', element: <Navigate to="/dashboard" replace /> }
       ]
     }

@@ -22,6 +22,8 @@ import { ProductsPage } from './pages/products/ProductsPage';
 import { BOMPage } from './pages/bom/BOMPage';
 import { UsersPage } from './pages/users/UsersPage';
 import { SettingsPage } from './pages/settings/SettingsPage';
+import WorkOrdersAnalysisPage from './pages/reports/WorkOrdersAnalysisPage';
+import ProfilePage from './pages/profile/ProfilePage';
 import { ProtectedRoute, RoleRoute } from './components/navigation/ProtectedRoute';
 
 export type AppRoute = {
@@ -47,6 +49,8 @@ export const appRoutes: AppRoute[] = [
   { key: 'settings', path: '/settings', element: <RoleRoute allowedRoles={["admin","manager"]}><SettingsPage /></RoleRoute>, protected: true, allowedRoles: ["admin","manager"] },
   { key: 'stock', path: '/stock', element: <ProtectedRoute><StockDashboard /></ProtectedRoute>, protected: true },
   { key: 'search', path: '/search', element: <ProtectedRoute><SearchResultsPage /></ProtectedRoute>, protected: true },
+  { key: 'work-orders-analysis', path: '/work-orders-analysis', element: <ProtectedRoute><WorkOrdersAnalysisPage /></ProtectedRoute>, protected: true },
+  { key: 'profile', path: '/profile', element: <ProtectedRoute><ProfilePage /></ProtectedRoute>, protected: true },
   { key: 'login', path: '/login', element: <LoginPage /> },
   { key: 'signup', path: '/signup', element: <SignupPage /> },
   { key: 'login-auth', path: '/auth/login', element: <LoginPage /> },
