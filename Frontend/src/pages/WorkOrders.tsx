@@ -4,59 +4,6 @@ import { useManufacturingStore } from '../store/manufacturing.store';
 import { COLORS } from '../theme';
 import toast from 'react-hot-toast';
 
-interface WorkOrder {
-  id: string;
-  orderNumber: string;
-  manufacturingOrder: string;
-  workCenter: string;
-  status: 'PLANNED' | 'RELEASED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ON_HOLD';
-  priority: 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
-  assignedUser: string;
-  plannedStartDate: string;
-  plannedEndDate: string;
-  actualStartDate?: string;
-  actualEndDate?: string;
-}
-
-const sampleWorkOrders: WorkOrder[] = [
-  {
-    id: '1',
-    orderNumber: 'WO-0001',
-    manufacturingOrder: 'MO-0001',
-    workCenter: 'Assembly Line A',
-    status: 'IN_PROGRESS',
-    priority: 'HIGH',
-    assignedUser: 'John Doe',
-    plannedStartDate: '2025-01-15',
-    plannedEndDate: '2025-01-20',
-    actualStartDate: '2025-01-15'
-  },
-  {
-    id: '2',
-    orderNumber: 'WO-0002',
-    manufacturingOrder: 'MO-0002',
-    workCenter: 'Machining Center B',
-    status: 'PLANNED',
-    priority: 'NORMAL',
-    assignedUser: 'Jane Smith',
-    plannedStartDate: '2025-01-22',
-    plannedEndDate: '2025-01-25'
-  },
-  {
-    id: '3',
-    orderNumber: 'WO-0003',
-    manufacturingOrder: 'MO-0003',
-    workCenter: 'Quality Control',
-    status: 'COMPLETED',
-    priority: 'LOW',
-    assignedUser: 'Mike Johnson',
-    plannedStartDate: '2025-01-10',
-    plannedEndDate: '2025-01-12',
-    actualStartDate: '2025-01-10',
-    actualEndDate: '2025-01-12'
-  }
-];
-
 export const WorkOrders: React.FC = () => {
   const { 
     workOrders, 
@@ -65,7 +12,6 @@ export const WorkOrders: React.FC = () => {
     fetchWorkOrders,
     setWorkOrdersFilters,
     workOrdersFilters,
-    updateWorkOrder,
     deleteWorkOrder 
   } = useManufacturingStore();
   
@@ -110,7 +56,7 @@ export const WorkOrders: React.FC = () => {
     toast('Create Work Order - Feature coming soon');
   };
 
-  const getStatusColor = (status: WorkOrder['status']) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'PLANNED': return COLORS.background.steel;
       case 'RELEASED': return COLORS.secondary.amber;
@@ -122,7 +68,7 @@ export const WorkOrders: React.FC = () => {
     }
   };
 
-  const getPriorityColor = (priority: WorkOrder['priority']) => {
+  const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'LOW': return COLORS.priority.normal;
       case 'NORMAL': return COLORS.secondary.amber;
@@ -184,32 +130,44 @@ export const WorkOrders: React.FC = () => {
           </button>
         </div>
 
-          {/* Filters */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ display: 'flex', gap: 12 }}>
-              {['ALL', 'PLANNED', 'IN_PROGRESS', 'COMPLETED'].map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setFilter(status as any)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: 20,
-                    border: 'none',
-                    background: filter === status ? COLORS.primary.blue : COLORS.background.white,
-                    color: filter === status ? 'white' : COLORS.background.steel,
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                    fontSize: 14
-                  }}
-                >
-                  {status.replace('_', ' ')}
-                </button>
-              ))}
-            </div>
+        {/* Filters */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: 'flex', gap: 12 }}>
+            {['ALL', 'PLANNED', 'IN_PROGRESS', 'COMPLETED'].map((status) => (
+              <button
+                key={status}
+                onClick={() => handleFilterChange(status as any)}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: 20,
+                  border: 'none',
+                  background: filter === status ? COLORS.primary.blue : COLORS.background.white,
+                  color: filter === status ? 'white' : COLORS.background.steel,
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: 14
+                }}
+              >
+                {status.replace('_', ' ')}
+              </button>
+            ))}
           </div>
+        </div>
 
-          {/* Work Orders Table */}
-          <div style={{ background: COLORS.background.white, borderRadius: 10, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+        {/* Work Orders Table */}
+        <div style={{ background: COLORS.background.white, borderRadius: 10, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+          {workOrdersLoading ? (
+            <div style={{ textAlign: 'center', padding: 40 }}>
+              <div>Loading work orders...</div>
+            </div>
+          ) : filteredOrders.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: 40 }}>
+              <h3>No work orders found</h3>
+              <p style={{ color: COLORS.background.steel }}>
+                {filter === 'ALL' ? 'No work orders available.' : `No work orders with status "${filter}".`}
+              </p>
+            </div>
+          ) : (
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #E5E7EB' }}>
@@ -229,8 +187,8 @@ export const WorkOrders: React.FC = () => {
                     <td style={{ padding: '16px 12px', fontWeight: 600, color: COLORS.primary.blue }}>
                       {order.orderNumber}
                     </td>
-                    <td style={{ padding: '16px 12px' }}>{order.manufacturingOrder}</td>
-                    <td style={{ padding: '16px 12px' }}>{order.workCenter}</td>
+                    <td style={{ padding: '16px 12px' }}>{order.manufacturingOrderId}</td>
+                    <td style={{ padding: '16px 12px' }}>{order.workCenter?.name || 'N/A'}</td>
                     <td style={{ padding: '16px 12px' }}>
                       <span style={{
                         padding: '6px 12px',
@@ -255,34 +213,58 @@ export const WorkOrders: React.FC = () => {
                         {order.priority}
                       </span>
                     </td>
-                    <td style={{ padding: '16px 12px' }}>{order.assignedUser}</td>
+                    <td style={{ padding: '16px 12px' }}>
+                      {order.assignedUser ? `${order.assignedUser.firstName} ${order.assignedUser.lastName}` : 'Unassigned'}
+                    </td>
                     <td style={{ padding: '16px 12px', fontSize: 14 }}>
-                      <div>{order.plannedStartDate}</div>
-                      <div style={{ color: COLORS.background.steel }}>to {order.plannedEndDate}</div>
+                      <div>{order.plannedStartDate || 'Not scheduled'}</div>
+                      {order.plannedEndDate && (
+                        <div style={{ color: COLORS.background.steel }}>to {order.plannedEndDate}</div>
+                      )}
                     </td>
                     <td style={{ padding: '16px 12px' }}>
                       <div style={{ display: 'flex', gap: 8 }}>
-                        <button style={{
-                          padding: '6px 12px',
-                          background: COLORS.primary.blue,
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: 6,
-                          fontSize: 12,
-                          cursor: 'pointer'
-                        }}>
+                        <button 
+                          onClick={() => handleViewWorkOrder(order.id)}
+                          style={{
+                            padding: '6px 12px',
+                            background: COLORS.primary.blue,
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: 6,
+                            fontSize: 12,
+                            cursor: 'pointer'
+                          }}
+                        >
                           View
                         </button>
-                        <button style={{
-                          padding: '6px 12px',
-                          background: COLORS.secondary.teal,
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: 6,
-                          fontSize: 12,
-                          cursor: 'pointer'
-                        }}>
+                        <button 
+                          onClick={() => handleEditWorkOrder(order.id)}
+                          style={{
+                            padding: '6px 12px',
+                            background: COLORS.secondary.teal,
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: 6,
+                            fontSize: 12,
+                            cursor: 'pointer'
+                          }}
+                        >
                           Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteWorkOrder(order.id)}
+                          style={{
+                            padding: '6px 12px',
+                            background: COLORS.priority.urgent,
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: 6,
+                            fontSize: 12,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Delete
                         </button>
                       </div>
                     </td>
@@ -290,9 +272,9 @@ export const WorkOrders: React.FC = () => {
                 ))}
               </tbody>
             </table>
-          </div>
-        </main>
+          )}
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };

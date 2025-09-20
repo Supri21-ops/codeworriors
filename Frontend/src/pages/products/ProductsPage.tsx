@@ -1,81 +1,106 @@
 import React, { useEffect, useState } from 'react';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
 import { PlusIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-
-interface Product {
-  id: string;
-  name: string;
-  sku: string;
-  description: string;
-  category: string;
-  price: number;
-  stockQuantity: number;
-  unit: string;
-  status: 'active' | 'inactive';
-  createdAt: string;
-}
+import { productService, Product, ProductSummary, ProductFilters } from '../../services/product.service';
+import toast from 'react-hot-toast';
 
 export const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [summary, setSummary] = useState<ProductSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [categories, setCategories] = useState<string[]>([]);
 
-  // Mock data - replace with actual API call
+  // Fetch products and summary on component mount
   useEffect(() => {
-    const mockProducts: Product[] = [
-      {
-        id: '1',
-        name: 'Steel Frame Assembly',
-        sku: 'SFA-001',
-        description: 'High-strength steel frame for industrial equipment',
-        category: 'Assemblies',
-        price: 250.00,
-        stockQuantity: 45,
-        unit: 'each',
-        status: 'active',
-        createdAt: '2024-01-15'
-      },
-      {
-        id: '2',
-        name: 'Precision Bearing',
-        sku: 'PB-2024',
-        description: 'High-precision ball bearing for rotating machinery',
-        category: 'Components',
-        price: 89.50,
-        stockQuantity: 120,
-        unit: 'each',
-        status: 'active',
-        createdAt: '2024-01-10'
-      },
-      {
-        id: '3',
-        name: 'Control Panel Housing',
-        sku: 'CPH-300',
-        description: 'Weather-resistant housing for control panels',
-        category: 'Enclosures',
-        price: 180.00,
-        stockQuantity: 28,
-        unit: 'each',
-        status: 'active',
-        createdAt: '2024-01-08'
-      }
-    ];
-
-    setTimeout(() => {
-      setProducts(mockProducts);
-      setLoading(false);
-    }, 1000);
+    fetchProducts();
+    fetchSummary();
+    fetchCategories();
   }, []);
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.sku.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'all' || product.category === filterCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const fetchProducts = async (filters?: ProductFilters) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await productService.getProducts({
+        search: searchTerm || undefined,
+        category: filterCategory !== 'all' ? filterCategory : undefined,
+        ...filters
+      });
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setError('Failed to load products');
+      toast.error('Failed to load products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const categories = ['all', ...Array.from(new Set(products.map(p => p.category)))];
+  const fetchSummary = async () => {
+    try {
+      const summaryData = await productService.getProductsSummary();
+      setSummary(summaryData);
+    } catch (error) {
+      console.error('Error fetching product summary:', error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const categoriesData = await productService.getCategories();
+      setCategories(['all', ...categoriesData]);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setCategories(['all']);
+    }
+  };
+
+  // Refetch when filters change
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchProducts();
+    }, 300); // Debounce search
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, filterCategory]);
+
+  const handleDeleteProduct = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      try {
+        await productService.deleteProduct(id);
+        toast.success('Product deleted successfully');
+        fetchProducts();
+        fetchSummary();
+      } catch (error) {
+        toast.error('Failed to delete product');
+      }
+    }
+  };
+
+  const handleEditProduct = (id: string) => {
+    toast(`Edit Product ${id} - Feature coming soon`);
+  };
+
+  const handleAddProduct = () => {
+    toast('Add Product - Feature coming soon');
+  };
+
+  const handleToggleStatus = async (id: string) => {
+    try {
+      await productService.toggleProductStatus(id);
+      toast.success('Product status updated');
+      fetchProducts();
+      fetchSummary();
+    } catch (error) {
+      toast.error('Failed to update product status');
+    }
+  };
+
+  // Products are already filtered by backend, just display them
+  const filteredProducts = products;
 
   return (
     <DashboardLayout>
@@ -88,7 +113,10 @@ export const ProductsPage: React.FC = () => {
               Manage your product catalog and inventory items
             </p>
           </div>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+          <button 
+            onClick={handleAddProduct}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+          >
             <PlusIcon className="w-5 h-5" />
             Add Product
           </button>
@@ -125,9 +153,41 @@ export const ProductsPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Summary Cards */}
+        {summary && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-lg shadow-sm border">
+              <div className="text-2xl font-bold text-blue-600">{summary.totalProducts}</div>
+              <div className="text-sm text-gray-500">Total Products</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border">
+              <div className="text-2xl font-bold text-green-600">{summary.activeProducts}</div>
+              <div className="text-sm text-gray-500">Active Products</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border">
+              <div className="text-2xl font-bold text-red-600">{summary.inactiveProducts}</div>
+              <div className="text-sm text-gray-500">Inactive Products</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border">
+              <div className="text-2xl font-bold text-yellow-600">{summary.lowStockProducts}</div>
+              <div className="text-sm text-gray-500">Low Stock</div>
+            </div>
+          </div>
+        )}
+
         {/* Products Table */}
         <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-          {loading ? (
+          {error ? (
+            <div className="p-8 text-center">
+              <div className="text-red-500 mb-4">⚠️ {error}</div>
+              <button 
+                onClick={() => fetchProducts()}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              >
+                Retry
+              </button>
+            </div>
+          ) : loading ? (
             <div className="p-8 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
               <p className="text-gray-500 mt-2">Loading products...</p>
@@ -147,10 +207,10 @@ export const ProductsPage: React.FC = () => {
                       Category
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Price
+                      Unit Price
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Stock
+                      Weight
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
@@ -178,26 +238,39 @@ export const ProductsPage: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${product.price.toFixed(2)}
+                        {product.currency || '$'}{product.unitPrice.toFixed(2)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.stockQuantity} {product.unit}
+                        {product.weight ? `${product.weight} kg` : 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          product.status === 'active' 
+                          product.isActive 
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-red-100 text-red-800'
                         }`}>
-                          {product.status}
+                          {product.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <button className="text-blue-600 hover:text-blue-900 p-1">
+                          <button 
+                            onClick={() => handleEditProduct(product.id)}
+                            className="text-blue-600 hover:text-blue-900 p-1"
+                          >
                             <PencilIcon className="w-4 h-4" />
                           </button>
-                          <button className="text-red-600 hover:text-red-900 p-1">
+                          <button 
+                            onClick={() => handleToggleStatus(product.id)}
+                            className="text-yellow-600 hover:text-yellow-900 p-1"
+                            title={product.isActive ? 'Deactivate' : 'Activate'}
+                          >
+                            {product.isActive ? '⏸️' : '▶️'}
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteProduct(product.id)}
+                            className="text-red-600 hover:text-red-900 p-1"
+                          >
                             <TrashIcon className="w-4 h-4" />
                           </button>
                         </div>

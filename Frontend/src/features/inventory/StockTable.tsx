@@ -12,6 +12,29 @@ export type StockRow = {
   category?: string;
 };
 
+interface StockTableItem {
+  id: string;
+  product: string;
+  sku: string;
+  category: string;
+  unitCost: number;
+  unit: string;
+  totalValue: number;
+  onHand: number;
+  freeToUse: number;
+  reserved: number;
+  incoming: number;
+  outgoing: number;
+  reorderLevel: number;
+  maxLevel: number;
+  lastMovement: string;
+  status: 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK' | 'OVERSTOCK';
+}
+
+interface Props {
+  data?: StockTableItem[];
+}
+
 const mockStock: StockRow[] = [
   { product: 'Dining Table', onHand: 500, freeToUse: 270, incoming: 0, outgoing: 230, totalValue: 600000 },
   { product: 'Drawer', onHand: 20, freeToUse: 20, incoming: 0, outgoing: 0, totalValue: 2000 },
@@ -19,7 +42,7 @@ const mockStock: StockRow[] = [
   { product: 'Glue', onHand: 2, freeToUse: 2, incoming: 10, outgoing: 0, totalValue: 200 },
 ];
 
-export const StockTable: React.FC = () => {
+export const StockTable: React.FC<Props> = ({ data }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
 
@@ -48,8 +71,25 @@ export const StockTable: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {mockStock.map((row) => (
-            <tr key={row.product} style={{ borderTop: '1px solid #EEE', background: row.onHand <= 10 ? COLORS.priority.urgent + '22' : 'inherit' }}>
+          {(data || mockStock.map(item => ({
+            id: item.product,
+            product: item.product,
+            sku: item.product,
+            category: item.category || 'Unknown',
+            unitCost: 0,
+            unit: 'unit',
+            totalValue: item.totalValue,
+            onHand: item.onHand,
+            freeToUse: item.freeToUse,
+            reserved: 0,
+            incoming: item.incoming,
+            outgoing: item.outgoing,
+            reorderLevel: 10,
+            maxLevel: 1000,
+            lastMovement: new Date().toISOString(),
+            status: (item.onHand <= 10 ? 'LOW_STOCK' : 'IN_STOCK') as 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK' | 'OVERSTOCK'
+          }))).map((row) => (
+            <tr key={row.id} style={{ borderTop: '1px solid #EEE', background: row.onHand <= 10 ? COLORS.priority.urgent + '22' : 'inherit' }}>
               <td style={{ padding: 8 }}>{row.product}</td>
               <td style={{ padding: 8, color: row.onHand <= 10 ? COLORS.priority.urgent : 'inherit', fontWeight: row.onHand <= 10 ? 700 : 400 }}>{row.onHand}</td>
               <td style={{ padding: 8 }}>{row.freeToUse}</td>
