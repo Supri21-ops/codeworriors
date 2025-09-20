@@ -59,7 +59,7 @@ export const Login: React.FC = () => {
             color: COLORS.primary.navy,
             margin: 0
           }}>
-            CodeWarrior
+            QuantumForge
           </h1>
           <p style={{
             color: COLORS.background.steel,

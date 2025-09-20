@@ -1,9 +1,13 @@
-<<<<<<< HEAD
-=======
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// schema.prisma
+// Prisma schema translated from your DDL + recommended improvements:
+// - UUID primary keys
+// - updatedAt uses @updatedAt
+// - vector embeddings stored as Float[] (use pgvector in production if available)
+// - added outbox_events, audit_logs, and optional RBAC tables (roles/permissions) for flexibility
+// - useful indexes and relations added
+//
+// Adjust connector URL in .env (DATABASE_URL)
 
->>>>>>> 3f96c8f9e2887f062742e21efdbbf5fcf52c1b7f
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,61 +15,13 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // Uncomment the following line if you want Prisma to use native types for Postgres
+  // referentialIntegrity = "prisma"
 }
 
-<<<<<<< HEAD
-model User {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  password   String
-  name       String?
-  role       String   @default("operator") // admin, manager, operator, inventory
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
-model Product {
-  id        String   @id @default(uuid())
-  name      String
-  sku       String?  @unique
-  category  String?
-  unitCost  Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ManufacturingOrder {
-  id            String   @id @default(uuid())
-  reference     String   @unique
-  finishedProd  String
-  quantity      Int
-  priority      Int      @default(50) // 0 = highest urgency
-  state         String   @default("draft") // draft, confirmed, in_progress, to_close, done, cancelled
-  scheduledAt   DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-=======
-// User Management
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  username  String   @unique
-  firstName String
-  lastName  String
-  role      UserRole @default(USER)
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  manufacturingOrders ManufacturingOrder[]
-  workOrders         WorkOrder[]
-  workCenters        WorkCenter[]
-  stockMovements     StockMovement[]
-
-  @@map("users")
-}
+/////////////////////////////////
+// Enums (from your DDL)
+/////////////////////////////////
 
 enum UserRole {
   ADMIN
@@ -75,151 +31,11 @@ enum UserRole {
   USER
 }
 
-// Product Management
-model Product {
-  id          String  @id @default(cuid())
-  name        String
-  description String?
-  sku         String  @unique
-  category    String
-  unit        String  @default("pcs")
-  isActive    Boolean @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  bomItems        BomItem[]
-  stockMovements  StockMovement[]
-  workOrderItems  WorkOrderItem[]
-
-  @@map("products")
-}
-
-// Bill of Materials
-model Bom {
-  id          String  @id @default(cuid())
-  name        String
-  description String?
-  version     String  @default("1.0")
-  isActive    Boolean @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  items BomItem[]
-
-  @@map("boms")
-}
-
-model BomItem {
-  id        String @id @default(cuid())
-  bomId     String
-  productId String
-  quantity  Float
-  unit      String @default("pcs")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  bom     Bom     @relation(fields: [bomId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id])
-
-  @@unique([bomId, productId])
-  @@map("bom_items")
-}
-
-// Work Centers
-model WorkCenter {
-  id              String  @id @default(cuid())
-  name            String
-  description     String?
-  code            String  @unique
-  capacity        Int     @default(1)
-  currentWorkload Int     @default(0)
-  isActive        Boolean @default(true)
-  managerId       String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  // Relations
-  manager     User?         @relation(fields: [managerId], references: [id])
-  workOrders  WorkOrder[]
-  stockItems  StockItem[]
-
-  @@map("work_centers")
-}
-
-// Stock Management
-model StockItem {
-  id           String  @id @default(cuid())
-  productId    String
-  workCenterId String?
-  quantity     Float   @default(0)
-  reservedQty  Float   @default(0)
-  minQty       Float   @default(0)
-  maxQty       Float   @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Relations
-  product    Product       @relation(fields: [productId], references: [id])
-  workCenter WorkCenter?   @relation(fields: [workCenterId], references: [id])
-  movements  StockMovement[]
-
-  @@unique([productId, workCenterId])
-  @@map("stock_items")
-}
-
-model StockMovement {
-  id          String            @id @default(cuid())
-  productId   String
-  workCenterId String?
-  quantity    Float
-  type        StockMovementType
-  reason      String
-  reference   String? // Reference to MO, WO, etc.
-  userId      String
-  createdAt   DateTime @default(now())
-
-  // Relations
-  product    Product     @relation(fields: [productId], references: [id])
-  workCenter WorkCenter? @relation(fields: [workCenterId], references: [id])
-  user       User        @relation(fields: [userId], references: [id])
-
-  @@map("stock_movements")
-}
-
 enum StockMovementType {
   IN
   OUT
   TRANSFER
   ADJUSTMENT
-}
-
-// Manufacturing Orders
-model ManufacturingOrder {
-  id            String                @id @default(cuid())
-  orderNumber   String                @unique
-  productId     String
-  quantity      Float
-  priority      ManufacturingPriority @default(NORMAL)
-  status        ManufacturingStatus   @default(PLANNED)
-  startDate     DateTime?
-  endDate       DateTime?
-  dueDate       DateTime
-  notes         String?
-  priorityScore Float?
-  customerTier  CustomerTier          @default(BRONZE)
-  createdById   String
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-
-  // Relations
-  product     Product      @relation(fields: [productId], references: [id])
-  createdBy   User         @relation(fields: [createdById], references: [id])
-  workOrders  WorkOrder[]
-
-  @@map("manufacturing_orders")
 }
 
 enum ManufacturingPriority {
@@ -245,36 +61,6 @@ enum ManufacturingStatus {
   ON_HOLD
 }
 
-// Work Orders
-model WorkOrder {
-  id                   String        @id @default(cuid())
-  orderNumber          String        @unique
-  manufacturingOrderId String
-  workCenterId         String
-  status               WorkOrderStatus @default(PLANNED)
-  priority             WorkOrderPriority @default(NORMAL)
-  plannedStartDate     DateTime?
-  plannedEndDate       DateTime?
-  actualStartDate      DateTime?
-  actualEndDate        DateTime?
-  assignedUserId       String?
-  notes                String?
-  priorityScore        Float?
-  schedulePosition     Int?
-  estimatedDuration    Float?
-  actualDuration       Float?
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
-
-  // Relations
-  manufacturingOrder ManufacturingOrder @relation(fields: [manufacturingOrderId], references: [id], onDelete: Cascade)
-  workCenter         WorkCenter         @relation(fields: [workCenterId], references: [id])
-  assignedUser       User?              @relation(fields: [assignedUserId], references: [id])
-  items              WorkOrderItem[]
-
-  @@map("work_orders")
-}
-
 enum WorkOrderStatus {
   PLANNED
   RELEASED
@@ -291,42 +77,6 @@ enum WorkOrderPriority {
   URGENT
 }
 
-model WorkOrderItem {
-  id           String  @id @default(cuid())
-  workOrderId  String
-  productId    String
-  quantity     Float
-  unit         String  @default("pcs")
-  completedQty Float   @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Relations
-  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
-  product   Product   @relation(fields: [productId], references: [id])
-
-  @@unique([workOrderId, productId])
-  @@map("work_order_items")
-}
-
-// Quality Control
-model QualityCheck {
-  id          String            @id @default(cuid())
-  workOrderId String
-  checkType   QualityCheckType
-  status      QualityStatus
-  notes       String?
-  checkedBy   String
-  checkedAt   DateTime          @default(now())
-  createdAt   DateTime          @default(now())
-
-  // Relations
-  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
-  checker   User      @relation(fields: [checkedBy], references: [id])
-
-  @@map("quality_checks")
-}
-
 enum QualityCheckType {
   INCOMING
   IN_PROCESS
@@ -338,23 +88,6 @@ enum QualityStatus {
   PASS
   FAIL
   PENDING
-}
-
-// Events and Notifications
-model Event {
-  id        String      @id @default(cuid())
-  type      EventType
-  title     String
-  message   String
-  data      Json?
-  userId    String?
-  isRead    Boolean     @default(false)
-  createdAt DateTime    @default(now())
-
-  // Relations
-  user User? @relation(fields: [userId], references: [id])
-
-  @@map("events")
 }
 
 enum EventType {
@@ -370,53 +103,403 @@ enum EventType {
   SYSTEM_ALERT
 }
 
-// Vector Search
-model VectorDocument {
-  id        String   @id @default(cuid())
-  content   String
-  embedding String   // JSON string of vector
-  metadata  Json?
-  collection String
+/////////////////////////////////
+// Models
+/////////////////////////////////
+
+model User {
+  id                 String            @id @default(uuid())
+  email              String            @unique
+  password           String
+  name               String?
+  // kept simple enum for quick-check role; for fine-grained RBAC use UserRoleAssignment below
+  role               UserRole          @default(USER)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  // Relations
+  createdManufacturingOrders  ManufacturingOrder[]  @relation("createdBy")
+  managedWorkCenters         WorkCenter[]          @relation("manager")
+  assignedWorkOrders         WorkOrder[]           @relation("assignedUser")
+  stockMovements             StockMovement[]
+  qualityChecks              QualityCheck[]        @relation("checkedByUser")
+  events                     Event[]               @relation("eventUser")
+  userRoleAssignments        UserRoleAssignment[]
+
+  @@map("users")
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  sku         String      @unique
+  category    String
+  unit        String      @default("pcs")
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // relations
+  bomItems        BomItem[]
+  stockItems      StockItem[]
+  stockMovements  StockMovement[]
+  workOrderItems  WorkOrderItem[]
+  manufacturingOrders ManufacturingOrder[]
+
+  @@map("products")
+  @@index([category])
+}
+
+model Bom {
+  id         String      @id @default(uuid())
+  name       String
+  description String?
+  version    String      @default("1.0")
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  items      BomItem[]
+
+  @@map("boms")
+}
+
+model BomItem {
+  id        String   @id @default(uuid())
+  bom       Bom      @relation(fields: [bomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bomId     String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  productId String
+  quantity  Float
+  unit      String   @default("pcs")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("vector_documents")
+  @@map("bom_items")
+  @@unique([bomId, productId], name: "bom_items_bomId_productId_key")
 }
 
-// Search Analytics
-model SearchAnalytics {
-  id          String   @id @default(cuid())
-  query       String
-  resultsCount Int
-  userId      String?
-  createdAt   DateTime @default(now())
+model WorkCenter {
+  id              String     @id @default(uuid())
+  name            String
+  description     String?
+  code            String     @unique
+  capacity        Int        @default(1)
+  currentWorkload Int        @default(0)
+  isActive        Boolean    @default(true)
+  manager         User?      @relation("manager", fields: [managerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  managerId       String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
-  @@map("search_analytics")
+  workOrders      WorkOrder[]
+  stockItems      StockItem[]
+
+  @@map("work_centers")
 }
 
-// Priority Queue
-model PriorityQueue {
-  id          String   @id @default(cuid())
-  orderId     String
-  orderType   String   // MANUFACTURING_ORDER or WORK_ORDER
-  priority    Float
-  dueDate     DateTime
+model StockItem {
+  id         String    @id @default(uuid())
+  product    Product   @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  productId  String
+  workCenter WorkCenter? @relation(fields: [workCenterId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   workCenterId String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  quantity   Float     @default(0)
+  reservedQty Float    @default(0)
+  minQty     Float     @default(0)
+  maxQty     Float     @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-  @@map("priority_queue")
+  @@map("stock_items")
+  @@unique([productId, workCenterId], name: "stock_items_productId_workCenterId_key")
+  @@index([productId])
+  @@index([workCenterId])
 }
 
-// Add missing relations
-model User {
-  // ... existing fields ...
-  qualityChecks QualityCheck[]
-  events        Event[]
+model StockMovement {
+  id         String            @id @default(uuid())
+  product    Product           @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  productId  String
+  workCenter WorkCenter?       @relation(fields: [workCenterId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  workCenterId String?
+  quantity   Float
+  type       StockMovementType
+  reason     String
+  reference  String?
+  user       User              @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  userId     String
+  createdAt  DateTime          @default(now())
+
+  @@map("stock_movements")
+  @@index([productId])
+  @@index([workCenterId])
+  @@index([userId])
+}
+
+model ManufacturingOrder {
+  id            String              @id @default(uuid())
+  orderNumber   String              @unique
+  product       Product             @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  productId     String
+  quantity      Float
+  priority      ManufacturingPriority @default(NORMAL)
+  status        ManufacturingStatus @default(PLANNED)
+  startDate     DateTime?
+  endDate       DateTime?
+  dueDate       DateTime
+  notes         String?
+  priorityScore Float?
+  customerTier  CustomerTier        @default(BRONZE)
+  createdBy     User                @relation("createdBy", fields: [createdById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdById   String
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  workOrders    WorkOrder[]
+
+  @@map("manufacturing_orders")
+  @@index([status, priority, dueDate], name: "idx_mo_status_priority_due")
+  @@index([createdById])
 }
 
 model WorkOrder {
-  // ... existing fields ...
-  qualityChecks QualityCheck[]
+  id                 String            @id @default(uuid())
+  orderNumber        String            @unique
+  manufacturingOrder ManufacturingOrder @relation(fields: [manufacturingOrderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  manufacturingOrderId String
+  workCenter         WorkCenter        @relation(fields: [workCenterId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  workCenterId       String
+  status             WorkOrderStatus   @default(PLANNED)
+  priority           WorkOrderPriority @default(NORMAL)
+  plannedStartDate   DateTime?
+  plannedEndDate     DateTime?
+  actualStartDate    DateTime?
+  actualEndDate      DateTime?
+  assignedUser       User?             @relation("assignedUser", fields: [assignedUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignedUserId     String?
+  notes              String?
+  priorityScore      Float?
+  schedulePosition   Int?
+  estimatedDuration  Float?
+  actualDuration     Float?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  items              WorkOrderItem[]
+  qualityChecks      QualityCheck[]
+
+  @@map("work_orders")
+  @@index([manufacturingOrderId])
+  @@index([assignedUserId])
+  @@index([workCenterId])
 }
->>>>>>> 3f96c8f9e2887f062742e21efdbbf5fcf52c1b7f
+
+model WorkOrderItem {
+  id         String    @id @default(uuid())
+  workOrder  WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  workOrderId String
+  product    Product   @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  productId  String
+  quantity   Float
+  unit       String    @default("pcs")
+  completedQty Float   @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("work_order_items")
+  @@unique([workOrderId, productId], name: "work_order_items_workOrderId_productId_key")
+  @@index([workOrderId])
+  @@index([productId])
+}
+
+model QualityCheck {
+  id         String      @id @default(uuid())
+  workOrder  WorkOrder   @relation(fields: [workOrderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  workOrderId String
+  checkType  QualityCheckType
+  status     QualityStatus
+  notes      String?
+  checkedBy  User        @relation("checkedByUser", fields: [checkedBy], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  checkedById String
+  checkedAt  DateTime    @default(now())
+  createdAt  DateTime    @default(now())
+
+  @@map("quality_checks")
+  @@index([workOrderId])
+  @@index([checkedById])
+}
+
+model Event {
+  id           String    @id @default(uuid())
+  type         EventType
+  title        String
+  message      String
+  data         Json?
+  user         User?     @relation("eventUser", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  userId       String?
+  isRead       Boolean   @default(false)
+  eventId      String?   // optional envelope id / correlation id
+  correlationId String?
+  topic        String?
+  processed    Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+
+  @@map("events")
+  @@index([topic])
+  @@index([userId])
+}
+
+model VectorDocument {
+  id         String    @id @default(uuid())
+  content    String
+  // Use Float[] to store embeddings. For production, prefer pgvector extension and map accordingly.
+  embedding  Float[]   @db.Float8[] 
+  metadata   Json?
+  collection String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("vector_documents")
+  @@index([collection])
+  @@index([createdAt])
+}
+
+model SearchAnalytics {
+  id           String   @id @default(uuid())
+  query        String
+  resultsCount Int
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  userId       String?
+  createdAt    DateTime @default(now())
+
+  @@map("search_analytics")
+  @@index([userId])
+}
+
+model PriorityQueue {
+  id          String    @id @default(uuid())
+  orderId     String
+  orderType   String
+  priority    Float
+  dueDate     DateTime
+  workCenter  WorkCenter? @relation(fields: [workCenterId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  workCenterId String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("priority_queue")
+  @@index([priority, dueDate], name: "idx_priority_queue_order")
+  @@index([orderId])
+}
+
+/////////////////////////////////
+// Reliability & Auditing helpers
+/////////////////////////////////
+
+model OutboxEvent {
+  id            String   @id @default(uuid())
+  aggregateType String?
+  aggregateId   String?
+  topic         String
+  eventType     String
+  payload       Json
+  createdAt     DateTime @default(now())
+  published     Boolean  @default(false)
+  publishedAt   DateTime?
+
+  @@map("outbox_events")
+  @@index([published, createdAt], name: "idx_outbox_unpublished")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  action      String
+  resource    String?
+  resourceId  String?
+  detail      Json?
+  createdAt   DateTime @default(now())
+
+  @@map("audit_logs")
+  @@index([userId])
+}
+
+/////////////////////////////////
+// Optional RBAC tables (recommended for flexible permissioning)
+// Keep these if you want to move beyond the simple UserRole enum.
+/////////////////////////////////
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  label       String?
+  description String?
+  createdAt   DateTime @default(now())
+
+  rolePermissions RolePermission[]
+  userAssignments UserRoleAssignment[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  action      String   // e.g., "mo.confirm"
+  resource    String? 
+  description String?
+  createdAt   DateTime @default(now())
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+  @@unique([action, resource], name: "permission_action_resource_unique")
+}
+
+model RolePermission {
+  id           String   @id @default(uuid())
+  role         Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId       String
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  permissionId String
+
+  @@map("role_permissions")
+  @@unique([roleId, permissionId], name: "role_permission_unique")
+}
+
+model UserRoleAssignment {
+  id      String   @id @default(uuid())
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  role    Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId  String
+  // optional scope to restrict role to specific objects (workCenters, orgs, etc)
+  scope   Json?    // e.g. { "workCenter": ["wc-1","wc-2"] }
+
+  @@map("user_roles")
+  @@unique([userId, roleId], name: "user_role_unique")
+  @@index([roleId])
+}
+
+/////////////////////////////////
+// Useful constraints
+/////////////////////////////////
+
+// Enforce non-negative and positive checks via application-level validation & DB constraints where appropriate.
+// Prisma doesn't expose CHECK constraints in the schema DSL; you can add them with a raw SQL migration if needed.
+// Example (raw SQL migration):
+// ALTER TABLE "stock_items" ADD CONSTRAINT chk_stock_quantity_nonneg CHECK (quantity >= 0 AND reservedQty >= 0);
+
+/////////////////////////////////
+// Notes
+/////////////////////////////////
+// - For production vector search, consider using the pgvector extension and store embeddings in a `vector` column.
+//   Prisma does not (natively) support pgvector at the time of writing; you can use a raw SQL migration to add the column/index
+//   or map embedding to Float[] as above and migrate later.
+// - Use the OutboxEvent model to implement the outbox pattern: write the outbox row inside the same DB transaction as your domain change,
+//   and run a background worker that publishes events to Kafka and marks published=true.
+// - Use AuditLog to capture critical operations (priority changes, stock adjustments, MO confirms).
+// - This schema uses UUIDs (String @default(uuid())). If you prefer native `uuid` type, Prisma's default uuid() maps to Postgres uuid.
+// - Add additional indexes and CHECK constraints via native SQL migrations for stricter DB-level enforcement.
+

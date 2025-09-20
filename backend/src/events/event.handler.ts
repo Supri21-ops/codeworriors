@@ -1,5 +1,7 @@
 import { EachMessagePayload } from 'kafkajs';
-import { prisma } from '../config/prisma';
+import { Pool } from 'pg';
+import { config } from '../config/env';
+const pool = new Pool({ connectionString: config.DATABASE_URL });
 import { logger } from '../config/logger';
 import { vectorService } from '../services/vector.service';
 import { priorityService } from '../services/priority.service';
@@ -146,10 +148,14 @@ export class EventHandler {
   private async handleManufacturingOrderCreated(data: any) {
     try {
       // Index the manufacturing order for vector search
-      const order = await prisma.manufacturingOrder.findUnique({
-        where: { id: data.orderId },
-        include: { product: true }
-      });
+      const { rows } = await pool.query(
+        `SELECT mo.*, p.name as product_name, p.description as product_description
+         FROM manufacturing_orders mo
+         JOIN products p ON mo.productId = p.id
+         WHERE mo.id = $1`,
+        [data.orderId]
+      );
+      const order = rows[0];
 
       if (order) {
         const content = `${order.product.name} ${order.product.description || ''} ${order.notes || ''}`;
@@ -186,10 +192,14 @@ export class EventHandler {
   private async handleManufacturingOrderUpdated(data: any) {
     try {
       // Update vector index
-      const order = await prisma.manufacturingOrder.findUnique({
-        where: { id: data.orderId },
-        include: { product: true }
-      });
+      const { rows } = await pool.query(
+        `SELECT mo.*, p.name as product_name, p.description as product_description
+         FROM manufacturing_orders mo
+         JOIN products p ON mo.productId = p.id
+         WHERE mo.id = $1`,
+        [data.orderId]
+      );
+      const order = rows[0];
 
       if (order) {
         const content = `${order.product.name} ${order.product.description || ''} ${order.notes || ''}`;
@@ -283,13 +293,10 @@ export class EventHandler {
   private async handleWorkOrderStarted(data: any) {
     try {
       // Update work center status
-      await prisma.workCenter.update({
-        where: { id: data.workCenterId },
-        data: { 
-          currentWorkload: { increment: 1 },
-          updatedAt: new Date()
-        }
-      });
+      await pool.query(
+        `UPDATE work_centers SET currentWorkload = currentWorkload + 1, updatedAt = NOW() WHERE id = $1`,
+        [data.workCenterId]
+      );
 
       // Create notification
       await this.createNotification({
@@ -307,13 +314,10 @@ export class EventHandler {
   private async handleWorkOrderCompleted(data: any) {
     try {
       // Update work center status
-      await prisma.workCenter.update({
-        where: { id: data.workCenterId },
-        data: { 
-          currentWorkload: { decrement: 1 },
-          updatedAt: new Date()
-        }
-      });
+      await pool.query(
+        `UPDATE work_centers SET currentWorkload = currentWorkload - 1, updatedAt = NOW() WHERE id = $1`,
+        [data.workCenterId]
+      );
 
       // Create notification
       await this.createNotification({
@@ -347,13 +351,10 @@ export class EventHandler {
   private async handleStockMovement(data: any) {
     try {
       // Update stock levels
-      await prisma.stockItem.update({
-        where: { id: data.stockItemId },
-        data: {
-          quantity: data.newQuantity,
-          updatedAt: new Date()
-        }
-      });
+      await pool.query(
+        `UPDATE stock_items SET quantity = $1, updatedAt = NOW() WHERE id = $2`,
+        [data.newQuantity, data.stockItemId]
+      );
 
       // Check for low stock alerts
       if (data.newQuantity <= data.minQty) {
@@ -470,10 +471,11 @@ export class EventHandler {
   private async handleSearchPerformed(data: any) {
     try {
       // Log search analytics
-      await prisma.$executeRaw`
-        INSERT INTO search_analytics (query, results_count, user_id, created_at)
-        VALUES (${data.query}, ${data.resultsCount}, ${data.userId}, NOW())
-      `;
+      await pool.query(
+        `INSERT INTO search_analytics (query, results_count, user_id, created_at)
+         VALUES ($1, $2, $3, NOW())`,
+        [data.query, data.resultsCount, data.userId]
+      );
     } catch (error) {
       logger.error('Error handling search performed:', error);
     }
@@ -490,16 +492,18 @@ export class EventHandler {
   // Helper Methods
   private async createNotification(notification: any) {
     try {
-      await prisma.event.create({
-        data: {
-          type: notification.type,
-          title: notification.title,
-          message: notification.message,
-          data: notification.data,
-          userId: notification.userId,
-          isRead: false
-        }
-      });
+      await pool.query(
+        `INSERT INTO events (type, title, message, data, userId, isRead, createdAt)
+         VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
+        [
+          notification.type,
+          notification.title,
+          notification.message,
+          JSON.stringify(notification.data),
+          notification.userId,
+          false
+        ]
+      );
     } catch (error) {
       logger.error('Error creating notification:', error);
     }

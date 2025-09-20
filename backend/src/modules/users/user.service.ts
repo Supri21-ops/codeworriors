@@ -1,4 +1,6 @@
-import { prisma } from '../../config/prisma';
+import { Pool } from 'pg';
+import { config } from '../../config/env';
+const pool = new Pool({ connectionString: config.DATABASE_URL });
 import { logger } from '../../config/logger';
 import { AppError } from '../../libs/errors';
 import { PaginationHelper } from '../../libs/pagination';
@@ -28,27 +30,35 @@ export class UserService {
         ];
       }
 
-      const [users, total] = await Promise.all([
-        prisma.user.findMany({
-          where,
-          skip,
-          take: pagination.limit,
-          select: {
-            id: true,
-            email: true,
-            username: true,
-            firstName: true,
-            lastName: true,
-            role: true,
-            isActive: true,
-            createdAt: true,
-            updatedAt: true
-          },
-          orderBy: { createdAt: 'desc' }
-        }),
-        prisma.user.count({ where })
-      ]);
-
+      // Build SQL WHERE clause and params
+      let sql = 'SELECT * FROM users WHERE 1=1';
+      let countSql = 'SELECT COUNT(*) FROM users WHERE 1=1';
+      let params: any[] = [];
+      let countParams: any[] = [];
+      if (filters.role) {
+        sql += ' AND role = $' + (params.length + 1);
+        countSql += ' AND role = $' + (countParams.length + 1);
+        params.push(filters.role);
+        countParams.push(filters.role);
+      }
+      if (filters.isActive !== undefined) {
+        sql += ' AND isActive = $' + (params.length + 1);
+        countSql += ' AND isActive = $' + (countParams.length + 1);
+        params.push(filters.isActive === 'true');
+        countParams.push(filters.isActive === 'true');
+      }
+      if (filters.search) {
+        sql += ' AND (firstName ILIKE $' + (params.length + 1) + ' OR lastName ILIKE $' + (params.length + 1) + ' OR email ILIKE $' + (params.length + 1) + ' OR username ILIKE $' + (params.length + 1) + ')';
+        countSql += ' AND (firstName ILIKE $' + (countParams.length + 1) + ' OR lastName ILIKE $' + (countParams.length + 1) + ' OR email ILIKE $' + (countParams.length + 1) + ' OR username ILIKE $' + (countParams.length + 1) + ')';
+        params.push(`%${filters.search}%`);
+        countParams.push(`%${filters.search}%`);
+      }
+      sql += ' ORDER BY createdAt DESC OFFSET $' + (params.length + 1) + ' LIMIT $' + (params.length + 2);
+      params.push(skip, pagination.limit);
+      const usersRes = await pool.query(sql, params);
+      const users = usersRes.rows;
+      const totalRes = await pool.query(countSql, countParams);
+      const total = parseInt(totalRes.rows[0].count, 10);
       return PaginationHelper.createPaginationResult(users, total, pagination.page, pagination.limit);
     } catch (error) {
       logger.error('Get users error:', error);
@@ -58,20 +68,11 @@ export class UserService {
 
   async getUserById(id: string) {
     try {
-      const user = await prisma.user.findUnique({
-        where: { id },
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      });
+      const { rows } = await pool.query(
+        'SELECT * FROM users WHERE id = $1',
+        [id]
+      );
+      const user = rows[0];
 
       if (!user) {
         throw new AppError('User not found', 404);
@@ -87,19 +88,16 @@ export class UserService {
   async updateUser(id: string, data: any, currentUserId: string) {
     try {
       // Check if user exists
-      const existingUser = await prisma.user.findUnique({
-        where: { id }
-      });
+      const { rows: existingRows } = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+      const existingUser = existingRows[0];
 
       if (!existingUser) {
         throw new AppError('User not found', 404);
       }
 
       // Check if user is trying to update their own profile or has admin role
-      const currentUser = await prisma.user.findUnique({
-        where: { id: currentUserId },
-        select: { role: true }
-      });
+      const { rows: currentRows } = await pool.query('SELECT role FROM users WHERE id = $1', [currentUserId]);
+      const currentUser = currentRows[0];
 
       if (currentUser?.role !== 'ADMIN' && currentUserId !== id) {
         throw new AppError('Insufficient permissions', 403);
@@ -118,24 +116,15 @@ export class UserService {
         updateData.isActive = data.isActive;
       }
 
-      const updatedUser = await prisma.user.update({
-        where: { id },
-        data: updateData,
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-          role: true,
-          isActive: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      });
-
+      // Build update SQL
+      const fields = Object.keys(updateData);
+      const values = Object.values(updateData);
+      if (fields.length === 0) return existingUser;
+      let setClause = fields.map((f, i) => `${f} = $${i + 1}`).join(', ');
+      await pool.query(`UPDATE users SET ${setClause}, updatedAt = NOW() WHERE id = $${fields.length + 1}`, [...values, id]);
+      const { rows: updatedRows } = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+      const updatedUser = updatedRows[0];
       logger.info(`User updated: ${updatedUser.email}`);
-
       return updatedUser;
     } catch (error) {
       logger.error('Update user error:', error);
@@ -146,9 +135,8 @@ export class UserService {
   async deleteUser(id: string, currentUserId: string) {
     try {
       // Check if user exists
-      const existingUser = await prisma.user.findUnique({
-        where: { id }
-      });
+      const { rows: existingRows } = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+      const existingUser = existingRows[0];
 
       if (!existingUser) {
         throw new AppError('User not found', 404);
@@ -160,18 +148,14 @@ export class UserService {
       }
 
       // Check if user has admin role
-      const currentUser = await prisma.user.findUnique({
-        where: { id: currentUserId },
-        select: { role: true }
-      });
+      const { rows: currentRows } = await pool.query('SELECT role FROM users WHERE id = $1', [currentUserId]);
+      const currentUser = currentRows[0];
 
       if (currentUser?.role !== 'ADMIN') {
         throw new AppError('Insufficient permissions', 403);
       }
 
-      await prisma.user.delete({
-        where: { id }
-      });
+      await pool.query('DELETE FROM users WHERE id = $1', [id]);
 
       logger.info(`User deleted: ${existingUser.email}`);
 
@@ -184,29 +168,18 @@ export class UserService {
 
   async getUserStats() {
     try {
-      const [
-        total,
-        active,
-        inactive,
-        byRole
-      ] = await Promise.all([
-        prisma.user.count(),
-        prisma.user.count({ where: { isActive: true } }),
-        prisma.user.count({ where: { isActive: false } }),
-        prisma.user.groupBy({
-          by: ['role'],
-          _count: { role: true }
-        })
-      ]);
-
+      const totalRes = await pool.query('SELECT COUNT(*) FROM users');
+      const activeRes = await pool.query('SELECT COUNT(*) FROM users WHERE isActive = true');
+      const inactiveRes = await pool.query('SELECT COUNT(*) FROM users WHERE isActive = false');
+      const byRoleRes = await pool.query('SELECT role, COUNT(*) as count FROM users GROUP BY role');
       return {
-        total,
-        active,
-        inactive,
-        byRole: byRole.reduce((acc, item) => {
-          acc[item.role] = item._count.role;
+        total: parseInt(totalRes.rows[0].count, 10),
+        active: parseInt(activeRes.rows[0].count, 10),
+        inactive: parseInt(inactiveRes.rows[0].count, 10),
+        byRole: byRoleRes.rows.reduce((acc: Record<string, number>, item: any) => {
+          acc[item.role] = parseInt(item.count, 10);
           return acc;
-        }, {} as Record<string, number>)
+        }, {})
       };
     } catch (error) {
       logger.error('Get user stats error:', error);

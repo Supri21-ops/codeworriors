@@ -1,4 +1,7 @@
-import { prisma } from '../config/prisma';
+import { Pool } from 'pg';
+import { config } from '../config/env';
+
+const pool = new Pool({ connectionString: config.DATABASE_URL });
 import { logger } from '../config/logger';
 import { kafkaService } from '../config/kafka';
 import { AppError } from '../libs/errors';
@@ -41,35 +44,39 @@ export class PriorityService {
     try {
       let order: any;
       
+
       if (type === 'MANUFACTURING_ORDER') {
-        order = await prisma.manufacturingOrder.findUnique({
-          where: { id: orderId },
-          include: {
-            product: true,
-            createdBy: true
-          }
-        });
+        const { rows } = await pool.query(
+          `SELECT mo.*, p.*, u.*
+           FROM manufacturing_orders mo
+           JOIN products p ON mo.productId = p.id
+           JOIN users u ON mo.createdById = u.id
+           WHERE mo.id = $1`,
+          [orderId]
+        );
+        order = rows[0];
       } else {
-        order = await prisma.workOrder.findUnique({
-          where: { id: orderId },
-          include: {
-            manufacturingOrder: {
-              include: { product: true }
-            },
-            workCenter: true
-          }
-        });
+        const { rows } = await pool.query(
+          `SELECT wo.*, mo.*, p.*, wc.*
+           FROM work_orders wo
+           JOIN manufacturing_orders mo ON wo.manufacturingOrderId = mo.id
+           JOIN products p ON mo.productId = p.id
+           JOIN work_centers wc ON wo.workCenterId = wc.id
+           WHERE wo.id = $1`,
+          [orderId]
+        );
+        order = rows[0];
       }
 
       if (!order) {
         throw new AppError('Order not found', 404);
       }
 
-      const baseScore = this.URGENCY_WEIGHTS[order.priority] || 2.0;
-      const urgencyMultiplier = this.calculateUrgencyMultiplier(order);
-      const deadlineFactor = this.calculateDeadlineFactor(order.dueDate);
-      const resourceAvailability = await this.calculateResourceAvailability(order);
-      const customerTier = this.CUSTOMER_TIER_WEIGHTS[order.customerTier] || 1.0;
+  const baseScore = this.URGENCY_WEIGHTS[(order.priority as keyof typeof this.URGENCY_WEIGHTS)] || 2.0;
+  const urgencyMultiplier = this.calculateUrgencyMultiplier(order);
+  const deadlineFactor = this.calculateDeadlineFactor(order.dueDate);
+  const resourceAvailability = await this.calculateResourceAvailability(order);
+  const customerTier = this.CUSTOMER_TIER_WEIGHTS[(order.customerTier as keyof typeof this.CUSTOMER_TIER_WEIGHTS)] || 1.0;
 
       const totalScore = baseScore * urgencyMultiplier * deadlineFactor * resourceAvailability * customerTier;
 
@@ -125,22 +132,21 @@ export class PriorityService {
     return 1.0; // More than a week
   }
 
-  private async calculateResourceAvailability(order: any): number {
+  private async calculateResourceAvailability(order: any): Promise<number> {
     try {
       // Check work center availability
-      const workCenters = await prisma.workCenter.findMany({
-        where: { isActive: true }
-      });
-
+      const { rows: wcRows } = await pool.query(
+        `SELECT * FROM work_centers WHERE "isActive" = true`
+      );
+      const workCenters = wcRows;
       const totalCapacity = workCenters.reduce((sum, wc) => sum + wc.capacity, 0);
-      
+
       // Check current workload
-      const currentWorkload = await prisma.workOrder.count({
-        where: {
-          status: 'IN_PROGRESS',
-          workCenterId: { in: workCenters.map(wc => wc.id) }
-        }
-      });
+      const { rows: workloadRows } = await pool.query(
+        `SELECT COUNT(*) as count FROM work_orders WHERE status = 'IN_PROGRESS' AND workCenterId = ANY($1::uuid[])`,
+        [workCenters.map(wc => wc.id)]
+      );
+      const currentWorkload = parseInt(workloadRows[0]?.count || '0', 10);
 
       const availabilityRatio = Math.max(0.1, (totalCapacity - currentWorkload) / totalCapacity);
       return 0.5 + (availabilityRatio * 1.5); // Range: 0.5 to 2.0
@@ -153,21 +159,15 @@ export class PriorityService {
   private async updatePriorityScore(orderId: string, type: string, score: number) {
     try {
       if (type === 'MANUFACTURING_ORDER') {
-        await prisma.manufacturingOrder.update({
-          where: { id: orderId },
-          data: { 
-            priorityScore: score,
-            updatedAt: new Date()
-          }
-        });
+        await pool.query(
+          `UPDATE manufacturing_orders SET "priorityScore" = $1, "updatedAt" = NOW() WHERE id = $2`,
+          [score, orderId]
+        );
       } else {
-        await prisma.workOrder.update({
-          where: { id: orderId },
-          data: { 
-            priorityScore: score,
-            updatedAt: new Date()
-          }
-        });
+        await pool.query(
+          `UPDATE work_orders SET "priorityScore" = $1, "updatedAt" = NOW() WHERE id = $2`,
+          [score, orderId]
+        );
       }
     } catch (error) {
       logger.error('Error updating priority score:', error);
@@ -185,20 +185,21 @@ export class PriorityService {
         whereClause.workCenterId = workCenterId;
       }
 
-      const workOrders = await prisma.workOrder.findMany({
-        where: whereClause,
-        include: {
-          manufacturingOrder: {
-            include: { product: true }
-          },
-          workCenter: true
-        },
-        orderBy: [
-          { priorityScore: 'desc' },
-          { dueDate: 'asc' }
-        ],
-        take: limit
-      });
+      // Get priority queue from work_orders
+      let sql = `SELECT wo.*, mo.orderNumber as moOrderNumber, p.name as productName, wc.name as workCenterName
+                 FROM work_orders wo
+                 JOIN manufacturing_orders mo ON wo.manufacturingOrderId = mo.id
+                 JOIN products p ON mo.productId = p.id
+                 JOIN work_centers wc ON wo.workCenterId = wc.id
+                 WHERE wo.status IN ('PLANNED', 'RELEASED')`;
+      let params: any[] = [];
+      if (workCenterId) {
+        sql += ` AND wo.workCenterId = $1`;
+        params.push(workCenterId);
+      }
+      sql += ` ORDER BY wo."priorityScore" DESC NULLS LAST, wo."dueDate" ASC LIMIT $${params.length + 1}`;
+      params.push(limit);
+      const { rows: workOrders } = await pool.query(sql, params);
 
       return workOrders.map(order => ({
         id: order.id,
@@ -208,9 +209,9 @@ export class PriorityService {
         estimatedDuration: this.calculateEstimatedDuration(order),
         resourceRequirements: [order.workCenterId],
         metadata: {
-          orderNumber: order.orderNumber,
-          productName: order.manufacturingOrder.product.name,
-          workCenter: order.workCenter.name
+          orderNumber: order.moOrderNumber,
+          productName: order.productName,
+          workCenter: order.workCenterName
         }
       }));
     } catch (error) {
@@ -266,14 +267,10 @@ export class PriorityService {
   private async updateWorkOrderPriorities(optimized: PriorityQueueItem[]) {
     try {
       for (let i = 0; i < optimized.length; i++) {
-        await prisma.workOrder.update({
-          where: { id: optimized[i].id },
-          data: { 
-            priorityScore: optimized[i].priority,
-            schedulePosition: i + 1,
-            updatedAt: new Date()
-          }
-        });
+        await pool.query(
+          `UPDATE work_orders SET "priorityScore" = $1, "schedulePosition" = $2, "updatedAt" = NOW() WHERE id = $3`,
+          [optimized[i].priority, i + 1, optimized[i].id]
+        );
       }
     } catch (error) {
       logger.error('Error updating work order priorities:', error);
@@ -298,23 +295,18 @@ export class PriorityService {
           break;
       }
 
-      const analytics = await prisma.$queryRaw<Array<{
-        priority: string;
-        count: number;
-        avgScore: number;
-        completionRate: number;
-      }>>`
-        SELECT 
+      const { rows: analytics } = await pool.query(
+        `SELECT 
           wo.priority,
           COUNT(*) as count,
-          AVG(wo.priority_score) as avg_score,
+          AVG(wo."priorityScore") as avg_score,
           AVG(CASE WHEN wo.status = 'COMPLETED' THEN 1.0 ELSE 0.0 END) as completion_rate
         FROM work_orders wo
-        WHERE wo.created_at >= ${startDate}
+        WHERE wo."createdAt" >= $1
         GROUP BY wo.priority
-        ORDER BY wo.priority
-      `;
-
+        ORDER BY wo.priority`,
+        [startDate]
+      );
       return analytics;
     } catch (error) {
       logger.error('Error getting priority analytics:', error);
@@ -325,13 +317,10 @@ export class PriorityService {
   async handlePriorityChange(orderId: string, newPriority: string, reason: string) {
     try {
       // Update priority in database
-      await prisma.workOrder.update({
-        where: { id: orderId },
-        data: { 
-          priority: newPriority,
-          updatedAt: new Date()
-        }
-      });
+      await pool.query(
+        `UPDATE work_orders SET priority = $1, "updatedAt" = NOW() WHERE id = $2`,
+        [newPriority, orderId]
+      );
 
       // Recalculate priority score
       const priorityScore = await this.calculatePriorityScore(orderId, 'WORK_ORDER');

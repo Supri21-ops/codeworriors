@@ -49,7 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) =
                 </svg>
               </div>
               <div className="ml-3">
-                <h1 className="text-xl font-bold text-gray-900">CodeWarrior</h1>
+                <h1 className="text-xl font-bold text-gray-900">QuantumForge</h1>
                 <p className="text-xs text-gray-500">Manufacturing</p>
               </div>
             </div>
@@ -117,7 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onLogout }) =
                 </svg>
               </div>
               <div className="ml-3">
-                <h1 className="text-xl font-bold text-gray-900">CodeWarrior</h1>
+                <h1 className="text-xl font-bold text-gray-900">QuantumForge</h1>
                 <p className="text-xs text-gray-500">Manufacturing</p>
               </div>
             </div>

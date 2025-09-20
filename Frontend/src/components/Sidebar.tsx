@@ -50,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNavigate, currentPage = 'das
       flexDirection: 'column'
     }}>
 <<<<<<< HEAD
-      <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 24 }}>CodeWarrior</div>
+  <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 24 }}>QuantumForge</div>
       <nav style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {links.map((l) => (
           <NavLink
@@ -78,7 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNavigate, currentPage = 'das
         padding: '16px 0',
         borderBottom: '1px solid rgba(255,255,255,0.1)'
       }}>
-        CodeWarrior
+  QuantumForge
       </div>
       
       <nav style={{ flex: 1 }}>

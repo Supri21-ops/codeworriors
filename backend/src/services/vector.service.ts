@@ -1,4 +1,7 @@
-import { prisma } from '../config/prisma';
+import { Pool } from 'pg';
+import { config } from '../config/env';
+
+const pool = new Pool({ connectionString: config.DATABASE_URL });
 import { logger } from '../config/logger';
 import { AppError } from '../libs/errors';
 
@@ -43,16 +46,16 @@ export class VectorService {
       const embedding = await this.createEmbedding(content);
       
       // Store in vector database (using pgvector extension)
-      await prisma.$executeRaw`
-        INSERT INTO vector_documents (id, content, embedding, metadata, collection, created_at)
-        VALUES (${id}, ${content}, ${JSON.stringify(embedding)}::vector, ${JSON.stringify(metadata)}, ${collection}, NOW())
-        ON CONFLICT (id) DO UPDATE SET
-          content = EXCLUDED.content,
-          embedding = EXCLUDED.embedding,
-          metadata = EXCLUDED.metadata,
-          updated_at = NOW()
-      `;
-
+      await pool.query(
+        `INSERT INTO vector_documents (id, content, embedding, metadata, collection, createdAt, updatedAt)
+         VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+         ON CONFLICT (id) DO UPDATE SET
+           content = EXCLUDED.content,
+           embedding = EXCLUDED.embedding,
+           metadata = EXCLUDED.metadata,
+           updatedAt = NOW()`,
+        [id, content, embedding, metadata, collection]
+      );
       logger.info(`Document indexed: ${id} in collection ${collection}`);
     } catch (error) {
       logger.error('Error indexing document:', error);
@@ -70,28 +73,25 @@ export class VectorService {
       const queryEmbedding = await this.createEmbedding(query);
 
       // Build filter conditions
-      let filterConditions = `collection = '${collection}'`;
-      if (Object.keys(filters).length > 0) {
-        const filterClauses = Object.entries(filters).map(([key, value]) => 
-          `metadata->>'${key}' = '${value}'`
-        );
-        filterConditions += ` AND ${filterClauses.join(' AND ')}`;
+      let filterConditions = [`collection = $1`];
+      let filterValues: any[] = [collection];
+      let paramIndex = 2;
+      for (const [key, value] of Object.entries(filters)) {
+        filterConditions.push(`metadata->>$${paramIndex} = $${paramIndex + 1}`);
+        filterValues.push(key, value);
+        paramIndex += 2;
       }
+      filterConditions.push(`1 - (embedding <=> $${paramIndex}::vector) > $${paramIndex + 1}`);
+      filterValues.push(queryEmbedding, threshold);
 
-      const results = await prisma.$queryRaw<VectorSearchResult[]>`
-        SELECT 
-          id,
-          content,
-          metadata,
-          1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
-        FROM vector_documents
-        WHERE ${filterConditions}
-        AND 1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}
-        ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
-        LIMIT ${limit}
-      `;
-
-      return results;
+      const sql = `SELECT id, content, metadata, 1 - (embedding <=> $${paramIndex}::vector) as similarity
+                   FROM vector_documents
+                   WHERE ${filterConditions.join(' AND ')}
+                   ORDER BY embedding <=> $${paramIndex}::vector
+                   LIMIT $${paramIndex + 2}`;
+      filterValues.push(limit);
+      const { rows } = await pool.query(sql, filterValues);
+      return rows;
     } catch (error) {
       logger.error('Error searching similar documents:', error);
       throw new AppError('Failed to search similar documents', 500);
@@ -109,23 +109,18 @@ export class VectorService {
       // Enrich with manufacturing order data
       const enrichedResults = await Promise.all(
         results.map(async (result) => {
-          const order = await prisma.manufacturingOrder.findUnique({
-            where: { id: result.id },
-            include: {
-              product: true,
-              createdBy: {
-                select: {
-                  firstName: true,
-                  lastName: true,
-                  email: true
-                }
-              }
-            }
-          });
-
+          // Example: fetch order data from manufacturing_orders and products
+          const { rows: orderRows } = await pool.query(
+            `SELECT mo.*, p.*, u.firstName, u.lastName, u.email
+             FROM manufacturing_orders mo
+             JOIN products p ON mo.productId = p.id
+             JOIN users u ON mo.createdById = u.id
+             WHERE mo.id = $1`,
+            [result.id]
+          );
           return {
             ...result,
-            orderData: order
+            orderData: orderRows[0] || null
           };
         })
       );
@@ -148,13 +143,14 @@ export class VectorService {
       // Enrich with product data
       const enrichedResults = await Promise.all(
         results.map(async (result) => {
-          const product = await prisma.product.findUnique({
-            where: { id: result.id }
-          });
-
+          // Example: fetch product data from products
+          const { rows: productRows } = await pool.query(
+            `SELECT * FROM products WHERE id = $1`,
+            [result.id]
+          );
           return {
             ...result,
-            productData: product
+            productData: productRows[0] || null
           };
         })
       );
@@ -168,21 +164,21 @@ export class VectorService {
 
   async getRecommendations(orderId: string, type: 'similar_orders' | 'recommended_products' = 'similar_orders') {
     try {
-      const order = await prisma.manufacturingOrder.findUnique({
-        where: { id: orderId },
-        include: { product: true }
-      });
-
+      // Example: fetch order and product data
+      const { rows: orderRows } = await pool.query(
+        `SELECT mo.*, p.*
+         FROM manufacturing_orders mo
+         JOIN products p ON mo.productId = p.id
+         WHERE mo.id = $1`,
+        [orderId]
+      );
+      const order = orderRows[0];
       if (!order) {
         throw new AppError('Order not found', 404);
       }
-
-      const searchQuery = `${order.product.name} ${order.product.description || ''} ${order.notes || ''}`;
-      
+      const searchQuery = `${order.name} ${order.description || ''} ${order.notes || ''}`;
       if (type === 'similar_orders') {
-        return this.searchManufacturingOrders(searchQuery, {
-          excludeId: orderId
-        });
+        return this.searchManufacturingOrders(searchQuery, { excludeId: orderId });
       } else {
         return this.searchProducts(searchQuery);
       }
@@ -194,8 +190,8 @@ export class VectorService {
 
   async updateDocumentEmbedding(id: string, content: string, metadata: any = {}) {
     try {
-      await this.indexDocument(id, content, metadata);
-      logger.info(`Document embedding updated: ${id}`);
+  await this.indexDocument(id, content, metadata);
+  logger.info(`Document embedding updated: ${id}`);
     } catch (error) {
       logger.error('Error updating document embedding:', error);
       throw new AppError('Failed to update document embedding', 500);
@@ -204,10 +200,8 @@ export class VectorService {
 
   async deleteDocument(id: string) {
     try {
-      await prisma.$executeRaw`
-        DELETE FROM vector_documents WHERE id = ${id}
-      `;
-      logger.info(`Document deleted from vector store: ${id}`);
+  await pool.query(`DELETE FROM vector_documents WHERE id = $1`, [id]);
+  logger.info(`Document deleted from vector store: ${id}`);
     } catch (error) {
       logger.error('Error deleting document:', error);
       throw new AppError('Failed to delete document', 500);
@@ -216,15 +210,13 @@ export class VectorService {
 
   async getCollectionStats(collection: string) {
     try {
-      const stats = await prisma.$queryRaw<Array<{ count: number }>>`
-        SELECT COUNT(*) as count
-        FROM vector_documents
-        WHERE collection = ${collection}
-      `;
-
+      const { rows } = await pool.query(
+        `SELECT COUNT(*) as count FROM vector_documents WHERE collection = $1`,
+        [collection]
+      );
       return {
         collection,
-        documentCount: stats[0]?.count || 0
+        documentCount: rows[0]?.count || 0
       };
     } catch (error) {
       logger.error('Error getting collection stats:', error);
