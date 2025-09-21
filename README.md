@@ -1,4 +1,4 @@
-# 🏭 Manufacturing Management System - CodeWarriors
+# 🏭 Manufacturing Management System - CodeWarriors **video link :** - https://drive.google.com/drive/folders/1D8_VMN_TjIRw9BBKdDyk9Sm6xAWXyfUc 
 
 A comprehensive manufacturing management system built for the Odoo Hackathon, featuring real-time order tracking, inventory management, and production planning.
 
